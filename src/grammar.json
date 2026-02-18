@@ -1,0 +1,95 @@
+{
+  "$schema": "https://tree-sitter.github.io/tree-sitter/assets/schemas/grammar.schema.json",
+  "name": "rpgle",
+  "rules": {
+    "source_file": {
+      "type": "REPEAT",
+      "content": {
+        "type": "SYMBOL",
+        "name": "_definition"
+      }
+    },
+    "_definition": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "function_definition"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "comment"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "built_in_todo"
+        }
+      ]
+    },
+    "function_definition": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "PATTERN",
+          "value": "[dDd][cCc][lLl]-[pPp][rRr][oOo][cCc]"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "identifier"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[eEe][nNn][dDd]-[pPp][rRr][oOo][cCc]"
+        }
+      ]
+    },
+    "identifier": {
+      "type": "PATTERN",
+      "value": "[a-zA-Z]+"
+    },
+    "comment": {
+      "type": "TOKEN",
+      "content": {
+        "type": "STRING",
+        "value": "//"
+      }
+    },
+    "built_in_todo": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "PATTERN",
+          "value": "[dDd][cCc][lLl][---][dDd][sSs]"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[eEe][nNn][dDd][---][dDd][sSs]"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[dDd][cCc][lLl][---][pPp][iIi]"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[rRr][eEe][tTt][uUu][rRr][nNn]"
+        }
+      ]
+    }
+  },
+  "extras": [
+    {
+      "type": "PATTERN",
+      "value": "\\s"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "comment"
+    }
+  ],
+  "conflicts": [],
+  "precedences": [],
+  "externals": [],
+  "inline": [],
+  "supertypes": [],
+  "reserved": {}
+}

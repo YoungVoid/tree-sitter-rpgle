@@ -1,0 +1,4 @@
+dcl-proc hello;
+end-proc;
+DCL-PROC bye;
+END-PROC;
