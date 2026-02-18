@@ -36,9 +36,9 @@ export default grammar({
     ),
 
     function_definition: $ => seq(
-      new RegExp(caseInsensitive('dcl') + '-' + caseInsensitive('proc')),
+      new RegExp(caseInsensitive('dcl-proc')),
       $.identifier,
-      new RegExp(caseInsensitive('end') + '-' + caseInsensitive('proc'))
+      new RegExp(caseInsensitive('end-proc'))
     ),
 
     identifier: $ => /[a-zA-Z]+/,
