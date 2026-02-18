@@ -7,7 +7,6 @@
 /// <reference types="tree-sitter-cli/dsl" />
 // @ts-check
 
-
 function caseInsensitive(word) {
   return word
     .split('')
@@ -43,7 +42,9 @@ export default grammar({
       $.end_of_statement,
     ),
 
-    identifier: $ => /[a-zA-Z]+/,
+    // BUG: Not catering for:
+    // underscores or other similar special characters?
+    identifier: $ => /[a-zA-Z][a-zA-Z0-9]+/, 
 
     comment: ($) => token("//"),
 

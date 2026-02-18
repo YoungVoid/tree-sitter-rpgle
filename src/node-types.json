@@ -54,8 +54,7 @@
   },
   {
     "type": "end_of_statement",
-    "named": true,
-    "extra": true
+    "named": true
   },
   {
     "type": "identifier",
