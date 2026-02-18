@@ -38,7 +38,9 @@ export default grammar({
     function_definition: $ => seq(
       new RegExp(caseInsensitive('dcl-proc')),
       $.identifier,
-      new RegExp(caseInsensitive('end-proc'))
+      $.end_of_statement,
+      new RegExp(caseInsensitive('end-proc')),
+      $.end_of_statement,
     ),
 
     identifier: $ => /[a-zA-Z]+/,
@@ -50,7 +52,9 @@ export default grammar({
       new RegExp(caseInsensitive('end-ds')),
       new RegExp(caseInsensitive('dcl-pi')),
       new RegExp(caseInsensitive('return'))
-    )
+    ),
+
+    end_of_statement: $ => ';'
 
 
   }

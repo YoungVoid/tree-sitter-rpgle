@@ -31,15 +31,23 @@
       "members": [
         {
           "type": "PATTERN",
-          "value": "[dDd][cCc][lLl]-[pPp][rRr][oOo][cCc]"
+          "value": "[dDd][cCc][lLl][---][pPp][rRr][oOo][cCc]"
         },
         {
           "type": "SYMBOL",
           "name": "identifier"
         },
         {
+          "type": "SYMBOL",
+          "name": "end_of_statement"
+        },
+        {
           "type": "PATTERN",
-          "value": "[eEe][nNn][dDd]-[pPp][rRr][oOo][cCc]"
+          "value": "[eEe][nNn][dDd][---][pPp][rRr][oOo][cCc]"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "end_of_statement"
         }
       ]
     },
@@ -74,6 +82,10 @@
           "value": "[rRr][eEe][tTt][uUu][rRr][nNn]"
         }
       ]
+    },
+    "end_of_statement": {
+      "type": "STRING",
+      "value": ";"
     }
   },
   "extras": [
@@ -84,6 +96,10 @@
     {
       "type": "SYMBOL",
       "name": "comment"
+    },
+    {
+      "type": "SYMBOL",
+      "name": "end_of_statement"
     }
   ],
   "conflicts": [],
