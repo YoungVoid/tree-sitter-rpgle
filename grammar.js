@@ -186,7 +186,7 @@ export default grammar({
       ';',
       repeat($.parameter),
       caseInsensitive('end-pi'),
-      choice($.identifier, '*n', '*N'),
+      optional(choice($.identifier, '*n', '*N')),
       ';'
     ),
 

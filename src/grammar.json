@@ -382,16 +382,24 @@
           "type": "CHOICE",
           "members": [
             {
-              "type": "SYMBOL",
-              "name": "identifier"
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "identifier"
+                },
+                {
+                  "type": "STRING",
+                  "value": "*n"
+                },
+                {
+                  "type": "STRING",
+                  "value": "*N"
+                }
+              ]
             },
             {
-              "type": "STRING",
-              "value": "*n"
-            },
-            {
-              "type": "STRING",
-              "value": "*N"
+              "type": "BLANK"
             }
           ]
         },

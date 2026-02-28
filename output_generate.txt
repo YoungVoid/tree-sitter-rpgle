@@ -42,8 +42,8 @@
           (number [9, 23] - [9, 25])))))
   (procedure [13, 0] - [39, 9]
     (identifier [13, 9] - [13, 13])
-    (declaration [14, 4] - [19, 11]
-      (dcl_pi [14, 4] - [19, 11]
+    (declaration [14, 4] - [16, 11]
+      (dcl_pi [14, 4] - [16, 11]
         (parameter [15, 8] - [15, 54]
           (identifier [15, 8] - [15, 23])
           (keyword [15, 27] - [15, 30]
@@ -54,11 +54,13 @@
               (expression [15, 39] - [15, 46]
                 (special_value [15, 39] - [15, 46]))
               (expression [15, 47] - [15, 52]
-                (special_value [15, 47] - [15, 52])))))
-        (ERROR [16, 10] - [16, 11])
-        (comment [18, 4] - [18, 30])
-        (identifier [19, 4] - [19, 8])
-        (ERROR [19, 8] - [19, 10])))
+                (special_value [15, 47] - [15, 52])))))))
+    (comment [18, 4] - [18, 30])
+    (expression_statement [19, 4] - [19, 11]
+      (expression [19, 4] - [19, 10]
+        (function_call [19, 4] - [19, 10]
+          (identifier [19, 4] - [19, 8])
+          (argument_list [19, 8] - [19, 10]))))
     (if_statement [21, 4] - [23, 10]
       (ERROR [21, 7] - [21, 9]
         (builtin [21, 7] - [21, 9]))
@@ -114,12 +116,13 @@
     (return_statement [37, 4] - [37, 11]))
   (procedure [43, 0] - [51, 14]
     (identifier [43, 9] - [43, 13])
-    (declaration [44, 4] - [47, 23]
-      (dcl_pi [44, 4] - [47, 23]
-        (ERROR [45, 10] - [47, 14]
-          (identifier [47, 4] - [47, 10]))
-        (identifier [47, 14] - [47, 21])
-        (ERROR [47, 21] - [47, 22])))
+    (declaration [44, 4] - [45, 11]
+      (dcl_pi [44, 4] - [45, 11]))
+    (assignment [47, 4] - [47, 23]
+      (identifier [47, 4] - [47, 10])
+      (expression [47, 13] - [47, 22]
+        (literal [47, 13] - [47, 22]
+          (string [47, 13] - [47, 22]))))
     (return_statement [49, 4] - [49, 11])
     (identifier [51, 9] - [51, 13])))
-example.rpgle	Parse:    0.21 ms	  3962 bytes/ms	(ERROR [16, 10] - [16, 11])
+example.rpgle	Parse:    0.25 ms	  3456 bytes/ms	(ERROR [21, 7] - [21, 9])
