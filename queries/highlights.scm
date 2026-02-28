@@ -1,44 +1,110 @@
-; ===== Core Structure =====
-
-(source_file) @module
-(declaration) @keyword
-(dcl_ds) @keyword
-
-; ===== Identifiers =====
-
-(identifier) @variable
-
-; Identifier inside function call head
-(function_call
-  (identifier) @function)
-
-; Identifier inside assignment LHS
-(assignment
-  (identifier) @variable.parameter)
-
-; ===== Literals =====
-
-(number) @number
-(string) @string
-(literal) @constant
-
-; ===== Expressions =====
-
-(binary_expression) @operator
-(argument_list) @punctuation.bracket
-
-; ===== Comments =====
+; ======================
+; Comments
+; ======================
 
 (comment) @comment
 
-; ===== Builtins =====
+; ======================
+; Keywords
+; ======================
+
+[
+  "ctl-opt"
+] @keyword
+
+; Declaration keywords (matched via regex tokens)
+(dcl_s) @keyword
+(dcl_ds) @keyword
+(dcl_pr) @keyword
+(dcl_pi) @keyword
+(procedure) @keyword
+
+(keyword_d_spec_fixed) @keyword
+(keyword) @keyword
+
+; Control flow
+;[
+;  "if"
+;  "elseif" "else" "endif"
+;  "select" "when" "when-is" "when-in" "other" "endsl"
+;  "dow" "dou" "enddo"
+;  "for" "to" "by" "endfor"
+;  "monitor" "on-error" "endmon"
+;  "return"
+;] @keyword
+
+; ======================
+; Types
+; ======================
+
+(type) @type
+
+;[
+;  "char" "varchar" "packed" "zoned"
+;  "int" "ind" "date" "time" "timestamp"
+;] @type.builtin
+
+; ======================
+; Functions & Procedures
+; ======================
+
+(procedure
+  (identifier) @function)
+
+(function_call
+  (identifier) @function.call)
 
 (builtin) @function.builtin
 
-; ===== Errors =====
+(call_statement
+  (identifier) @function.call)
 
-(ERROR) @error
+; ======================
+; Variables
+; ======================
 
-; ===== TEMP   =====
-;(expression_statement) @constant.builtin
-;(binary_expression) @typeI
+(field_declaration
+  (identifier) @variable.member)
+
+(parameter
+  (identifier) @parameter)
+
+(assignment
+  (identifier) @variable)
+
+(identifier) @variable
+
+; ======================
+; Literals
+; ======================
+
+(string) @string
+(number) @number
+(literal) @constant
+
+(special_value) @constant
+
+; ======================
+; Operators
+; ======================
+
+;[
+;  "+" "-" "*" "/"
+;  "=" "<>" "<" ">" "<=" ">="
+;] @operator
+
+;[
+;  "and" "or" "not"
+;] @keyword.operator
+
+; ======================
+; Native operands
+; ======================
+
+(native_operand) @function.builtin
+
+; ======================
+; SQL Block
+; ======================
+
+(sql_block) @string.special
