@@ -82,7 +82,10 @@ export default grammar({
 
   rules: {
 
-    source_file: $ => repeat($._statement),
+    source_file: $ => seq(
+      $.fully_free,
+      repeat($._statement)
+    ),
 
     // =====================
     // Core Statements
@@ -106,6 +109,9 @@ export default grammar({
       $.native_operand_statement,
       $.expression_statement
     ),
+
+
+    fully_free: $ => caseInsensitive('**FREE'),
 
     // =====================
     // Compiler Directives

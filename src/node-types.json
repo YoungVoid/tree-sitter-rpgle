@@ -1238,7 +1238,7 @@
     "fields": {},
     "children": {
       "multiple": true,
-      "required": false,
+      "required": true,
       "types": [
         {
           "type": "assignment",
@@ -1274,6 +1274,10 @@
         },
         {
           "type": "for_loop",
+          "named": true
+        },
+        {
+          "type": "fully_free",
           "named": true
         },
         {
@@ -1518,6 +1522,10 @@
   {
     "type": "ctl-opt",
     "named": false
+  },
+  {
+    "type": "fully_free",
+    "named": true
   },
   {
     "type": "identifier",

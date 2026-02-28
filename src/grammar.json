@@ -4,11 +4,20 @@
   "word": "identifier",
   "rules": {
     "source_file": {
-      "type": "REPEAT",
-      "content": {
-        "type": "SYMBOL",
-        "name": "_statement"
-      }
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "fully_free"
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SYMBOL",
+            "name": "_statement"
+          }
+        }
+      ]
     },
     "_statement": {
       "type": "CHOICE",
@@ -78,6 +87,10 @@
           "name": "expression_statement"
         }
       ]
+    },
+    "fully_free": {
+      "type": "PATTERN",
+      "value": "[***][***][FFf][RRr][EEe][EEe]"
     },
     "compiler_directive": {
       "type": "TOKEN",
