@@ -528,6 +528,10 @@
         {
           "type": "literal",
           "named": true
+        },
+        {
+          "type": "special_value",
+          "named": true
         }
       ]
     }
@@ -765,6 +769,10 @@
         },
         {
           "type": "keyword_d_spec_fixed",
+          "named": true
+        },
+        {
+          "type": "special_value",
           "named": true
         }
       ]
@@ -1360,10 +1368,6 @@
     "named": false
   },
   {
-    "type": ",",
-    "named": false
-  },
-  {
     "type": "-",
     "named": false
   },
@@ -1430,6 +1434,10 @@
   },
   {
     "type": "number",
+    "named": true
+  },
+  {
+    "type": "special_value",
     "named": true
   }
 ]

@@ -908,6 +908,14 @@
         }
       ]
     },
+    "special_value": {
+      "type": "PATTERN",
+      "value": "\\*[A-Za-z][A-Za-z0-9_]*"
+    },
+    "indicator": {
+      "type": "PATTERN",
+      "value": "\\*[iI][nN]([0-9]{2})|\\*[lL][rR]"
+    },
     "keyword": {
       "type": "PREC",
       "value": 0,
@@ -917,6 +925,10 @@
           {
             "type": "CHOICE",
             "members": [
+              {
+                "type": "SYMBOL",
+                "name": "special_value"
+              },
               {
                 "type": "SYMBOL",
                 "name": "keyword_d_spec_fixed"
@@ -1485,7 +1497,7 @@
                         "members": [
                           {
                             "type": "STRING",
-                            "value": ","
+                            "value": ":"
                           },
                           {
                             "type": "SYMBOL",
@@ -1554,6 +1566,10 @@
         {
           "type": "SYMBOL",
           "name": "identifier"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "special_value"
         },
         {
           "type": "SEQ",

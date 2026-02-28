@@ -51,9 +51,10 @@
           (keyword [15, 31] - [15, 53]
             (keyword_d_spec_fixed [15, 31] - [15, 38])
             (argument_list [15, 38] - [15, 53]
-              (ERROR [15, 39] - [15, 48])
-              (expression [15, 48] - [15, 52]
-                (identifier [15, 48] - [15, 52])))))
+              (expression [15, 39] - [15, 46]
+                (special_value [15, 39] - [15, 46]))
+              (expression [15, 47] - [15, 52]
+                (special_value [15, 47] - [15, 52])))))
         (ERROR [16, 10] - [16, 11])
         (comment [18, 4] - [18, 30])
         (identifier [19, 4] - [19, 8])
@@ -103,15 +104,13 @@
           (function_call [32, 8] - [32, 28]
             (identifier [32, 8] - [32, 26])
             (argument_list [32, 26] - [32, 28])))))
-    (ERROR [36, 4] - [36, 5])
-    (expression_statement [36, 5] - [36, 16]
-      (expression [36, 5] - [36, 15]
-        (binary_expression [36, 5] - [36, 15]
-          (expression [36, 5] - [36, 9]
-            (identifier [36, 5] - [36, 9]))
-          (ERROR [36, 10] - [36, 11])
-          (expression [36, 13] - [36, 15]
-            (identifier [36, 13] - [36, 15])))))
+    (expression_statement [36, 4] - [36, 16]
+      (expression [36, 4] - [36, 15]
+        (binary_expression [36, 4] - [36, 15]
+          (expression [36, 4] - [36, 9]
+            (special_value [36, 4] - [36, 9]))
+          (expression [36, 12] - [36, 15]
+            (special_value [36, 12] - [36, 15])))))
     (return_statement [37, 4] - [37, 11]))
   (procedure [43, 0] - [51, 14]
     (identifier [43, 9] - [43, 13])
@@ -123,4 +122,4 @@
         (ERROR [47, 21] - [47, 22])))
     (return_statement [49, 4] - [49, 11])
     (identifier [51, 9] - [51, 13])))
-example.rpgle	Parse:    0.27 ms	  3127 bytes/ms	(ERROR [15, 39] - [15, 48])
+example.rpgle	Parse:    0.21 ms	  3962 bytes/ms	(ERROR [16, 10] - [16, 11])
