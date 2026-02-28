@@ -72,7 +72,7 @@ export default grammar({
 
 
   conflicts: $ => [
-    [$.identifier, $.builtin]
+    //[$.identifier, $.builtin]
   ],
 
   rules: {
@@ -115,11 +115,12 @@ export default grammar({
     // Control Options
     // =====================
 
-    ctl_opt: $ => seq(
-      caseInsensitive('ctl-opt'),
+    ctl_opt: $ => prec.right(2, seq(
+      //caseInsensitive('ctl-opt'),
+      'ctl-opt',
       repeat1($.identifier),
-      optional(';')
-    ),
+      ';'
+    )),
 
     // =====================
     // Declarations
@@ -137,7 +138,7 @@ export default grammar({
       $.identifier,
       optional($.type),
       repeat($.keyword),
-      optional(';')
+      ';'
     ),
 
     // BUG: Just wandering if niche case theres dcl-ds and double semi colon without an end-ds,
@@ -147,29 +148,29 @@ export default grammar({
       caseInsensitive('dcl-ds'),
       $.identifier,
       repeat($.keyword),
-      optional(';'),
+      ';',
       repeat($.field_declaration),
       optional(caseInsensitive('end-ds')),
       optional($.identifier),
-      optional(';')
+      ';'
     ),
 
     field_declaration: $ => seq(
       $.identifier,
-      optional($.type),
+      $.type,
       repeat($.keyword),
-      optional(';')
+      ';'
     ),
 
     dcl_pr: $ => seq(
       caseInsensitive('dcl-pr'),
       $.identifier,
       repeat($.keyword),
-      optional(';'),
+      ';',
       repeat($.parameter),
       caseInsensitive('end-pr'),
       optional($.identifier),
-      optional(';')
+      ';'
     ),
 
     dcl_pi: $ => seq(
@@ -177,29 +178,29 @@ export default grammar({
       choice($.identifier, '*n', '*N'),
       optional($.type),
       repeat($.keyword),
-      optional(';'),
+      ';',
       repeat($.parameter),
       caseInsensitive('end-pi'),
       choice($.identifier, '*n', '*N'),
-      optional(';')
+      ';'
     ),
 
     parameter: $ => seq(
       $.identifier,
       optional($.type),
       repeat($.keyword),
-      optional(';')
+      ';'
     ),
 
     procedure: $ => seq(
       caseInsensitive('dcl-proc'),
       $.identifier,
       repeat($.keyword),
-      optional(';'),
+      ';',
       repeat($._statement),
       caseInsensitive('end-proc'),
       optional($.identifier),
-      optional(';')
+      ';'
     ),
 
     // =====================
@@ -250,12 +251,12 @@ Caused by:
       $.identifier,
       '=',
       $.expression,
-      optional(';')
+      ';'
     )),
 
     expression_statement: $ => seq(
       $.expression,
-      optional(';')
+      ';'
     ),
 
     // =====================
@@ -266,35 +267,35 @@ Caused by:
     if_statement: $ => seq(
       caseInsensitive('if'),
       $.expression,
-      optional(';'),
+      ';',
       repeat($._statement),
       repeat($.elseif_clause),
       optional($.else_clause),
       caseInsensitive('endif'),
-      optional(';')
+      ';'
     ),
 
     elseif_clause: $ => seq(
       caseInsensitive('elseif'),
       $.expression,
-      optional(';'),
+      ';',
       repeat($._statement)
     ),
 
     else_clause: $ => seq(
       caseInsensitive('else'),
-      optional(';'),
+      ';',
       repeat($._statement)
     ),
 
     select_statement: $ => seq(
       caseInsensitive('select'),
       optional($.identifier),
-      optional(';'),
+      ';',
       repeat($.when_clause),
       optional($.other_clause),
       caseInsensitive('endSl'),
-      optional(';')
+      ';'
     ),
 
     when_clause: $ => seq(
@@ -305,35 +306,35 @@ Caused by:
         ), 
         seq(
           choice(caseInsensitive('when-is'), caseInsensitive('when-in')), 
-          choice($.expression, $.identifier)
+          $.expression
         )
       ),
-      optional(';'),
+      ';',
       repeat($._statement)
     ),
 
     other_clause: $ => seq(
       caseInsensitive('other'),
-      optional(';'),
+      ';',
       repeat($._statement)
     ),
 
     dow_loop: $ => seq(
       caseInsensitive('dow'),
       $.expression,
-      optional(';'),
+      ';',
       repeat($._statement),
       caseInsensitive('enddo'),
-      optional(';')
+      ';'
     ),
 
     dou_loop: $ => seq(
       caseInsensitive('dou'),
       $.expression,
-      optional(';'),
+      ';',
       repeat($._statement),
       caseInsensitive('enddo'),
-      optional(';')
+      ';'
     ),
 
     for_loop: $ => seq(
@@ -342,25 +343,25 @@ Caused by:
       caseInsensitive('to'),
       $.expression,
       optional(seq('by', $.expression)),
-      optional(';'),
+      ';',
       repeat($._statement),
       caseInsensitive('endfor'),
-      optional(';')
+      ';'
     ),
 
     monitor_block: $ => seq(
       caseInsensitive('monitor'),
-      optional(';'),
+      ';',
       repeat($._statement),
       repeat($.on_error_clause),
       caseInsensitive('endmon'),
-      optional(';')
+      ';'
     ),
 
     on_error_clause: $ => seq(
       caseInsensitive('on-error'),
       optional($.expression),
-      optional(';'),
+      ';',
       repeat($._statement)
     ),
 
@@ -391,14 +392,14 @@ Caused by:
     return_statement: $ => prec.right(2, seq(
       caseInsensitive('return'),
       optional($.expression),
-      optional(';')
+      ';'
     )),
 
     call_statement: $ => seq(
       choice(caseInsensitive('callp'), caseInsensitive('call')),
       $.identifier,
       optional($.argument_list),
-      optional(';')
+      ';'
     ),
 
     argument_list: $ => seq(
@@ -424,7 +425,7 @@ Caused by:
 
     expression: $ => choice(
       $.binary_expression,
-      $.unary_expression,
+      // $.unary_expression,
       $.function_call,
       $.literal,
       $.identifier,
@@ -441,10 +442,11 @@ Caused by:
       $.expression
     )),
 
-    unary_expression: $ => seq(
-      choice('-', caseInsensitive('not')),
-      $.expression
-    ),
+    // Not sure if we need a unary_expression?
+    //unary_expression: $ => seq(
+    //  choice('-', caseInsensitive('not')),
+    //  $.expression
+    //),
 
 /*
 Error: Error when generating parser
