@@ -71,6 +71,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "native_operand_statement"
+        },
+        {
+          "type": "SYMBOL",
           "name": "expression_statement"
         }
       ]
@@ -957,6 +961,48 @@
           }
         ]
       }
+    },
+    "native_operand": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "PATTERN",
+          "value": "[WWw][RRr][IIi][TTt][EEe]"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[eEe][xXx][fFf][mMm][tTt]"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[rRr][eEe][aAa][dDd]"
+        }
+      ]
+    },
+    "native_operand_statement": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "SYMBOL",
+          "name": "native_operand"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "identifier"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "STRING",
+          "value": ";"
+        }
+      ]
     },
     "assignment": {
       "type": "PREC_RIGHT",

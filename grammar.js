@@ -103,6 +103,7 @@ export default grammar({
       $.call_statement,
       $.sql_block,
       $.compiler_directive,
+      $.native_operand_statement,
       $.expression_statement
     ),
 
@@ -305,6 +306,30 @@ export default grammar({
       ),
       optional($.argument_list)
     )),
+
+    // =====================
+    // Native Operands
+    // =====================
+
+    // NOTE: For now this is kind of just a dump for the `exfmt` type of operations
+    
+    native_operand: $ => choice(
+      caseInsensitive('WRITE'),
+      caseInsensitive('exfmt'),
+      caseInsensitive('read'),
+    ),
+
+
+    native_operand_statement: $ => seq(
+      $.native_operand,
+      optional($.identifier), // should perhaps be $.expression, for now $.identifier makes more sense since i only have write/exfmt/read
+      ';'
+    ),
+
+
+
+
+
 
     // =====================
     // Assignments
