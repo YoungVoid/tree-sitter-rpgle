@@ -555,13 +555,14 @@ Caused by:
       4:  Add a conflict for these rules: `expression`, `function_call`
 */
     // Guessing prec(2..) will fix above error
+    // BUG: Function can be without brackets
     function_call: $ => prec(2, seq(
       choice($.identifier, $.builtin),
-      $.argument_list
+      $.argument_list 
     )),
 
       // Just making builtin's any word that starts with a %
-      builtin: $ => /%\w/,
+      builtin: $ => /%[A-Za-z][A-Za-z0-9_]*/,
   /*
     builtin: $ => token(choice(
       '%trim',

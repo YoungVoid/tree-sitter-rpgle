@@ -1696,7 +1696,7 @@
     },
     "builtin": {
       "type": "PATTERN",
-      "value": "%\\w"
+      "value": "%[A-Za-z][A-Za-z0-9_]*"
     },
     "literal": {
       "type": "CHOICE",
