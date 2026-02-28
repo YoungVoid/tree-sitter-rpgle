@@ -23,7 +23,7 @@ export default grammar({
   name: "rpgle",
 
   extras: ($) => [
-    /\s/, // whitespace
+    /\s+/, // whitespace
     $.comment,
   ],
 
@@ -145,12 +145,12 @@ export default grammar({
     // if it will see the second ; as part of the dcl-ds? should, with the way it is set up now...
     // happens a few times, ie with dcl-pr as well.
     dcl_ds: $ => seq(
-      caseInsensitive('dcl-ds'),
+      token(prec(2, new RegExp(caseInsensitive('dcl-ds')))),
       $.identifier,
       repeat($.keyword),
       ';',
       repeat($.field_declaration),
-      optional(caseInsensitive('end-ds')),
+      optional(token(caseInsensitive('end-ds'))),
       optional($.identifier),
       ';'
     ),
@@ -219,7 +219,81 @@ export default grammar({
       caseInsensitive('timestamp')
     ),
 
-    keyword: $ => $.identifier,
+    keyword_d_spec_fixed: $ => choice(
+      caseInsensitive('LIKE'),
+      caseInsensitive('LIKEDS'),
+      caseInsensitive('LIKEREC'),
+      caseInsensitive('EXTNAME'),
+      caseInsensitive('EXTFLD'),
+      caseInsensitive('PREFIX'),
+      caseInsensitive('RENAME'),
+      caseInsensitive('QUALIFIED'),
+      caseInsensitive('DIM'),
+      caseInsensitive('CTDATA'),
+      caseInsensitive('PERRCD'),
+      caseInsensitive('OVERLAY'),
+      caseInsensitive('BASED'),
+      caseInsensitive('TEMPLATE'),
+      caseInsensitive('INZ'),
+      caseInsensitive('VALUE'),
+      caseInsensitive('CONST'),
+      caseInsensitive('OPTIONS'),
+      caseInsensitive('VARYING'),
+      caseInsensitive('ASCEND'),
+      caseInsensitive('DESCEND'),
+      caseInsensitive('ALT'),
+      caseInsensitive('DTAARA'),
+      caseInsensitive('SDS'),
+      caseInsensitive('PSDS'),
+      caseInsensitive('STATIC'),
+      caseInsensitive('AUTOMATIC'),
+      caseInsensitive('EXPORT'),
+      caseInsensitive('IMPORT'),
+      caseInsensitive('EXTPROC'),
+      caseInsensitive('PROC'),
+      caseInsensitive('PROCPTR'),
+      caseInsensitive('NOPASS'),
+      caseInsensitive('PASS'),
+      caseInsensitive('ALIGN'),
+      caseInsensitive('NOALIGN'),
+      caseInsensitive('INT'),
+      caseInsensitive('UNS'),
+      caseInsensitive('PACKED'),
+      caseInsensitive('ZONED'),
+      caseInsensitive('FLOAT'),
+      caseInsensitive('REAL'),
+      caseInsensitive('IND'),
+      caseInsensitive('DATE'),
+      caseInsensitive('TIME'),
+      caseInsensitive('TIMESTAMP'),
+      caseInsensitive('GRAPH'),
+      caseInsensitive('UCS2'),
+      caseInsensitive('VARGRAPH'),
+      caseInsensitive('VARCHAR'),
+      caseInsensitive('VARUCS2'),
+      caseInsensitive('POINTER'),
+      caseInsensitive('OBJECT'),
+      caseInsensitive('SQLTYPE'),
+      caseInsensitive('DATFMT'),
+      caseInsensitive('TIMFMT'),
+      caseInsensitive('CCSID'),
+      caseInsensitive('INTDATE'),
+      caseInsensitive('INTTIME'),
+      caseInsensitive('ALIAS'),
+      caseInsensitive('QUAL'),
+      caseInsensitive('OCCURS'),
+      caseInsensitive('LEN'),
+      caseInsensitive('PROC'),
+      caseInsensitive('EXTPGM'),
+      caseInsensitive('ENTRY'),
+      caseInsensitive('OPTIONS'),
+    ),
+
+
+    keyword: $ => prec(0, seq(
+      choice($.keyword_d_spec_fixed),
+      optional($.argument_list)
+    )),
 
     // =====================
     // Assignments
