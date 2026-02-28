@@ -23,6 +23,11 @@ function colonSep(rule) {
   return optional(seq(rule, repeat(seq(':', rule))));
 }
 
+function periodSep(rule) {
+  return optional(seq(rule, repeat(seq('.', rule))));
+}
+
+
 
 export default grammar({
   name: "rpgle",
@@ -163,7 +168,7 @@ export default grammar({
       ';',
       repeat($.field_declaration),
       optional(token(caseInsensitive('end-ds'))),
-      optional($.identifier),
+      optional($.field_reference),
       ';'
     ),
 
@@ -198,7 +203,7 @@ export default grammar({
     ),
 
     parameter: $ => seq(
-      $.identifier,
+      $.field_reference,
       optional($.type),
       repeat($.keyword),
       ';'
@@ -328,7 +333,7 @@ export default grammar({
 
     native_operand_statement: $ => seq(
       $.native_operand,
-      optional($.identifier), // should perhaps be $.expression, for now $.identifier makes more sense since i only have write/exfmt/read
+      optional($.field_reference), // should perhaps be $.expression, for now $.identifier (or $.field_reference in case) makes more sense since i only have write/exfmt/read
       ';'
     ),
 
@@ -364,7 +369,7 @@ Caused by:
 */
     // Guessing prec.right will fix the above issue
     assignment: $ => prec.right(2, seq(
-      $.identifier,
+      $.field_reference,
       '=',
       $.expression,
       ';'
@@ -406,7 +411,7 @@ Caused by:
 
     select_statement: $ => seq(
       caseInsensitive('select'),
-      optional($.identifier),
+      optional($.field_reference),
       ';',
       repeat($.when_clause),
       optional($.other_clause),
@@ -545,6 +550,7 @@ Caused by:
       $.function_call,
       $.literal,
       $.identifier,
+      $.field_reference,
       $.special_value,
       seq('(', $.expression, ')')
     ),
@@ -630,6 +636,14 @@ Caused by:
       ),
 
     identifier: $ => /[A-Za-z_][A-Za-z0-9_]*/,
+
+    // You can have DataStruct.FieldName and so forth
+    dotted_identifier: $ => seq(
+      $.identifier,
+      repeat(periodSep($.identifier))
+    )
+
+    field_reference: $ => choice($.identifier, $.dotted_identifier),
 
     comment: $ => token(choice(
       seq('//', /.*/)

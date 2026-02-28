@@ -12,6 +12,9 @@
   "ctl-opt"
 ] @keyword
 
+(compiler_directive) @keyword
+(fully_free) @keyword
+
 ; Declaration keywords (matched via regex tokens)
 (dcl_s) @keyword
 (dcl_ds) @keyword
