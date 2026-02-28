@@ -294,9 +294,15 @@ export default grammar({
       caseInsensitive('OPTIONS'),
     ),
 
+    special_value: $ => /\*[A-Za-z][A-Za-z0-9_]*/,
+
+    indicator: $ => /\*[iI][nN]([0-9]{2})|\*[lL][rR]/,
 
     keyword: $ => prec(0, seq(
-      choice($.keyword_d_spec_fixed),
+      choice(
+        $.special_value, 
+        $.keyword_d_spec_fixed
+      ),
       optional($.argument_list)
     )),
 
@@ -508,6 +514,7 @@ Caused by:
       $.function_call,
       $.literal,
       $.identifier,
+      $.special_value,
       seq('(', $.expression, ')')
     ),
 
