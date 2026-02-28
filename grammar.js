@@ -8,10 +8,10 @@
 // @ts-check
 
 function caseInsensitive(word) {
-  return word
+  return new RegExp(word
     .split('')
     .map(letter => `[${letter}${letter.toUpperCase()}${letter.toLowerCase()}]`)
-    .join('');
+    .join(''));
 }
 
 
@@ -145,7 +145,7 @@ export default grammar({
     // if it will see the second ; as part of the dcl-ds? should, with the way it is set up now...
     // happens a few times, ie with dcl-pr as well.
     dcl_ds: $ => seq(
-      token(prec(2, new RegExp(caseInsensitive('dcl-ds')))),
+      token(prec(2, caseInsensitive('dcl-ds'))),
       $.identifier,
       repeat($.keyword),
       ';',
