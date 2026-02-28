@@ -19,6 +19,11 @@ function commaSep(rule) {
   return optional(seq(rule, repeat(seq(',', rule))));
 }
 
+function colonSep(rule) {
+  return optional(seq(rule, repeat(seq(':', rule))));
+}
+
+
 export default grammar({
   name: "rpgle",
 
@@ -478,7 +483,7 @@ Caused by:
 
     argument_list: $ => seq(
       '(',
-      optional(commaSep($.expression)),
+      optional(colonSep($.expression)),
       ')'
     ),
 
