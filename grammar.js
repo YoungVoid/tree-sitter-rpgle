@@ -510,7 +510,7 @@ Caused by:
 
     expression: $ => choice(
       $.binary_expression,
-      // $.unary_expression,
+      $.unary_expression,
       $.function_call,
       $.literal,
       $.identifier,
@@ -528,11 +528,10 @@ Caused by:
       $.expression
     )),
 
-    // Not sure if we need a unary_expression?
-    //unary_expression: $ => seq(
-    //  choice('-', caseInsensitive('not')),
-    //  $.expression
-    //),
+    unary_expression: $ => prec.left(seq(
+      choice('-', caseInsensitive('not')),
+      $.expression
+    )),
 
 /*
 Error: Error when generating parser
