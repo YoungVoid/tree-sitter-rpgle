@@ -12,7 +12,8 @@
         "rpgle"
       ],
       "injection-regex": "^rpgle$",
-      "class-name": "TreeSitterRpgle"
+      "class-name": "TreeSitterRpgle",
+      "highlights": "queries\\highlights.scm"
     }
   ],
   "metadata": {
