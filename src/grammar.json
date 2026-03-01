@@ -7,8 +7,16 @@
       "type": "SEQ",
       "members": [
         {
-          "type": "SYMBOL",
-          "name": "fully_free"
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "fully_free"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
         },
         {
           "type": "REPEAT",
@@ -89,8 +97,12 @@
       ]
     },
     "fully_free": {
-      "type": "PATTERN",
-      "value": "[***][***][FFf][RRr][EEe][EEe]"
+      "type": "PREC_LEFT",
+      "value": 2,
+      "content": {
+        "type": "PATTERN",
+        "value": "\\*\\*[fF][rR][eE][eE]"
+      }
     },
     "compiler_directive": {
       "type": "TOKEN",
@@ -249,7 +261,7 @@
           "members": [
             {
               "type": "SYMBOL",
-              "name": "identifier"
+              "name": "field_reference"
             },
             {
               "type": "BLANK"
@@ -431,7 +443,7 @@
       "members": [
         {
           "type": "SYMBOL",
-          "name": "identifier"
+          "name": "field_reference"
         },
         {
           "type": "CHOICE",
@@ -1004,7 +1016,7 @@
           "members": [
             {
               "type": "SYMBOL",
-              "name": "identifier"
+              "name": "field_reference"
             },
             {
               "type": "BLANK"
@@ -1025,7 +1037,7 @@
         "members": [
           {
             "type": "SYMBOL",
-            "name": "identifier"
+            "name": "field_reference"
           },
           {
             "type": "STRING",
@@ -1162,7 +1174,7 @@
           "members": [
             {
               "type": "SYMBOL",
-              "name": "identifier"
+              "name": "field_reference"
             },
             {
               "type": "BLANK"
@@ -1640,6 +1652,10 @@
         },
         {
           "type": "SYMBOL",
+          "name": "field_reference"
+        },
+        {
+          "type": "SYMBOL",
           "name": "special_value"
         },
         {
@@ -1850,57 +1866,54 @@
       ]
     },
     "identifier": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "PATTERN",
-          "value": "[A-Za-z_][A-Za-z0-9_]*"
-        },
-        {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "REPEAT",
-              "content": {
-                "type": "CHOICE",
-                "members": [
-                  {
-                    "type": "SEQ",
-                    "members": [
-                      {
-                        "type": "SYMBOL",
-                        "name": "identifier"
-                      },
-                      {
-                        "type": "REPEAT",
-                        "content": {
-                          "type": "SEQ",
-                          "members": [
-                            {
-                              "type": "STRING",
-                              "value": "."
-                            },
-                            {
-                              "type": "SYMBOL",
-                              "name": "identifier"
-                            }
-                          ]
-                        }
-                      }
-                    ]
-                  },
-                  {
-                    "type": "BLANK"
-                  }
-                ]
-              }
-            },
-            {
-              "type": "BLANK"
+      "type": "PATTERN",
+      "value": "[A-Za-z_][A-Za-z0-9_]*"
+    },
+    "dotted_identifier": {
+      "type": "PREC_RIGHT",
+      "value": 3,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "identifier"
+          },
+          {
+            "type": "REPEAT",
+            "content": {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": "."
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "identifier"
+                }
+              ]
             }
-          ]
-        }
-      ]
+          }
+        ]
+      }
+    },
+    "field_reference": {
+      "type": "PREC_RIGHT",
+      "value": 2,
+      "content": {
+        "type": "CHOICE",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "identifier"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "dotted_identifier"
+          }
+        ]
+      }
     },
     "comment": {
       "type": "TOKEN",
