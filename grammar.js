@@ -88,7 +88,7 @@ export default grammar({
   rules: {
 
     source_file: $ => seq(
-      $.fully_free,
+      optional($.fully_free),
       repeat($._statement)
     ),
 
@@ -116,7 +116,7 @@ export default grammar({
     ),
 
 
-    fully_free: $ => caseInsensitive('**FREE'),
+    fully_free: $ => prec.left(2,/\*\*[fF][rR][eE][eE]/),
 
     // =====================
     // Compiler Directives
@@ -638,12 +638,12 @@ Caused by:
     identifier: $ => /[A-Za-z_][A-Za-z0-9_]*/,
 
     // You can have DataStruct.FieldName and so forth
-    dotted_identifier: $ => seq(
+    dotted_identifier: $ => prec.right(3, seq(
       $.identifier,
-      repeat(periodSep($.identifier))
-    )
+      repeat(seq('.', $.identifier))
+    )),
 
-    field_reference: $ => choice($.identifier, $.dotted_identifier),
+    field_reference: $ => prec.right(2, choice($.identifier, $.dotted_identifier)),
 
     comment: $ => token(choice(
       seq('//', /.*/)
