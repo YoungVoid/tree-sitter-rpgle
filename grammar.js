@@ -144,11 +144,21 @@ export default grammar({
     // =====================
 
     declaration: $ => choice(
+      $.dcl_f,
       $.dcl_s,
       $.dcl_ds,
       $.dcl_pr,
       $.dcl_pi
     ),
+    
+    dcl_f: $ => seq(
+      caseInsensitive('dcl-f'),
+      $.identifier,
+      optional($.type),
+      repeat($.keyword),
+      ';'
+    ),
+
 
     dcl_s: $ => seq(
       caseInsensitive('dcl-s'),
@@ -161,15 +171,18 @@ export default grammar({
     // BUG: Just wandering if niche case theres dcl-ds and double semi colon without an end-ds,
     // if it will see the second ; as part of the dcl-ds? should, with the way it is set up now...
     // happens a few times, ie with dcl-pr as well.
-    dcl_ds: $ => seq(
-      token(prec(2, caseInsensitive('dcl-ds'))),
-      $.identifier,
-      repeat($.keyword),
-      ';',
-      repeat($.field_declaration),
-      optional(token(caseInsensitive('end-ds'))),
-      optional($.field_reference),
-      ';'
+    dcl_ds: $ => choice(
+      // 
+      seq(
+        token(prec(2, caseInsensitive('dcl-ds'))),
+        $.identifier,
+        repeat($.keyword),
+        ';',
+        repeat($.field_declaration),
+        optional(token(caseInsensitive('end-ds'))),
+        optional($.field_reference),
+        ';'
+      ),
     ),
 
     field_declaration: $ => seq(
@@ -234,6 +247,23 @@ export default grammar({
       caseInsensitive('date'),
       caseInsensitive('time'),
       caseInsensitive('timestamp')
+    ),
+
+    keyword_h_spec_free: $ => choice(
+      caseInsensitive('DFTACTGRP'),
+      caseInsensitive('ACTGRP'),
+      caseInsensitive('OPTION'),
+      caseInsensitive('BNDDIR'),
+    ),
+
+
+    keyword_f_spec_free: $ => choice(
+      caseInsensitive('WORKSTN'),
+      caseInsensitive('USROPN'),
+      caseInsensitive('INFDS'),
+      caseInsensitive('INDDS'),
+      caseInsensitive('SFILE'),
+      caseInsensitive('USAGE'),
     ),
 
     keyword_d_spec_fixed: $ => choice(
@@ -313,7 +343,9 @@ export default grammar({
     keyword: $ => prec(0, seq(
       choice(
         $.special_value, 
-        $.keyword_d_spec_fixed
+        $.keyword_h_spec_free,
+        $.keyword_f_spec_free,
+        $.keyword_d_spec_fixed,
       ),
       optional($.argument_list)
     )),

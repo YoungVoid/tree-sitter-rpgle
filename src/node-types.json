@@ -110,6 +110,29 @@
     }
   },
   {
+    "type": "dcl_f",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "keyword",
+          "named": true
+        },
+        {
+          "type": "type",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
     "type": "dcl_pi",
     "named": true,
     "fields": {},
@@ -192,6 +215,10 @@
       "types": [
         {
           "type": "dcl_ds",
+          "named": true
+        },
+        {
+          "type": "dcl_f",
           "named": true
         },
         {
@@ -847,6 +874,14 @@
           "named": true
         },
         {
+          "type": "keyword_f_spec_free",
+          "named": true
+        },
+        {
+          "type": "keyword_h_spec_free",
+          "named": true
+        },
+        {
           "type": "special_value",
           "named": true
         }
@@ -855,6 +890,16 @@
   },
   {
     "type": "keyword_d_spec_fixed",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "keyword_f_spec_free",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "keyword_h_spec_free",
     "named": true,
     "fields": {}
   },

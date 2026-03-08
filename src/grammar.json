@@ -153,6 +153,10 @@
       "members": [
         {
           "type": "SYMBOL",
+          "name": "dcl_f"
+        },
+        {
+          "type": "SYMBOL",
           "name": "dcl_s"
         },
         {
@@ -166,6 +170,42 @@
         {
           "type": "SYMBOL",
           "name": "dcl_pi"
+        }
+      ]
+    },
+    "dcl_f": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "PATTERN",
+          "value": "[dDd][cCc][lLl][---][fFf]"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "identifier"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "SYMBOL",
+              "name": "type"
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        },
+        {
+          "type": "REPEAT",
+          "content": {
+            "type": "SYMBOL",
+            "name": "keyword"
+          }
+        },
+        {
+          "type": "STRING",
+          "value": ";"
         }
       ]
     },
@@ -672,6 +712,56 @@
         }
       ]
     },
+    "keyword_h_spec_free": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "PATTERN",
+          "value": "[DDd][FFf][TTt][AAa][CCc][TTt][GGg][RRr][PPp]"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[AAa][CCc][TTt][GGg][RRr][PPp]"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[OOo][PPp][TTt][IIi][OOo][NNn]"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[BBb][NNn][DDd][DDd][IIi][RRr]"
+        }
+      ]
+    },
+    "keyword_f_spec_free": {
+      "type": "CHOICE",
+      "members": [
+        {
+          "type": "PATTERN",
+          "value": "[WWw][OOo][RRr][KKk][SSs][TTt][NNn]"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[UUu][SSs][RRr][OOo][PPp][NNn]"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[IIi][NNn][FFf][DDd][SSs]"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[IIi][NNn][DDd][DDd][SSs]"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[SSs][FFf][IIi][LLl][EEe]"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[UUu][SSs][AAa][GGg][EEe]"
+        }
+      ]
+    },
     "keyword_d_spec_fixed": {
       "type": "CHOICE",
       "members": [
@@ -965,6 +1055,14 @@
               {
                 "type": "SYMBOL",
                 "name": "special_value"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "keyword_h_spec_free"
+              },
+              {
+                "type": "SYMBOL",
+                "name": "keyword_f_spec_free"
               },
               {
                 "type": "SYMBOL",

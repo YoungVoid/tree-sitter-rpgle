@@ -1,5 +1,3 @@
-; TODO: field_reference, dotted_identifier needs to be implemented
-
 ; ======================
 ; Comments
 ; ======================
@@ -18,6 +16,7 @@
 (fully_free) @keyword
 
 ; Declaration keywords (matched via regex tokens)
+(dcl_f) @keyword
 (dcl_s) @keyword
 (dcl_ds) @keyword
 (dcl_pr) @keyword
@@ -72,10 +71,10 @@
   (identifier) @variable.member)
 
 (parameter
-  (identifier) @parameter)
+  (field_reference) @parameter)
 
 (assignment
-  (identifier) @variable)
+  (field_reference) @variable)
 
 (identifier) @variable
 
