@@ -36,6 +36,9 @@ zig-out/
 # Example dirs
 /examples/*/
 
+# Utils to be ignored
+utils/copy-queries.ps1
+
 # Grammar volatiles
 *.wasm
 *.obj
