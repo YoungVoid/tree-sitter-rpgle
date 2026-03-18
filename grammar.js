@@ -27,7 +27,50 @@ function periodSep(rule) {
   return optional(seq(rule, repeat(seq('.', rule))));
 }
 
+// Copied: https://github.com/tree-sitter/tree-sitter-go/blob/master/grammar.js#L32
+const PREC = {
+  primary: 7,
+  unary: 6,
+  multiplicative: 5,
+  additive: 4,
+  comparative: 3,
+  and: 2,
+  or: 1,
+  composite_literal: -1,
+};
 
+// TODO: Check these lists, whether they are correct for RPGLE
+const multiplicativeOperators = ['*', '/', '%', '<<', '>>', '&', '&^'];
+const additiveOperators = ['+', '-', '|', '^'];
+const comparativeOperators = ['=', '<>', '<', '<=', '>', '>='];
+const assignmentOperators = multiplicativeOperators.concat(additiveOperators).map(operator => operator + '=').concat('=');
+
+const open_block = [
+  caseInsensitive('if'),
+  caseInsensitive('select'),
+  caseInsensitive('dow'),
+  caseInsensitive('dou'),
+  caseInsensitive('for'),
+  caseInsensitive('monitor'),
+  caseInsensitive('dcl-proc'),
+  caseInsensitive('dcl-pr'),
+  caseInsensitive('dcl-pi'),
+  caseInsensitive('dcl-ds'),
+  caseInsensitive('dcl-enum')
+];
+
+const close_block = [
+  caseInsensitive('endif'),
+  caseInsensitive('endsl'),
+  caseInsensitive('enddo'),
+  caseInsensitive('endfor'),
+  caseInsensitive('endmon'),
+  caseInsensitive('end-proc'),
+  caseInsensitive('end-pr'),
+  caseInsensitive('end-pi'),
+  caseInsensitive('end-ds'),
+  caseInsensitive('end-enum')
+];
 
 export default grammar({
   name: "rpgle",
@@ -37,46 +80,6 @@ export default grammar({
     $.comment,
   ],
 
-  /*
-  rules: {
-   source_file: $ => repeat($._definition),
-
-    _definition: $ => choice(
-      $.function_definition,
-      $.comment,
-      $.built_in_todo
-
-      // TODO: other kinds of definitions
-    ),
-
-    function_definition: $ => seq(
-      new RegExp(caseInsensitive('dcl-proc')),
-      $.identifier,
-      $.end_of_statement,
-      new RegExp(caseInsensitive('end-proc')),
-      $.end_of_statement,
-    ),
-
-    // BUG: Not catering for:
-    // underscores or other similar special characters?
-    identifier: $ => /[a-zA-Z][a-zA-Z0-9]+/, 
-
-    comment: ($) => token("//"),
-
-    built_in_todo: $ => choice(
-      new RegExp(caseInsensitive('dcl-ds')),
-      new RegExp(caseInsensitive('end-ds')),
-      new RegExp(caseInsensitive('dcl-pi')),
-      new RegExp(caseInsensitive('return'))
-    ),
-
-    end_of_statement: $ => ';'
-
-
-  }
-*/
-
-  // NOTE: Asked ChatGPT to generate
 
   word: $ => $.identifier,
 
@@ -129,13 +132,14 @@ export default grammar({
     )),
 
     // =====================
+    // H-Spec
     // Control Options
+    // https://www.ibm.com/docs/en/i/7.6.0?topic=specifications-control
     // =====================
 
     ctl_opt: $ => prec.right(2, seq(
-      //caseInsensitive('ctl-opt'),
-      'ctl-opt',
-      repeat1($.identifier),
+      caseInsensitive('ctl-opt'),
+      repeat(seq($.keyword_h_spec, optional($.argument_list))),
       ';'
     )),
 
@@ -155,7 +159,7 @@ export default grammar({
       caseInsensitive('dcl-f'),
       $.identifier,
       optional($.type),
-      repeat($.keyword),
+      repeat($.keyword_f_spec),
       ';'
     ),
 
@@ -164,7 +168,7 @@ export default grammar({
       caseInsensitive('dcl-s'),
       $.identifier,
       optional($.type),
-      repeat($.keyword),
+      repeat($.keyword_d_spec),
       ';'
     ),
 
@@ -176,7 +180,7 @@ export default grammar({
       seq(
         token(prec(2, caseInsensitive('dcl-ds'))),
         $.identifier,
-        repeat($.keyword),
+        repeat($.keyword_d_spec),
         ';',
         repeat($.field_declaration),
         optional(token(caseInsensitive('end-ds'))),
@@ -188,14 +192,14 @@ export default grammar({
     field_declaration: $ => seq(
       $.identifier,
       $.type,
-      repeat($.keyword),
+      repeat($.keyword_d_spec),
       ';'
     ),
 
     dcl_pr: $ => seq(
       caseInsensitive('dcl-pr'),
       $.identifier,
-      repeat($.keyword),
+      repeat($.keyword_d_spec),
       ';',
       repeat($.parameter),
       caseInsensitive('end-pr'),
@@ -207,7 +211,7 @@ export default grammar({
       caseInsensitive('dcl-pi'),
       choice($.identifier, '*n', '*N'),
       optional($.type),
-      repeat($.keyword),
+      repeat($.keyword_d_spec),
       ';',
       repeat($.parameter),
       caseInsensitive('end-pi'),
@@ -218,14 +222,14 @@ export default grammar({
     parameter: $ => seq(
       $.field_reference,
       optional($.type),
-      repeat($.keyword),
+      repeat($.keyword_d_spec),
       ';'
     ),
 
     procedure: $ => seq(
       caseInsensitive('dcl-proc'),
       $.identifier,
-      repeat($.keyword),
+      repeat($.keyword_p_spec),
       ';',
       repeat($._statement),
       caseInsensitive('end-proc'),
@@ -238,35 +242,133 @@ export default grammar({
     // =====================
 
     type: $ => choice(
-      seq(caseInsensitive('char'), '(', $.number, ')'),
-      seq(caseInsensitive('varchar'), '(', $.number, ')'),
-      seq(caseInsensitive('packed'), '(', $.number, optional(seq(':', $.number)), ')'),
-      seq(caseInsensitive('zoned'), '(', $.number, optional(seq(':', $.number)), ')'),
-      caseInsensitive('int'),
-      caseInsensitive('ind'),
-      caseInsensitive('date'),
-      caseInsensitive('time'),
-      caseInsensitive('timestamp')
+      seq(caseInsensitive('BINDEC', '(', $.number, optional(seq(':', $.number)), ')')),
+      seq(caseInsensitive('CHAR'), '(', $.number, ')'),
+      seq(caseInsensitive('DATE'), optional(seq('(', choice($.special_value, choice('/','-',',','.','&')), ')'))),
+      seq(caseInsensitive('FLOAT', '(', $.number, ')')),
+      seq(caseInsensitive('GRAPH', '(', $.number, ')')),
+      caseInsensitive('IND'),
+      seq(caseInsensitive('INT'), '(', $.number, ')'),
+      seq(caseInsensitive('OBJECT'), optional(seq('(', caseInsensitive('*JAVA'), optional(colonSep(choice($.special_value, $.string))), ')'))),
+      seq(caseInsensitive('PACKED'), '(', $.number, optional(seq(':', $.number)), ')'),
+      seq(caseInsensitive('POINTER'), optional(seq('(', caseInsensitive('*PROC'), ')'))),
+      seq(caseInsensitive('TIME'), optional(seq('(', choice($.special_value, choice(':','.',',','&')), ')'))),
+      seq(caseInsensitive('TIMESTAMP'), optional(seq('(', $.number, ')'))),
+      seq(caseInsensitive('UCS2'), '(', $.number, ')'),
+      seq(caseInsensitive('UNS'), '(', $.number, ')'),
+      seq(caseInsensitive('VARCHAR'), '(', $.number, optional(seq(':', $.number)), ')',),
+      seq(caseInsensitive('VARGRAPH'),'(', $.number, optional(seq(':', $.number)), ')',),
+      seq(caseInsensitive('VARUCS2'),'(', $.number, optional(seq(':', $.number)), ')',),
+      seq(caseInsensitive('ZONED'),'(', $.number, optional(seq(':', $.number)), ')',),
     ),
 
-    keyword_h_spec_free: $ => choice(
-      caseInsensitive('DFTACTGRP'),
+
+    // https://www.ibm.com/docs/en/i/7.6.0?topic=specifications-control-specification-keywords
+    keyword_h_spec: $ => choice(
       caseInsensitive('ACTGRP'),
-      caseInsensitive('OPTION'),
+      caseInsensitive('ALLOC'),
+      caseInsensitive('ALTSEQ'),
+      caseInsensitive('ALWNULL'),
+      caseInsensitive('AUT'),
       caseInsensitive('BNDDIR'),
+      caseInsensitive('CCSID'),
+      caseInsensitive('CCSIDCVT'),
+      caseInsensitive('CHARCOUNT'),
+      caseInsensitive('CHARCOUNTTYPES'),
+      caseInsensitive('COPYNEST'),
+      caseInsensitive('COPYRIGHT'),
+      caseInsensitive('CURSYM'),
+      caseInsensitive('CVTOPT'),
+      caseInsensitive('DATEDIT'),
+      caseInsensitive('DATEYY'),
+      caseInsensitive('DATFMT'),
+      caseInsensitive('DCLOPT'),
+      caseInsensitive('DEBUG'),
+      caseInsensitive('DECEDIT'),
+      caseInsensitive('DECPREC'),
+      caseInsensitive('DFTACTGRP'),
+      caseInsensitive('DFTNAME'),
+      caseInsensitive('ENBPFRCOL'),
+      caseInsensitive('EXPROPTS'),
+      caseInsensitive('EXTBININT'),
+      caseInsensitive('FIXNBR'),
+      caseInsensitive('FLTDIV'),
+      caseInsensitive('FORMSALIGN'),
+      caseInsensitive('FTRANS'),
+      caseInsensitive('GENLVL'),
+      caseInsensitive('INDENT'),
+      caseInsensitive('INTPREC'),
+      caseInsensitive('LANGID'),
+      caseInsensitive('MAIN'),
+      caseInsensitive('NOMAIN'),
+      caseInsensitive('OPENOPT'),
+      caseInsensitive('OPTIMIZE'),
+      caseInsensitive('OPTION'),
+      caseInsensitive('PGMINFO'),
+      caseInsensitive('PRFDTA'),
+      caseInsensitive('REQPREXP'),
+      caseInsensitive('SRTSEQ'),
+      caseInsensitive('STGMDL'),
+      caseInsensitive('TEXT'),
+      caseInsensitive('THREAD'),
+      caseInsensitive('TIMFMT'),
+      caseInsensitive('TRUNCNBR'),
+      caseInsensitive('USRPRF'),
+      caseInsensitive('VALIDATE'),
     ),
 
 
-    keyword_f_spec_free: $ => choice(
-      caseInsensitive('WORKSTN'),
-      caseInsensitive('USROPN'),
-      caseInsensitive('INFDS'),
+    keyword_f_spec: $ => choice(
+      caseInsensitive('ALIAS'),
+      caseInsensitive('BLOCK'),
+      caseInsensitive('COMMIT'),
+      caseInsensitive('CHARCOUNT'),
+      caseInsensitive('DATA'),
+      caseInsensitive('DATFMT'),
+      caseInsensitive('DEVID'),
+      caseInsensitive('DISK'),
+      caseInsensitive('EXTDESC'),
+      caseInsensitive('EXTFILE'),
+      caseInsensitive('EXTIND'),
+      caseInsensitive('EXTMBR'),
+      caseInsensitive('FORMLEN'),
+      caseInsensitive('FORMOFL'),
+      caseInsensitive('HANDLER'),
+      caseInsensitive('IGNORE'),
+      caseInsensitive('INCLUDE'),
       caseInsensitive('INDDS'),
+      caseInsensitive('INFDS'),
+      caseInsensitive('INFSR'),
+      caseInsensitive('KEYED'),
+      caseInsensitive('KEYLOC'),
+      caseInsensitive('LIKEFILE'),
+      caseInsensitive('MAXDEV'),
+      caseInsensitive('OFLIND'),
+      caseInsensitive('PASS'),
+      caseInsensitive('PGMNAME'),
+      caseInsensitive('PLIST'),
+      caseInsensitive('PREFIX'),
+      caseInsensitive('PRINTER'),
+      caseInsensitive('PRTCTL'),
+      caseInsensitive('QUALIFIED'),
+      caseInsensitive('RAFDATA'),
+      caseInsensitive('RECNO'),
+      caseInsensitive('RENAME'),
+      caseInsensitive('SAVEDS'),
+      caseInsensitive('SAVEIND'),
+      caseInsensitive('SEQ'),
       caseInsensitive('SFILE'),
+      caseInsensitive('SLN'),
+      caseInsensitive('SPECIAL'),
+      caseInsensitive('STATIC'),
+      caseInsensitive('TEMPLATE'),
+      caseInsensitive('TIMFMT'),
       caseInsensitive('USAGE'),
+      caseInsensitive('USROPN'),
+      caseInsensitive('WORKSTN'),
     ),
 
-    keyword_d_spec_fixed: $ => choice(
+    keyword_d_spec: $ => choice(
       caseInsensitive('LIKE'),
       caseInsensitive('LIKEDS'),
       caseInsensitive('LIKEREC'),
@@ -303,23 +405,23 @@ export default grammar({
       caseInsensitive('PASS'),
       caseInsensitive('ALIGN'),
       caseInsensitive('NOALIGN'),
-      caseInsensitive('INT'),
-      caseInsensitive('UNS'),
-      caseInsensitive('PACKED'),
-      caseInsensitive('ZONED'),
-      caseInsensitive('FLOAT'),
+      // caseInsensitive('INT'),
+      // caseInsensitive('UNS'),
+      // caseInsensitive('PACKED'),
+      // caseInsensitive('ZONED'),
+      // caseInsensitive('FLOAT'),
       caseInsensitive('REAL'),
-      caseInsensitive('IND'),
-      caseInsensitive('DATE'),
-      caseInsensitive('TIME'),
-      caseInsensitive('TIMESTAMP'),
-      caseInsensitive('GRAPH'),
-      caseInsensitive('UCS2'),
-      caseInsensitive('VARGRAPH'),
-      caseInsensitive('VARCHAR'),
-      caseInsensitive('VARUCS2'),
-      caseInsensitive('POINTER'),
-      caseInsensitive('OBJECT'),
+      // caseInsensitive('IND'),
+      // caseInsensitive('DATE'),
+      // caseInsensitive('TIME'),
+      // caseInsensitive('TIMESTAMP'),
+      // caseInsensitive('GRAPH'),
+      // caseInsensitive('UCS2'),
+      // caseInsensitive('VARGRAPH'),
+      // caseInsensitive('VARCHAR'),
+      // caseInsensitive('VARUCS2'),
+      // caseInsensitive('POINTER'),
+      // caseInsensitive('OBJECT'),
       caseInsensitive('SQLTYPE'),
       caseInsensitive('DATFMT'),
       caseInsensitive('TIMFMT'),
@@ -336,19 +438,21 @@ export default grammar({
       caseInsensitive('OPTIONS'),
     ),
 
+    keyword_p_spec: $ => choice($.special_value, 'TODO:'),
+
     special_value: $ => /\*[A-Za-z][A-Za-z0-9_]*/,
 
     indicator: $ => /\*[iI][nN]([0-9]{2})|\*[lL][rR]/,
 
-    keyword: $ => prec(0, seq(
-      choice(
-        $.special_value, 
-        $.keyword_h_spec_free,
-        $.keyword_f_spec_free,
-        $.keyword_d_spec_fixed,
-      ),
-      optional($.argument_list)
-    )),
+    // keyword: $ => prec(0, seq(
+    //   choice(
+    //     $.special_value, 
+    //     $.keyword_h_spec,
+    //     $.keyword_f_spec,
+    //     $.keyword_d_spec,
+    //   ),
+    //   optional($.argument_list)
+    // )),
 
     // =====================
     // Native Operands
@@ -360,6 +464,7 @@ export default grammar({
       caseInsensitive('WRITE'),
       caseInsensitive('exfmt'),
       caseInsensitive('read'),
+      caseInsensitive('readc'),
     ),
 
 
