@@ -128,10 +128,6 @@
         {
           "type": "keyword_f_spec",
           "named": true
-        },
-        {
-          "type": "type",
-          "named": true
         }
       ]
     }
@@ -869,7 +865,37 @@
   {
     "type": "keyword_f_spec",
     "named": true,
-    "fields": {}
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "indicator",
+          "named": true
+        },
+        {
+          "type": "literal",
+          "named": true
+        },
+        {
+          "type": "number",
+          "named": true
+        },
+        {
+          "type": "special_value",
+          "named": true
+        },
+        {
+          "type": "string",
+          "named": true
+        }
+      ]
+    }
   },
   {
     "type": "keyword_h_spec",
@@ -1543,7 +1569,19 @@
     "named": false
   },
   {
+    "type": "*FILE",
+    "named": false
+  },
+  {
     "type": "*N",
+    "named": false
+  },
+  {
+    "type": "*NOIND",
+    "named": false
+  },
+  {
+    "type": "*ONLY",
     "named": false
   },
   {
@@ -1568,6 +1606,14 @@
   },
   {
     "type": "/",
+    "named": false
+  },
+  {
+    "type": "0",
+    "named": false
+  },
+  {
+    "type": "1",
     "named": false
   },
   {
@@ -1625,6 +1671,10 @@
   },
   {
     "type": "identifier",
+    "named": true
+  },
+  {
+    "type": "indicator",
     "named": true
   },
   {
