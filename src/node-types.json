@@ -76,10 +76,6 @@
       "required": false,
       "types": [
         {
-          "type": "argument_list",
-          "named": true
-        },
-        {
           "type": "keyword_h_spec",
           "named": true
         }
@@ -900,7 +896,29 @@
   {
     "type": "keyword_h_spec",
     "named": true,
-    "fields": {}
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": false,
+      "types": [
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "number",
+          "named": true
+        },
+        {
+          "type": "special_value",
+          "named": true
+        },
+        {
+          "type": "string",
+          "named": true
+        }
+      ]
+    }
   },
   {
     "type": "keyword_p_spec",

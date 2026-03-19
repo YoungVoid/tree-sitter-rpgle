@@ -1,53 +1,54 @@
-
-ctl-opt ACTGRP(*STGMDL);
-ctl-opt ALLOC(*STGMDL);
-ctl-opt ALTSEQ(*NONE);
-ctl-opt ALWNULL(*NO);
-ctl-opt AUT(*LIBRCRTAUT);
-ctl-opt BNDDIR('binding-directory-name':'binding-directory-name');
-ctl-opt CCSID(123);
-ctl-opt CCSIDCVT(*EXCP);
-ctl-opt CHARCOUNT(*NATURAL);
-ctl-opt CHARCOUNTTYPES(*UTF8);
-ctl-opt COPYNEST(123);
-ctl-opt COPYRIGHT('copyright string');
-ctl-opt CURSYM('sym');
-ctl-opt CVTOPT(*NODATETIME:*GRAPHIC:*VARCHAR:*VARGRAPHIC);
-ctl-opt DATEDIT(fmt{separator});
-ctl-opt DATEYY(*ALLOW | *WARN | *NOALLOW);
-ctl-opt DATFMT(*MDY&);
-ctl-opt DCLOPT(*NOCHGDSLEN);
-ctl-opt DEBUG(*DUMP);
-ctl-opt DECEDIT(*JOBRUN);
-ctl-opt DECPREC(30);
-ctl-opt DFTACTGRP(*YES);
-ctl-opt DFTNAME(rpg_name);
-ctl-opt ENBPFRCOL(*PEP);
-ctl-opt EXPROPTS(*MAXDIGITS);
-ctl-opt EXTBININT(*NO);
-ctl-opt EXTBININT;
-ctl-opt FIXNBR(*ZONED);
-ctl-opt FLTDIV(*NO);
-ctl-opt FORMSALIGN(*NO);
-ctl-opt FTRANS(*NONE);
-ctl-opt GENLVL(123);
-ctl-opt INDENT(*NONE);
-ctl-opt INTPREC(10);
-ctl-opt LANGID(*JOBRUN);
-ctl-opt MAIN(main_procedure_name);
-ctl-opt NOMAIN;
-ctl-opt OPENOPT (*NOINZOFL:*NOCVTDATA);
-ctl-opt OPTIMIZE(*NONE);
-ctl-opt OPTION(*NOXREF:*NOGEN:*NOSECLVL:*SHOWCPY:*NOEXPDDS:*NOEXT:*NOSHOWSKP :*NOSRCSTMT:*NODEBUGIO:*NOUNREF);
-ctl-opt PGMINFO(*PCML);
-ctl-opt PRFDTA(*NOCOL);
-ctl-opt REQPREXP(*NO);
-ctl-opt SRTSEQ(*HEX);
-ctl-opt STGMDL(*INHERIT);
-ctl-opt TEXT(*SRCMBRTXT);
-ctl-opt THREAD(*CONCURRENT);
-ctl-opt TIMFMT(*ISO:);
-ctl-opt TIMFMT(*ISO.);
-ctl-opt TRUNCNBR(*YES);
-ctl-opt USRPRF(*USER);
-ctl-opt VALIDATE(*NODATETIME);
+ctl-opt DftActGrp(*no) ActGrp('QILE') BndDir('UTIL_BND':'SQL_BND':'SRV_BASE36');
+ctl-opt Option(*nounref: *nodebugio: *srcstmt);
+ctl-opt ExprOpts(*ResDecPos) ExtBinInt( *Yes );
+ctl-opt Debug(*constants : *retval);
+ctl-opt Indent('| ');
+ctl-opt dftactgrp(*no) actgrp(*caller) option(*nodebugio: *srcstmt)
+ctl-opt dftactgrp(*no) actgrp(*caller) option(*nodebugio: *srcstmt)
+ctl-opt dftactgrp(*no) actgrp(*caller) option(*nodebugio: *srcstmt)
+ctl-opt debug option(*nodebugio: *srcstmt)
+ctl-opt debug option(*nodebugio: *srcstmt)
+ctl-opt debug option(*nodebugio: *srcstmt)
+ctl-opt debug  option(*nodebugio: *srcstmt) dftactgrp(*no)
+ctl-opt debug  option(*nodebugio: *srcstmt) dftactgrp(*no)
+ctl-opt debug nomain option(*nodebugio: *srcstmt) ;
+ctl-opt option(*nodebugio: *srcstmt)
+ctl-opt BndDir('UTIL_BND');
+ctl-opt DftActGrp(*NO) ActGrp(*new) option(*nodebugio: *srcstmt)
+ctl-opt BndDir('UTIL_BND');
+Ctl-Opt NoMain;
+Ctl-Opt NoMain;
+ctl-opt option(*srcstmt) actgrp(*new) main(Prt);
+ctl-opt option(*srcstmt) actgrp(*new) main(Prt);
+ctl-opt option(*srcstmt) actgrp(*new) main(Prt);
+ctl-opt option(*srcstmt: *nodebugio)
+ctl-opt option(*srcstmt: *nodebugio)
+ctl-opt option(*srcstmt: *nodebugio) actgrp(*new) main(Main);
+ Ctl-Opt DEBUG(*YES) OPTION(*NODEBUGIO:*SRCSTMT:*NOUNREF);
+ Ctl-Opt DFTACTGRP(*NO) ACTGRP(*NEW);
+Ctl-Opt DEBUG(*YES) OPTION(*NODEBUGIO:*SRCSTMT:*NOUNREF);
+Ctl-Opt DFTACTGRP(*NO) ACTGRP(*NEW);
+       Ctl-Opt OPTION(*NODEBUGIO: *SRCSTMT);
+       Ctl-Opt DFTACTGRP(*NO) ACTGRP(*NEW);
+  // Any program that call this service *must not* be in the default activation group, otherwise the arrary will be loaded every call. So code `ctl-opt DftActGrp(*NO) ActGrp(...)`.
+ctl-opt option(*NoDebugIo: *srcstmt)
+Ctl-Opt DftActGrp(*NO) ActGrp(*CALLER) option(*nodebugio: *srcstmt);
+Ctl-Opt BndDir('UTIL_BND');
+ctl-opt nomain option(*nodebugio: *srcstmt);
+ctl-opt  option(*NoDebugIo: *SrcStmt :*NoUnref) indent(' |')
+ctl-opt dftactgrp(*no) actgrp(*caller) option(*nodebugio: *srcstmt)
+ctl-opt nomain option(*nodebugio: *srcstmt);
+ctl-opt DftActGrp(*NO) ActGrp(*CALLER) option(*nodebugio: *srcstmt)
+ctl-opt nomain
+ctl-opt nomain option(*nodebugio: *srcstmt);
+ctl-opt dftactgrp(*no) actgrp(*caller) option(*nodebugio: *srcstmt)
+ctl-opt nomain option(*nodebugio:*srcstmt) 
+ctl-opt DftActGrp(*NO) ActGrp(*new) // <--- Needed 
+Ctl-Opt option(*nodebugio) dftactgrp(*no) actgrp(*caller);
+ ctl-opt option(*nodebugio:*srcstmt) dftactgrp(*no) actgrp(*caller)
+ ctl-opt option(*nodebugio:*srcstmt) dftactgrp(*no) actgrp(*caller)
+ctl-opt option(*nodebugio:*srcstmt) dftactgrp(*no) actgrp(*caller)
+ctl-opt dftactgrp(*no) actgrp(*caller) option(*nodebugio: *srcstmt)
+ctl-opt
+ctl-opt debug option(*nodebugio: *srcstmt)
+Ctl-Opt option(*nodebugio) dftactgrp(*no) actgrp(*caller);

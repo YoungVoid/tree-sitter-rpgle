@@ -142,18 +142,6 @@
                 {
                   "type": "SYMBOL",
                   "name": "keyword_h_spec"
-                },
-                {
-                  "type": "CHOICE",
-                  "members": [
-                    {
-                      "type": "SYMBOL",
-                      "name": "argument_list"
-                    },
-                    {
-                      "type": "BLANK"
-                    }
-                  ]
                 }
               ]
             }
@@ -1190,204 +1178,2063 @@
       "type": "CHOICE",
       "members": [
         {
-          "type": "PATTERN",
-          "value": "[AAa][CCc][TTt][GGg][RRr][PPp]"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[AAa][CCc][TTt][GGg][RRr][PPp]"
+            },
+            {
+              "type": "STRING",
+              "value": "("
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "PATTERN",
+                  "value": "[***][SSs][TTt][GGg][MMm][DDd][LLl]"
+                },
+                {
+                  "type": "PATTERN",
+                  "value": "[***][NNn][EEe][WWw]"
+                },
+                {
+                  "type": "PATTERN",
+                  "value": "[***][CCc][AAa][LLl][LLl][EEe][RRr]"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "string"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "identifier"
+                }
+              ]
+            },
+            {
+              "type": "STRING",
+              "value": ")"
+            }
+          ]
         },
         {
-          "type": "PATTERN",
-          "value": "[AAa][LLl][LLl][OOo][CCc]"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[AAa][LLl][LLl][OOo][CCc]"
+            },
+            {
+              "type": "STRING",
+              "value": "("
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "PATTERN",
+                  "value": "[***][SSs][TTt][GGg][MMm][DDd][LLl]"
+                },
+                {
+                  "type": "PATTERN",
+                  "value": "[***][TTt][EEe][RRr][AAa][SSs][PPp][AAa][CCc][EEe]"
+                },
+                {
+                  "type": "PATTERN",
+                  "value": "[***][SSs][NNn][GGg][LLl][VVv][LLl]"
+                }
+              ]
+            },
+            {
+              "type": "STRING",
+              "value": ")"
+            }
+          ]
         },
         {
-          "type": "PATTERN",
-          "value": "[AAa][LLl][TTt][SSs][EEe][QQq]"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[AAa][LLl][TTt][SSs][EEe][QQq]"
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "STRING",
+                      "value": "("
+                    },
+                    {
+                      "type": "CHOICE",
+                      "members": [
+                        {
+                          "type": "PATTERN",
+                          "value": "[***][NNn][OOo][NNn][EEe]"
+                        },
+                        {
+                          "type": "PATTERN",
+                          "value": "[***][SSs][RRr][CCc]"
+                        },
+                        {
+                          "type": "PATTERN",
+                          "value": "[***][EEe][XXx][TTt]"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "STRING",
+                      "value": ")"
+                    }
+                  ]
+                },
+                {
+                  "type": "BLANK"
+                }
+              ]
+            }
+          ]
         },
         {
-          "type": "PATTERN",
-          "value": "[AAa][LLl][WWw][NNn][UUu][LLl][LLl]"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[AAa][LLl][WWw][NNn][UUu][LLl][LLl]"
+            },
+            {
+              "type": "STRING",
+              "value": "("
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "PATTERN",
+                  "value": "[***][NNn][OOo]"
+                }
+              ]
+            },
+            {
+              "type": "STRING",
+              "value": ")"
+            }
+          ]
         },
         {
-          "type": "PATTERN",
-          "value": "[AAa][UUu][TTt]"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[AAa][UUu][TTt]"
+            },
+            {
+              "type": "STRING",
+              "value": "("
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "PATTERN",
+                  "value": "[***][LLl][IIi][BBb][RRr][CCc][RRr][TTt][AAa][UUu][TTt]"
+                },
+                {
+                  "type": "PATTERN",
+                  "value": "[***][AAa][LLl][LLl]"
+                },
+                {
+                  "type": "PATTERN",
+                  "value": "[***][CCc][HHh][AAa][NNn][GGg][EEe]"
+                },
+                {
+                  "type": "PATTERN",
+                  "value": "[***][UUu][SSs][EEe]"
+                },
+                {
+                  "type": "PATTERN",
+                  "value": "[***][EEe][XXx][CCc][LLl][UUu][DDd][EEe]"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "string"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "identifier"
+                }
+              ]
+            },
+            {
+              "type": "STRING",
+              "value": ")"
+            }
+          ]
         },
         {
-          "type": "PATTERN",
-          "value": "[BBb][NNn][DDd][DDd][IIi][RRr]"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[BBb][NNn][DDd][DDd][IIi][RRr]"
+            },
+            {
+              "type": "STRING",
+              "value": "("
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SYMBOL",
+                  "name": "string"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "identifier"
+                }
+              ]
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "STRING",
+                      "value": ":"
+                    },
+                    {
+                      "type": "CHOICE",
+                      "members": [
+                        {
+                          "type": "SYMBOL",
+                          "name": "string"
+                        },
+                        {
+                          "type": "SYMBOL",
+                          "name": "identifier"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "BLANK"
+                }
+              ]
+            },
+            {
+              "type": "STRING",
+              "value": ")"
+            }
+          ]
         },
         {
-          "type": "PATTERN",
-          "value": "[CCc][CCc][SSs][IIi][DDd]"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[CCc][OOo][PPp][YYy][NNn][EEe][SSs][TTt]"
+            },
+            {
+              "type": "STRING",
+              "value": "("
+            },
+            {
+              "type": "SYMBOL",
+              "name": "number"
+            },
+            {
+              "type": "STRING",
+              "value": ")"
+            }
+          ]
         },
         {
-          "type": "PATTERN",
-          "value": "[CCc][CCc][SSs][IIi][DDd][CCc][VVv][TTt]"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[CCc][CCc][SSs][IIi][DDd]"
+            },
+            {
+              "type": "STRING",
+              "value": "("
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "PATTERN",
+                  "value": "[***][EEe][XXx][AAa][CCc][TTt]"
+                },
+                {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "PATTERN",
+                      "value": "[***][CCc][HHh][AAa][RRr]"
+                    },
+                    {
+                      "type": "STRING",
+                      "value": ":"
+                    },
+                    {
+                      "type": "CHOICE",
+                      "members": [
+                        {
+                          "type": "PATTERN",
+                          "value": "[***][JJj][OOo][BBb][RRr][UUu][NNn]"
+                        },
+                        {
+                          "type": "PATTERN",
+                          "value": "[***][JJj][OOo][BBb][RRr][UUu][NNn][MMm][IIi][XXx]"
+                        },
+                        {
+                          "type": "PATTERN",
+                          "value": "[***][UUu][TTt][FFf][888]"
+                        },
+                        {
+                          "type": "PATTERN",
+                          "value": "[***][HHh][EEe][XXx]"
+                        },
+                        {
+                          "type": "SYMBOL",
+                          "name": "number"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "PATTERN",
+                      "value": "[***][GGg][RRr][AAa][PPp][HHh]"
+                    },
+                    {
+                      "type": "STRING",
+                      "value": ":"
+                    },
+                    {
+                      "type": "CHOICE",
+                      "members": [
+                        {
+                          "type": "PATTERN",
+                          "value": "[***][JJj][OOo][BBb][RRr][UUu][NNn]"
+                        },
+                        {
+                          "type": "PATTERN",
+                          "value": "[***][SSs][RRr][CCc]"
+                        },
+                        {
+                          "type": "PATTERN",
+                          "value": "[***][HHh][EEe][XXx]"
+                        },
+                        {
+                          "type": "PATTERN",
+                          "value": "[***][IIi][GGg][NNn][OOo][RRr][EEe]"
+                        },
+                        {
+                          "type": "SYMBOL",
+                          "name": "number"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "PATTERN",
+                      "value": "[***][UUu][CCc][SSs][222]"
+                    },
+                    {
+                      "type": "STRING",
+                      "value": ":"
+                    },
+                    {
+                      "type": "CHOICE",
+                      "members": [
+                        {
+                          "type": "PATTERN",
+                          "value": "[***][UUu][TTt][FFf][111][666]"
+                        },
+                        {
+                          "type": "SYMBOL",
+                          "name": "number"
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "STRING",
+              "value": ")"
+            }
+          ]
         },
         {
-          "type": "PATTERN",
-          "value": "[CCc][HHh][AAa][RRr][CCc][OOo][UUu][NNn][TTt]"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[CCc][CCc][SSs][IIi][DDd][CCc][VVv][TTt]"
+            },
+            {
+              "type": "STRING",
+              "value": "("
+            },
+            {
+              "type": "PATTERN",
+              "value": "[***][EEe][XXx][CCc][PPp]"
+            },
+            {
+              "type": "PATTERN",
+              "value": "[***][LLl][IIi][SSs][TTt]"
+            },
+            {
+              "type": "STRING",
+              "value": ")"
+            }
+          ]
         },
         {
-          "type": "PATTERN",
-          "value": "[CCc][HHh][AAa][RRr][CCc][OOo][UUu][NNn][TTt][TTt][YYy][PPp][EEe][SSs]"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[CCc][OOo][PPp][YYy][RRr][IIi][GGg][HHh][TTt]"
+            },
+            {
+              "type": "STRING",
+              "value": "("
+            },
+            {
+              "type": "SYMBOL",
+              "name": "string"
+            },
+            {
+              "type": "STRING",
+              "value": ")"
+            }
+          ]
         },
         {
-          "type": "PATTERN",
-          "value": "[CCc][OOo][PPp][YYy][NNn][EEe][SSs][TTt]"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[CCc][UUu][RRr][SSs][YYy][MMm]"
+            },
+            {
+              "type": "STRING",
+              "value": "("
+            },
+            {
+              "type": "SYMBOL",
+              "name": "string"
+            },
+            {
+              "type": "STRING",
+              "value": ")"
+            }
+          ]
         },
         {
-          "type": "PATTERN",
-          "value": "[CCc][OOo][PPp][YYy][RRr][IIi][GGg][HHh][TTt]"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[CCc][VVv][TTt][OOo][PPp][TTt]"
+            },
+            {
+              "type": "STRING",
+              "value": "("
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "CHOICE",
+                      "members": [
+                        {
+                          "type": "PATTERN",
+                          "value": "[***][DDd][AAa][TTt][EEe][TTt][IIi][MMm][EEe]"
+                        },
+                        {
+                          "type": "PATTERN",
+                          "value": "[***][NNn][OOo][DDd][AAa][TTt][EEe][TTt][IIi][MMm][EEe]"
+                        },
+                        {
+                          "type": "PATTERN",
+                          "value": "[***][GGg][RRr][AAa][PPp][HHh][IIi][CCc]"
+                        },
+                        {
+                          "type": "PATTERN",
+                          "value": "[***][NNn][OOo][GGg][RRr][AAa][PPp][HHh][IIi][CCc]"
+                        },
+                        {
+                          "type": "PATTERN",
+                          "value": "[***][VVv][AAa][RRr][CCc][HHh][AAa][RRr]"
+                        },
+                        {
+                          "type": "PATTERN",
+                          "value": "[***][NNn][OOo][VVv][AAa][RRr][CCc][HHh][AAa][RRr]"
+                        },
+                        {
+                          "type": "PATTERN",
+                          "value": "[***][VVv][AAa][RRr][GGg][RRr][AAa][PPp][HHh][IIi][CCc]"
+                        },
+                        {
+                          "type": "PATTERN",
+                          "value": "[***][NNn][OOo][VVv][AAa][RRr][GGg][RRr][AAa][PPp][HHh][IIi][CCc]"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "REPEAT",
+                      "content": {
+                        "type": "SEQ",
+                        "members": [
+                          {
+                            "type": "STRING",
+                            "value": ":"
+                          },
+                          {
+                            "type": "CHOICE",
+                            "members": [
+                              {
+                                "type": "PATTERN",
+                                "value": "[***][DDd][AAa][TTt][EEe][TTt][IIi][MMm][EEe]"
+                              },
+                              {
+                                "type": "PATTERN",
+                                "value": "[***][NNn][OOo][DDd][AAa][TTt][EEe][TTt][IIi][MMm][EEe]"
+                              },
+                              {
+                                "type": "PATTERN",
+                                "value": "[***][GGg][RRr][AAa][PPp][HHh][IIi][CCc]"
+                              },
+                              {
+                                "type": "PATTERN",
+                                "value": "[***][NNn][OOo][GGg][RRr][AAa][PPp][HHh][IIi][CCc]"
+                              },
+                              {
+                                "type": "PATTERN",
+                                "value": "[***][VVv][AAa][RRr][CCc][HHh][AAa][RRr]"
+                              },
+                              {
+                                "type": "PATTERN",
+                                "value": "[***][NNn][OOo][VVv][AAa][RRr][CCc][HHh][AAa][RRr]"
+                              },
+                              {
+                                "type": "PATTERN",
+                                "value": "[***][VVv][AAa][RRr][GGg][RRr][AAa][PPp][HHh][IIi][CCc]"
+                              },
+                              {
+                                "type": "PATTERN",
+                                "value": "[***][NNn][OOo][VVv][AAa][RRr][GGg][RRr][AAa][PPp][HHh][IIi][CCc]"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "BLANK"
+                }
+              ]
+            },
+            {
+              "type": "STRING",
+              "value": ")"
+            }
+          ]
         },
         {
-          "type": "PATTERN",
-          "value": "[CCc][UUu][RRr][SSs][YYy][MMm]"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[DDd][AAa][TTt][EEe][DDd][IIi][TTt]"
+            },
+            {
+              "type": "STRING",
+              "value": "("
+            },
+            {
+              "type": "SYMBOL",
+              "name": "special_value"
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "STRING",
+                      "value": "/"
+                    },
+                    {
+                      "type": "STRING",
+                      "value": "."
+                    },
+                    {
+                      "type": "STRING",
+                      "value": ","
+                    },
+                    {
+                      "type": "STRING",
+                      "value": "&"
+                    }
+                  ]
+                },
+                {
+                  "type": "BLANK"
+                }
+              ]
+            },
+            {
+              "type": "STRING",
+              "value": ")"
+            }
+          ]
         },
         {
-          "type": "PATTERN",
-          "value": "[CCc][VVv][TTt][OOo][PPp][TTt]"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[DDd][AAa][TTt][EEe][YYy][YYy]"
+            },
+            {
+              "type": "STRING",
+              "value": "("
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "PATTERN",
+                  "value": "[***][AAa][LLl][LLl][OOo][WWw]"
+                },
+                {
+                  "type": "PATTERN",
+                  "value": "[***][WWw][AAa][RRr][NNn]"
+                },
+                {
+                  "type": "PATTERN",
+                  "value": "[***][NNn][OOo][AAa][LLl][LLl][OOo][WWw]"
+                }
+              ]
+            },
+            {
+              "type": "STRING",
+              "value": ")"
+            }
+          ]
         },
         {
-          "type": "PATTERN",
-          "value": "[DDd][AAa][TTt][EEe][DDd][IIi][TTt]"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[DDd][AAa][TTt][FFf][MMm][TTt]"
+            },
+            {
+              "type": "STRING",
+              "value": "("
+            },
+            {
+              "type": "SYMBOL",
+              "name": "special_value"
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "STRING",
+                      "value": "/"
+                    },
+                    {
+                      "type": "STRING",
+                      "value": "."
+                    },
+                    {
+                      "type": "STRING",
+                      "value": ","
+                    },
+                    {
+                      "type": "STRING",
+                      "value": "&"
+                    }
+                  ]
+                },
+                {
+                  "type": "BLANK"
+                }
+              ]
+            },
+            {
+              "type": "STRING",
+              "value": ")"
+            }
+          ]
         },
         {
-          "type": "PATTERN",
-          "value": "[DDd][AAa][TTt][EEe][YYy][YYy]"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[DDd][CCc][LLl][OOo][PPp][TTt]"
+            },
+            {
+              "type": "STRING",
+              "value": "("
+            },
+            {
+              "type": "PATTERN",
+              "value": "[***][NNn][OOo][CCc][HHh][GGg][DDd][SSs][LLl][EEe][NNn]"
+            },
+            {
+              "type": "STRING",
+              "value": ")"
+            }
+          ]
         },
         {
-          "type": "PATTERN",
-          "value": "[DDd][AAa][TTt][FFf][MMm][TTt]"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[DDd][EEe][BBb][UUu][GGg]"
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "STRING",
+                      "value": "("
+                    },
+                    {
+                      "type": "CHOICE",
+                      "members": [
+                        {
+                          "type": "SEQ",
+                          "members": [
+                            {
+                              "type": "CHOICE",
+                              "members": [
+                                {
+                                  "type": "PATTERN",
+                                  "value": "[***][DDd][UUu][MMm][PPp]"
+                                },
+                                {
+                                  "type": "PATTERN",
+                                  "value": "[***][IIi][NNn][PPp][UUu][TTt]"
+                                },
+                                {
+                                  "type": "PATTERN",
+                                  "value": "[***][RRr][EEe][TTt][VVv][AAa][LLl]"
+                                },
+                                {
+                                  "type": "PATTERN",
+                                  "value": "[***][XXx][MMm][LLl][SSs][AAa][XXx]"
+                                },
+                                {
+                                  "type": "PATTERN",
+                                  "value": "[***][NNn][OOo]"
+                                },
+                                {
+                                  "type": "PATTERN",
+                                  "value": "[***][YYy][EEe][SSs]"
+                                }
+                              ]
+                            },
+                            {
+                              "type": "REPEAT",
+                              "content": {
+                                "type": "SEQ",
+                                "members": [
+                                  {
+                                    "type": "STRING",
+                                    "value": ":"
+                                  },
+                                  {
+                                    "type": "CHOICE",
+                                    "members": [
+                                      {
+                                        "type": "PATTERN",
+                                        "value": "[***][DDd][UUu][MMm][PPp]"
+                                      },
+                                      {
+                                        "type": "PATTERN",
+                                        "value": "[***][IIi][NNn][PPp][UUu][TTt]"
+                                      },
+                                      {
+                                        "type": "PATTERN",
+                                        "value": "[***][RRr][EEe][TTt][VVv][AAa][LLl]"
+                                      },
+                                      {
+                                        "type": "PATTERN",
+                                        "value": "[***][XXx][MMm][LLl][SSs][AAa][XXx]"
+                                      },
+                                      {
+                                        "type": "PATTERN",
+                                        "value": "[***][NNn][OOo]"
+                                      },
+                                      {
+                                        "type": "PATTERN",
+                                        "value": "[***][YYy][EEe][SSs]"
+                                      }
+                                    ]
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "type": "BLANK"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "STRING",
+                      "value": ")"
+                    }
+                  ]
+                },
+                {
+                  "type": "BLANK"
+                }
+              ]
+            }
+          ]
         },
         {
-          "type": "PATTERN",
-          "value": "[DDd][CCc][LLl][OOo][PPp][TTt]"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[DDd][EEe][CCc][EEe][DDd][IIi][TTt]"
+            },
+            {
+              "type": "STRING",
+              "value": "("
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "PATTERN",
+                  "value": "[***][JJj][OOo][BBb][RRr][UUu][NNn]"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "string"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "identifier"
+                }
+              ]
+            },
+            {
+              "type": "STRING",
+              "value": ")"
+            }
+          ]
         },
         {
-          "type": "PATTERN",
-          "value": "[DDd][EEe][BBb][UUu][GGg]"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[DDd][FFf][TTt][AAa][CCc][TTt][GGg][RRr][PPp]"
+            },
+            {
+              "type": "STRING",
+              "value": "("
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "PATTERN",
+                  "value": "[***][YYy][EEe][SSs]"
+                },
+                {
+                  "type": "PATTERN",
+                  "value": "[***][NNn][OOo]"
+                }
+              ]
+            },
+            {
+              "type": "STRING",
+              "value": ")"
+            }
+          ]
         },
         {
-          "type": "PATTERN",
-          "value": "[DDd][EEe][CCc][EEe][DDd][IIi][TTt]"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[DDd][FFf][TTt][NNn][AAa][MMm][EEe]"
+            },
+            {
+              "type": "STRING",
+              "value": "("
+            },
+            {
+              "type": "SYMBOL",
+              "name": "identifier"
+            },
+            {
+              "type": "STRING",
+              "value": ")"
+            }
+          ]
         },
         {
-          "type": "PATTERN",
-          "value": "[DDd][EEe][CCc][PPp][RRr][EEe][CCc]"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[EEe][NNn][BBb][PPp][FFf][RRr][CCc][OOo][LLl]"
+            },
+            {
+              "type": "STRING",
+              "value": "("
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "PATTERN",
+                  "value": "[***][PPp][EEe][PPp]"
+                },
+                {
+                  "type": "PATTERN",
+                  "value": "[***][EEe][NNn][TTt][RRr][YYy][EEe][XXx][IIi][TTt]"
+                },
+                {
+                  "type": "PATTERN",
+                  "value": "[***][FFf][UUu][LLl][LLl]"
+                }
+              ]
+            },
+            {
+              "type": "STRING",
+              "value": ")"
+            }
+          ]
         },
         {
-          "type": "PATTERN",
-          "value": "[DDd][FFf][TTt][AAa][CCc][TTt][GGg][RRr][PPp]"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[EEe][XXx][PPp][RRr][OOo][PPp][TTt][SSs]"
+            },
+            {
+              "type": "STRING",
+              "value": "("
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "PATTERN",
+                  "value": "[***][MMm][AAa][XXx][DDd][IIi][GGg][IIi][TTt][SSs]"
+                },
+                {
+                  "type": "PATTERN",
+                  "value": "[***][RRr][EEe][SSs][DDd][EEe][CCc][PPp][OOo][SSs]"
+                },
+                {
+                  "type": "PATTERN",
+                  "value": "[***][AAa][LLl][WWw][BBb][LLl][AAa][NNn][KKk][NNn][UUu][MMm]"
+                },
+                {
+                  "type": "PATTERN",
+                  "value": "[***][UUu][SSs][EEe][DDd][EEe][CCc][EEe][DDd][IIi][TTt]"
+                }
+              ]
+            },
+            {
+              "type": "STRING",
+              "value": ")"
+            }
+          ]
         },
         {
-          "type": "PATTERN",
-          "value": "[DDd][FFf][TTt][NNn][AAa][MMm][EEe]"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[EEe][XXx][TTt][BBb][IIi][NNn][IIi][NNn][TTt]"
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "STRING",
+                      "value": "("
+                    },
+                    {
+                      "type": "CHOICE",
+                      "members": [
+                        {
+                          "type": "PATTERN",
+                          "value": "[***][NNn][OOo]"
+                        },
+                        {
+                          "type": "PATTERN",
+                          "value": "[***][YYy][EEe][SSs]"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "STRING",
+                      "value": ")"
+                    }
+                  ]
+                },
+                {
+                  "type": "BLANK"
+                }
+              ]
+            }
+          ]
         },
         {
-          "type": "PATTERN",
-          "value": "[EEe][NNn][BBb][PPp][FFf][RRr][CCc][OOo][LLl]"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[FFf][IIi][XXx][NNn][BBb][RRr]"
+            },
+            {
+              "type": "STRING",
+              "value": "("
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "CHOICE",
+                      "members": [
+                        {
+                          "type": "PATTERN",
+                          "value": "[***][ZZz][OOo][NNn][EEe][DDd]"
+                        },
+                        {
+                          "type": "PATTERN",
+                          "value": "[***][NNn][OOo][ZZz][OOo][NNn][EEe][DDd]"
+                        },
+                        {
+                          "type": "PATTERN",
+                          "value": "[***][IIi][NNn][PPp][UUu][TTt][PPp][AAa][CCc][KKk][EEe][DDd]"
+                        },
+                        {
+                          "type": "PATTERN",
+                          "value": "[***][NNn][OOo][IIi][NNn][PPp][UUu][TTt][PPp][AAa][CCc][KKk][EEe][DDd]"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "REPEAT",
+                      "content": {
+                        "type": "SEQ",
+                        "members": [
+                          {
+                            "type": "STRING",
+                            "value": ":"
+                          },
+                          {
+                            "type": "CHOICE",
+                            "members": [
+                              {
+                                "type": "PATTERN",
+                                "value": "[***][ZZz][OOo][NNn][EEe][DDd]"
+                              },
+                              {
+                                "type": "PATTERN",
+                                "value": "[***][NNn][OOo][ZZz][OOo][NNn][EEe][DDd]"
+                              },
+                              {
+                                "type": "PATTERN",
+                                "value": "[***][IIi][NNn][PPp][UUu][TTt][PPp][AAa][CCc][KKk][EEe][DDd]"
+                              },
+                              {
+                                "type": "PATTERN",
+                                "value": "[***][NNn][OOo][IIi][NNn][PPp][UUu][TTt][PPp][AAa][CCc][KKk][EEe][DDd]"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                },
+                {
+                  "type": "BLANK"
+                }
+              ]
+            },
+            {
+              "type": "STRING",
+              "value": ")"
+            }
+          ]
         },
         {
-          "type": "PATTERN",
-          "value": "[EEe][XXx][PPp][RRr][OOo][PPp][TTt][SSs]"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[FFf][LLl][TTt][DDd][IIi][VVv]"
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "STRING",
+                      "value": "("
+                    },
+                    {
+                      "type": "CHOICE",
+                      "members": [
+                        {
+                          "type": "PATTERN",
+                          "value": "[***][NNn][OOo]"
+                        },
+                        {
+                          "type": "PATTERN",
+                          "value": "[***][YYy][EEe][SSs]"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "STRING",
+                      "value": ")"
+                    }
+                  ]
+                },
+                {
+                  "type": "BLANK"
+                }
+              ]
+            }
+          ]
         },
         {
-          "type": "PATTERN",
-          "value": "[EEe][XXx][TTt][BBb][IIi][NNn][IIi][NNn][TTt]"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[FFf][OOo][RRr][MMm][SSs][AAa][LLl][IIi][GGg][NNn]"
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "STRING",
+                      "value": "("
+                    },
+                    {
+                      "type": "CHOICE",
+                      "members": [
+                        {
+                          "type": "PATTERN",
+                          "value": "[***][NNn][OOo]"
+                        },
+                        {
+                          "type": "PATTERN",
+                          "value": "[***][YYy][EEe][SSs]"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "STRING",
+                      "value": ")"
+                    }
+                  ]
+                },
+                {
+                  "type": "BLANK"
+                }
+              ]
+            }
+          ]
         },
         {
-          "type": "PATTERN",
-          "value": "[FFf][IIi][XXx][NNn][BBb][RRr]"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[FFf][TTt][RRr][AAa][NNn][SSs]"
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "SEQ",
+                  "members": [
+                    {
+                      "type": "STRING",
+                      "value": "("
+                    },
+                    {
+                      "type": "CHOICE",
+                      "members": [
+                        {
+                          "type": "PATTERN",
+                          "value": "[***][NNn][OOo][NNn][EEe]"
+                        },
+                        {
+                          "type": "PATTERN",
+                          "value": "[***][SSs][RRr][CCc]"
+                        }
+                      ]
+                    },
+                    {
+                      "type": "STRING",
+                      "value": ")"
+                    }
+                  ]
+                },
+                {
+                  "type": "BLANK"
+                }
+              ]
+            }
+          ]
         },
         {
-          "type": "PATTERN",
-          "value": "[FFf][LLl][TTt][DDd][IIi][VVv]"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[GGg][EEe][NNn][LLl][VVv][LLl]"
+            },
+            {
+              "type": "STRING",
+              "value": "("
+            },
+            {
+              "type": "SYMBOL",
+              "name": "number"
+            },
+            {
+              "type": "STRING",
+              "value": ")"
+            }
+          ]
         },
         {
-          "type": "PATTERN",
-          "value": "[FFf][OOo][RRr][MMm][SSs][AAa][LLl][IIi][GGg][NNn]"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[IIi][NNn][DDd][EEe][NNn][TTt]"
+            },
+            {
+              "type": "STRING",
+              "value": "("
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "PATTERN",
+                  "value": "[***][NNn][OOo][NNn][EEe]"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "string"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "identifier"
+                }
+              ]
+            },
+            {
+              "type": "STRING",
+              "value": ")"
+            }
+          ]
         },
         {
-          "type": "PATTERN",
-          "value": "[FFf][TTt][RRr][AAa][NNn][SSs]"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[IIi][NNn][TTt][PPp][RRr][EEe][CCc]"
+            },
+            {
+              "type": "STRING",
+              "value": "("
+            },
+            {
+              "type": "SYMBOL",
+              "name": "number"
+            },
+            {
+              "type": "STRING",
+              "value": ")"
+            }
+          ]
         },
         {
-          "type": "PATTERN",
-          "value": "[GGg][EEe][NNn][LLl][VVv][LLl]"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[LLl][AAa][NNn][GGg][IIi][DDd]"
+            },
+            {
+              "type": "STRING",
+              "value": "("
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "PATTERN",
+                  "value": "[***][JJj][OOo][BBb][RRr][UUu][NNn]"
+                },
+                {
+                  "type": "PATTERN",
+                  "value": "[***][JJj][OOo][BBb]"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "string"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "identifier"
+                }
+              ]
+            },
+            {
+              "type": "STRING",
+              "value": ")"
+            }
+          ]
         },
         {
-          "type": "PATTERN",
-          "value": "[IIi][NNn][DDd][EEe][NNn][TTt]"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[MMm][AAa][IIi][NNn]"
+            },
+            {
+              "type": "STRING",
+              "value": "("
+            },
+            {
+              "type": "SYMBOL",
+              "name": "identifier"
+            },
+            {
+              "type": "STRING",
+              "value": ")"
+            }
+          ]
         },
         {
-          "type": "PATTERN",
-          "value": "[IIi][NNn][TTt][PPp][RRr][EEe][CCc]"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[NNn][OOo][MMm][AAa][IIi][NNn]"
+            },
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "PATTERN",
+                  "value": "[OOo][PPp][EEe][NNn][OOo][PPp][TTt]"
+                },
+                {
+                  "type": "STRING",
+                  "value": "("
+                },
+                {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SEQ",
+                      "members": [
+                        {
+                          "type": "CHOICE",
+                          "members": [
+                            {
+                              "type": "PATTERN",
+                              "value": "[***][IIi][NNn][ZZz][OOo][FFf][LLl]"
+                            },
+                            {
+                              "type": "PATTERN",
+                              "value": "[***][NNn][OOo][IIi][NNn][ZZz][OOo][FFf][LLl]"
+                            },
+                            {
+                              "type": "PATTERN",
+                              "value": "[***][CCc][VVv][TTt][DDd][AAa][TTt][AAa]"
+                            },
+                            {
+                              "type": "PATTERN",
+                              "value": "[***][NNn][OOo][CCc][VVv][TTt][DDd][AAa][TTt][AAa]"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "REPEAT",
+                          "content": {
+                            "type": "SEQ",
+                            "members": [
+                              {
+                                "type": "STRING",
+                                "value": ":"
+                              },
+                              {
+                                "type": "CHOICE",
+                                "members": [
+                                  {
+                                    "type": "PATTERN",
+                                    "value": "[***][IIi][NNn][ZZz][OOo][FFf][LLl]"
+                                  },
+                                  {
+                                    "type": "PATTERN",
+                                    "value": "[***][NNn][OOo][IIi][NNn][ZZz][OOo][FFf][LLl]"
+                                  },
+                                  {
+                                    "type": "PATTERN",
+                                    "value": "[***][CCc][VVv][TTt][DDd][AAa][TTt][AAa]"
+                                  },
+                                  {
+                                    "type": "PATTERN",
+                                    "value": "[***][NNn][OOo][CCc][VVv][TTt][DDd][AAa][TTt][AAa]"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "BLANK"
+                    }
+                  ]
+                },
+                {
+                  "type": "STRING",
+                  "value": ")"
+                }
+              ]
+            },
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "PATTERN",
+                  "value": "[OOo][PPp][TTt][IIi][MMm][IIi][ZZz][EEe]"
+                },
+                {
+                  "type": "STRING",
+                  "value": "("
+                },
+                {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "PATTERN",
+                      "value": "[***][NNn][OOo][NNn][EEe]"
+                    },
+                    {
+                      "type": "PATTERN",
+                      "value": "[***][BBb][AAa][SSs][IIi][CCc]"
+                    },
+                    {
+                      "type": "PATTERN",
+                      "value": "[***][FFf][UUu][LLl][LLl]"
+                    }
+                  ]
+                },
+                {
+                  "type": "STRING",
+                  "value": ")"
+                }
+              ]
+            },
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "PATTERN",
+                  "value": "[OOo][PPp][TTt][IIi][OOo][NNn]"
+                },
+                {
+                  "type": "STRING",
+                  "value": "("
+                },
+                {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "SEQ",
+                      "members": [
+                        {
+                          "type": "CHOICE",
+                          "members": [
+                            {
+                              "type": "PATTERN",
+                              "value": "[***][XXx][RRr][EEe][FFf]"
+                            },
+                            {
+                              "type": "PATTERN",
+                              "value": "[***][NNn][OOo][XXx][RRr][EEe][FFf]"
+                            },
+                            {
+                              "type": "PATTERN",
+                              "value": "[***][GGg][EEe][NNn]"
+                            },
+                            {
+                              "type": "PATTERN",
+                              "value": "[***][NNn][OOo][GGg][EEe][NNn]"
+                            },
+                            {
+                              "type": "PATTERN",
+                              "value": "[***][SSs][EEe][CCc][LLl][VVv][LLl]"
+                            },
+                            {
+                              "type": "PATTERN",
+                              "value": "[***][NNn][OOo][SSs][EEe][CCc][LLl][VVv][LLl]"
+                            },
+                            {
+                              "type": "PATTERN",
+                              "value": "[***][SSs][HHh][OOo][WWw][CCc][PPp][YYy]"
+                            },
+                            {
+                              "type": "PATTERN",
+                              "value": "[***][NNn][OOo][SSs][HHh][OOo][WWw][CCc][PPp][YYy]"
+                            },
+                            {
+                              "type": "PATTERN",
+                              "value": "[***][EEe][XXx][PPp][DDd][DDd][SSs]"
+                            },
+                            {
+                              "type": "PATTERN",
+                              "value": "[***][NNn][OOo][EEe][XXx][PPp][DDd][DDd][SSs]"
+                            },
+                            {
+                              "type": "PATTERN",
+                              "value": "[***][EEe][XXx][TTt]"
+                            },
+                            {
+                              "type": "PATTERN",
+                              "value": "[***][NNn][OOo][EEe][XXx][TTt]"
+                            },
+                            {
+                              "type": "PATTERN",
+                              "value": "[***][SSs][HHh][OOo][WWw][SSs][KKk][PPp]"
+                            },
+                            {
+                              "type": "PATTERN",
+                              "value": "[***][NNn][OOo][SSs][HHh][OOo][WWw][SSs][KKk][PPp]"
+                            },
+                            {
+                              "type": "PATTERN",
+                              "value": "[***][SSs][RRr][CCc][SSs][TTt][MMm][TTt]"
+                            },
+                            {
+                              "type": "PATTERN",
+                              "value": "[***][NNn][OOo][SSs][RRr][CCc][SSs][TTt][MMm][TTt]"
+                            },
+                            {
+                              "type": "PATTERN",
+                              "value": "[***][DDd][EEe][BBb][UUu][GGg][IIi][OOo]"
+                            },
+                            {
+                              "type": "PATTERN",
+                              "value": "[***][NNn][OOo][DDd][EEe][BBb][UUu][GGg][IIi][OOo]"
+                            },
+                            {
+                              "type": "PATTERN",
+                              "value": "[***][UUu][NNn][RRr][EEe][FFf]"
+                            },
+                            {
+                              "type": "PATTERN",
+                              "value": "[***][NNn][OOo][UUu][NNn][RRr][EEe][FFf]"
+                            }
+                          ]
+                        },
+                        {
+                          "type": "REPEAT",
+                          "content": {
+                            "type": "SEQ",
+                            "members": [
+                              {
+                                "type": "STRING",
+                                "value": ":"
+                              },
+                              {
+                                "type": "CHOICE",
+                                "members": [
+                                  {
+                                    "type": "PATTERN",
+                                    "value": "[***][XXx][RRr][EEe][FFf]"
+                                  },
+                                  {
+                                    "type": "PATTERN",
+                                    "value": "[***][NNn][OOo][XXx][RRr][EEe][FFf]"
+                                  },
+                                  {
+                                    "type": "PATTERN",
+                                    "value": "[***][GGg][EEe][NNn]"
+                                  },
+                                  {
+                                    "type": "PATTERN",
+                                    "value": "[***][NNn][OOo][GGg][EEe][NNn]"
+                                  },
+                                  {
+                                    "type": "PATTERN",
+                                    "value": "[***][SSs][EEe][CCc][LLl][VVv][LLl]"
+                                  },
+                                  {
+                                    "type": "PATTERN",
+                                    "value": "[***][NNn][OOo][SSs][EEe][CCc][LLl][VVv][LLl]"
+                                  },
+                                  {
+                                    "type": "PATTERN",
+                                    "value": "[***][SSs][HHh][OOo][WWw][CCc][PPp][YYy]"
+                                  },
+                                  {
+                                    "type": "PATTERN",
+                                    "value": "[***][NNn][OOo][SSs][HHh][OOo][WWw][CCc][PPp][YYy]"
+                                  },
+                                  {
+                                    "type": "PATTERN",
+                                    "value": "[***][EEe][XXx][PPp][DDd][DDd][SSs]"
+                                  },
+                                  {
+                                    "type": "PATTERN",
+                                    "value": "[***][NNn][OOo][EEe][XXx][PPp][DDd][DDd][SSs]"
+                                  },
+                                  {
+                                    "type": "PATTERN",
+                                    "value": "[***][EEe][XXx][TTt]"
+                                  },
+                                  {
+                                    "type": "PATTERN",
+                                    "value": "[***][NNn][OOo][EEe][XXx][TTt]"
+                                  },
+                                  {
+                                    "type": "PATTERN",
+                                    "value": "[***][SSs][HHh][OOo][WWw][SSs][KKk][PPp]"
+                                  },
+                                  {
+                                    "type": "PATTERN",
+                                    "value": "[***][NNn][OOo][SSs][HHh][OOo][WWw][SSs][KKk][PPp]"
+                                  },
+                                  {
+                                    "type": "PATTERN",
+                                    "value": "[***][SSs][RRr][CCc][SSs][TTt][MMm][TTt]"
+                                  },
+                                  {
+                                    "type": "PATTERN",
+                                    "value": "[***][NNn][OOo][SSs][RRr][CCc][SSs][TTt][MMm][TTt]"
+                                  },
+                                  {
+                                    "type": "PATTERN",
+                                    "value": "[***][DDd][EEe][BBb][UUu][GGg][IIi][OOo]"
+                                  },
+                                  {
+                                    "type": "PATTERN",
+                                    "value": "[***][NNn][OOo][DDd][EEe][BBb][UUu][GGg][IIi][OOo]"
+                                  },
+                                  {
+                                    "type": "PATTERN",
+                                    "value": "[***][UUu][NNn][RRr][EEe][FFf]"
+                                  },
+                                  {
+                                    "type": "PATTERN",
+                                    "value": "[***][NNn][OOo][UUu][NNn][RRr][EEe][FFf]"
+                                  }
+                                ]
+                              }
+                            ]
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "type": "BLANK"
+                    }
+                  ]
+                },
+                {
+                  "type": "STRING",
+                  "value": ")"
+                }
+              ]
+            },
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "PATTERN",
+                  "value": "[PPp][RRr][FFf][DDd][TTt][AAa]"
+                },
+                {
+                  "type": "STRING",
+                  "value": "("
+                },
+                {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "PATTERN",
+                      "value": "[***][NNn][OOo][CCc][OOo][LLl]"
+                    },
+                    {
+                      "type": "PATTERN",
+                      "value": "[***][CCc][OOo][LLl]"
+                    }
+                  ]
+                },
+                {
+                  "type": "STRING",
+                  "value": ")"
+                }
+              ]
+            },
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "PATTERN",
+                  "value": "[RRr][EEe][QQq][PPp][RRr][EEe][XXx][PPp]"
+                },
+                {
+                  "type": "STRING",
+                  "value": "("
+                },
+                {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "PATTERN",
+                      "value": "[***][NNn][OOo]"
+                    },
+                    {
+                      "type": "PATTERN",
+                      "value": "[***][WWw][AAa][RRr][NNn]"
+                    },
+                    {
+                      "type": "PATTERN",
+                      "value": "[***][RRr][EEe][QQq][UUu][IIi][RRr][EEe]"
+                    }
+                  ]
+                },
+                {
+                  "type": "STRING",
+                  "value": ")"
+                }
+              ]
+            },
+            {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "PATTERN",
+                  "value": "[SSs][RRr][TTt][SSs][EEe][QQq]"
+                },
+                {
+                  "type": "STRING",
+                  "value": "("
+                },
+                {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "PATTERN",
+                      "value": "[***][HHh][EEe][XXx]"
+                    },
+                    {
+                      "type": "PATTERN",
+                      "value": "[***][JJj][OOo][BBb]"
+                    },
+                    {
+                      "type": "PATTERN",
+                      "value": "[***][JJj][OOo][BBb][RRr][UUu][NNn]"
+                    },
+                    {
+                      "type": "PATTERN",
+                      "value": "[***][LLl][AAa][NNn][GGg][IIi][DDd][UUu][NNn][QQq]"
+                    },
+                    {
+                      "type": "PATTERN",
+                      "value": "[***][LLl][AAa][NNn][GGg][IIi][DDd][SSs][HHh][RRr]"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "string"
+                    },
+                    {
+                      "type": "SYMBOL",
+                      "name": "identifier"
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "type": "STRING",
+              "value": ")"
+            }
+          ]
         },
         {
-          "type": "PATTERN",
-          "value": "[LLl][AAa][NNn][GGg][IIi][DDd]"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[TTt][EEe][XXx][TTt]"
+            },
+            {
+              "type": "STRING",
+              "value": "("
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "PATTERN",
+                  "value": "[***][SSs][RRr][CCc][MMm][BBb][RRr][TTt][XXx][TTt]"
+                },
+                {
+                  "type": "PATTERN",
+                  "value": "[***][BBb][LLl][AAa][NNn][KKk]"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "string"
+                },
+                {
+                  "type": "SYMBOL",
+                  "name": "identifier"
+                }
+              ]
+            },
+            {
+              "type": "STRING",
+              "value": ")"
+            }
+          ]
         },
         {
-          "type": "PATTERN",
-          "value": "[MMm][AAa][IIi][NNn]"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[TTt][HHh][RRr][EEe][AAa][DDd]"
+            },
+            {
+              "type": "STRING",
+              "value": "("
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "PATTERN",
+                  "value": "[***][CCc][OOo][NNn][CCc][UUu][RRr][RRr][EEe][NNn][TTt]"
+                },
+                {
+                  "type": "PATTERN",
+                  "value": "[***][SSs][EEe][RRr][IIi][AAa][LLl][IIi][ZZz][EEe]"
+                }
+              ]
+            },
+            {
+              "type": "STRING",
+              "value": ")"
+            }
+          ]
         },
         {
-          "type": "PATTERN",
-          "value": "[NNn][OOo][MMm][AAa][IIi][NNn]"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[TTt][IIi][MMm][FFf][MMm][TTt]"
+            },
+            {
+              "type": "STRING",
+              "value": "("
+            },
+            {
+              "type": "SYMBOL",
+              "name": "special_value"
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "CHOICE",
+                  "members": [
+                    {
+                      "type": "STRING",
+                      "value": ":"
+                    },
+                    {
+                      "type": "STRING",
+                      "value": "."
+                    },
+                    {
+                      "type": "STRING",
+                      "value": ","
+                    },
+                    {
+                      "type": "STRING",
+                      "value": "&"
+                    }
+                  ]
+                },
+                {
+                  "type": "BLANK"
+                }
+              ]
+            },
+            {
+              "type": "STRING",
+              "value": ")"
+            }
+          ]
         },
         {
-          "type": "PATTERN",
-          "value": "[OOo][PPp][EEe][NNn][OOo][PPp][TTt]"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[TTt][RRr][UUu][NNn][CCc][NNn][BBb][RRr]"
+            },
+            {
+              "type": "STRING",
+              "value": "("
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "PATTERN",
+                  "value": "[***][NNn][OOo]"
+                },
+                {
+                  "type": "PATTERN",
+                  "value": "[***][YYy][EEe][SSs]"
+                }
+              ]
+            },
+            {
+              "type": "STRING",
+              "value": ")"
+            }
+          ]
         },
         {
-          "type": "PATTERN",
-          "value": "[OOo][PPp][TTt][IIi][MMm][IIi][ZZz][EEe]"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[UUu][SSs][RRr][PPp][RRr][FFf]"
+            },
+            {
+              "type": "STRING",
+              "value": "("
+            },
+            {
+              "type": "CHOICE",
+              "members": [
+                {
+                  "type": "PATTERN",
+                  "value": "[***][UUu][SSs][EEe][RRr]"
+                },
+                {
+                  "type": "PATTERN",
+                  "value": "[***][OOo][WWw][NNn][EEe][RRr]"
+                }
+              ]
+            },
+            {
+              "type": "STRING",
+              "value": ")"
+            }
+          ]
         },
         {
-          "type": "PATTERN",
-          "value": "[OOo][PPp][TTt][IIi][OOo][NNn]"
-        },
-        {
-          "type": "PATTERN",
-          "value": "[PPp][GGg][MMm][IIi][NNn][FFf][OOo]"
-        },
-        {
-          "type": "PATTERN",
-          "value": "[PPp][RRr][FFf][DDd][TTt][AAa]"
-        },
-        {
-          "type": "PATTERN",
-          "value": "[RRr][EEe][QQq][PPp][RRr][EEe][XXx][PPp]"
-        },
-        {
-          "type": "PATTERN",
-          "value": "[SSs][RRr][TTt][SSs][EEe][QQq]"
-        },
-        {
-          "type": "PATTERN",
-          "value": "[SSs][TTt][GGg][MMm][DDd][LLl]"
-        },
-        {
-          "type": "PATTERN",
-          "value": "[TTt][EEe][XXx][TTt]"
-        },
-        {
-          "type": "PATTERN",
-          "value": "[TTt][HHh][RRr][EEe][AAa][DDd]"
-        },
-        {
-          "type": "PATTERN",
-          "value": "[TTt][IIi][MMm][FFf][MMm][TTt]"
-        },
-        {
-          "type": "PATTERN",
-          "value": "[TTt][RRr][UUu][NNn][CCc][NNn][BBb][RRr]"
-        },
-        {
-          "type": "PATTERN",
-          "value": "[UUu][SSs][RRr][PPp][RRr][FFf]"
-        },
-        {
-          "type": "PATTERN",
-          "value": "[VVv][AAa][LLl][IIi][DDd][AAa][TTt][EEe]"
+          "type": "SEQ",
+          "members": [
+            {
+              "type": "PATTERN",
+              "value": "[VVv][AAa][LLl][IIi][DDd][AAa][TTt][EEe]"
+            },
+            {
+              "type": "STRING",
+              "value": "("
+            },
+            {
+              "type": "PATTERN",
+              "value": "[***][NNn][OOo][DDd][AAa][TTt][EEe][TTt][IIi][MMm][EEe]"
+            },
+            {
+              "type": "STRING",
+              "value": ")"
+            }
+          ]
         }
       ]
     },
