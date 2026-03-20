@@ -8,10 +8,18 @@
 // @ts-check
 
 function caseInsensitive(word) {
-  return new RegExp(word
-    .split('')
-    .map(letter => `[${letter}${letter.toUpperCase()}${letter.toLowerCase()}]`)
-    .join(''));
+  return new RegExp(
+    word
+      .split('')
+      .map(char => {
+        if (/[a-zA-Z]/.test(char)) {
+          return `[${char.toLowerCase()}${char.toUpperCase()}]`;
+        }
+        // Escape special regex characters
+        return char.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+      })
+      .join('')
+  );
 }
 
 
@@ -174,19 +182,21 @@ export default grammar({
     // BUG: Just wandering if niche case theres dcl-ds and double semi colon without an end-ds,
     // if it will see the second ; as part of the dcl-ds? should, with the way it is set up now...
     // happens a few times, ie with dcl-pr as well.
-    dcl_ds: $ => choice(
+    dcl_ds: $ => prec.right(choice(
       // 
       seq(
         token(prec(2, caseInsensitive('dcl-ds'))),
         $.identifier,
         repeat($.keyword_d_spec),
         ';',
-        repeat($.field_declaration),
-        optional(token(caseInsensitive('end-ds'))),
-        optional($.field_reference),
-        ';'
+        optional(repeat($.field_declaration)),
+        optional(seq(
+          token(caseInsensitive('end-ds')),
+          optional($.field_reference),
+          ';'
+        )),
       ),
-    ),
+    )),
 
     field_declaration: $ => seq(
       $.identifier,
@@ -240,12 +250,12 @@ export default grammar({
     // Types
     // =====================
 
-    type: $ => choice(
-      seq(caseInsensitive('BINDEC', '(', $.number, optional(seq(':', $.number)), ')')),
+    type: $ => prec(2, choice(
+      seq(caseInsensitive('BINDEC'), '(', $.number, optional(seq(':', $.number)), ')'),
       seq(caseInsensitive('CHAR'), '(', $.number, ')'),
-      seq(caseInsensitive('DATE'), optional(seq('(', choice($.special_value, choice('/','-',',','.','&')), ')'))),
-      seq(caseInsensitive('FLOAT', '(', $.number, ')')),
-      seq(caseInsensitive('GRAPH', '(', $.number, ')')),
+      // seq(caseInsensitive('DATE'), optional(seq('(', choice($.special_value, choice('/','-',',','.','&')), ')'))),
+      seq(caseInsensitive('FLOAT'), '(', $.number, ')'),
+      seq(caseInsensitive('GRAPH'), '(', $.number, ')'),
       caseInsensitive('IND'),
       seq(caseInsensitive('INT'), '(', $.number, ')'),
       seq(caseInsensitive('OBJECT'), optional(seq('(', caseInsensitive('*JAVA'), optional(colonSep(choice($.special_value, $.string))), ')'))),
@@ -259,7 +269,7 @@ export default grammar({
       seq(caseInsensitive('VARGRAPH'),'(', $.number, optional(seq(':', $.number)), ')',),
       seq(caseInsensitive('VARUCS2'),'(', $.number, optional(seq(':', $.number)), ')',),
       seq(caseInsensitive('ZONED'),'(', $.number, optional(seq(':', $.number)), ')',),
-    ),
+    )),
 
 
     // https://www.ibm.com/docs/en/i/7.6.0?topic=specifications-control-specification-keywords
@@ -267,7 +277,7 @@ export default grammar({
       seq(caseInsensitive('ACTGRP'), '(', choice(caseInsensitive('*STGMDL'), caseInsensitive('*NEW'), caseInsensitive('*CALLER'), $.string, $.identifier), ')', ),
       seq(caseInsensitive('ALLOC'), '(', choice(caseInsensitive('*STGMDL'), caseInsensitive('*TERASPACE'), caseInsensitive('*SNGLVL')), ')',),
       seq(caseInsensitive('ALTSEQ'), optional(seq('(', choice(caseInsensitive('*NONE'), caseInsensitive('*SRC'), caseInsensitive('*EXT')),')'))),
-      seq(caseInsensitive('ALWNULL'), '(', choice(caseInsensitive('*NO', caseInsensitive('*INPUTONLY'), caseInsensitive('*USRCTL'))), ')'),
+      seq(caseInsensitive('ALWNULL'), '(', choice(caseInsensitive('*NO'), caseInsensitive('*INPUTONLY'), caseInsensitive('*USRCTL')), ')'),
       seq(caseInsensitive('AUT'), '(', choice(caseInsensitive('*LIBRCRTAUT'), caseInsensitive('*ALL'), caseInsensitive('*CHANGE'), caseInsensitive('*USE'), caseInsensitive('*EXCLUDE'), $.string, $.identifier),')'),
       seq(caseInsensitive('BNDDIR'), '(', choice($.string, $.identifier), optional(seq(':', choice($.string, $.identifier))), ')',), 
       seq(caseInsensitive('COPYNEST'), '(', $.number,')', ),
@@ -380,73 +390,105 @@ export default grammar({
     ),
 
     keyword_d_spec: $ => choice(
-      caseInsensitive('LIKE'),
-      caseInsensitive('LIKEDS'),
-      caseInsensitive('LIKEREC'),
-      caseInsensitive('EXTNAME'),
-      caseInsensitive('EXTFLD'),
-      caseInsensitive('PREFIX'),
-      caseInsensitive('RENAME'),
-      caseInsensitive('QUALIFIED'),
-      caseInsensitive('DIM'),
-      caseInsensitive('CTDATA'),
-      caseInsensitive('PERRCD'),
-      caseInsensitive('OVERLAY'),
-      caseInsensitive('BASED'),
-      caseInsensitive('TEMPLATE'),
-      caseInsensitive('INZ'),
-      caseInsensitive('VALUE'),
-      caseInsensitive('CONST'),
-      caseInsensitive('OPTIONS'),
-      caseInsensitive('VARYING'),
-      caseInsensitive('ASCEND'),
-      caseInsensitive('DESCEND'),
-      caseInsensitive('ALT'),
-      caseInsensitive('DTAARA'),
-      caseInsensitive('SDS'),
-      caseInsensitive('PSDS'),
-      caseInsensitive('STATIC'),
-      caseInsensitive('AUTOMATIC'),
-      caseInsensitive('EXPORT'),
-      caseInsensitive('IMPORT'),
-      caseInsensitive('EXTPROC'),
-      caseInsensitive('PROC'),
-      caseInsensitive('PROCPTR'),
-      caseInsensitive('NOPASS'),
-      caseInsensitive('PASS'),
-      caseInsensitive('ALIGN'),
-      caseInsensitive('NOALIGN'),
-      // caseInsensitive('INT'),
-      // caseInsensitive('UNS'),
-      // caseInsensitive('PACKED'),
-      // caseInsensitive('ZONED'),
-      // caseInsensitive('FLOAT'),
-      caseInsensitive('REAL'),
-      // caseInsensitive('IND'),
-      // caseInsensitive('DATE'),
-      // caseInsensitive('TIME'),
-      // caseInsensitive('TIMESTAMP'),
-      // caseInsensitive('GRAPH'),
-      // caseInsensitive('UCS2'),
-      // caseInsensitive('VARGRAPH'),
-      // caseInsensitive('VARCHAR'),
-      // caseInsensitive('VARUCS2'),
-      // caseInsensitive('POINTER'),
-      // caseInsensitive('OBJECT'),
-      caseInsensitive('SQLTYPE'),
-      caseInsensitive('DATFMT'),
-      caseInsensitive('TIMFMT'),
-      caseInsensitive('CCSID'),
-      caseInsensitive('INTDATE'),
-      caseInsensitive('INTTIME'),
       caseInsensitive('ALIAS'),
-      caseInsensitive('QUAL'),
-      caseInsensitive('OCCURS'),
-      caseInsensitive('LEN'),
-      caseInsensitive('PROC'),
-      caseInsensitive('EXTPGM'),
-      caseInsensitive('ENTRY'),
-      caseInsensitive('OPTIONS'),
+      seq(caseInsensitive('ALIGN'), optional(seq('(', caseInsensitive('*FULL'), ')', ))),
+      seq(caseInsensitive('ALT'), '(', $.identifier, ')', ),
+      seq(caseInsensitive('ALTSEQ'), '(', caseInsensitive('*NONE'),')',),
+      caseInsensitive('ASCEND'), 
+      seq(caseInsensitive('BASED'), '(', $.identifier, ')', ),
+      seq(caseInsensitive('BINDEC'), '(', $.number, optional(seq(':', $.number)), ')',),
+      seq(caseInsensitive('CHAR'), '(', $.number, ')', ),
+      seq(caseInsensitive('CCSID'), '(', 
+        choice( 
+          caseInsensitive('*EXACT'), 
+          seq(caseInsensitive('*CHAR'), ':', choice(caseInsensitive('*JOBRUN'), caseInsensitive('*JOBRUNMIX'), caseInsensitive('*UTF8'), caseInsensitive('*HEX'), $.number)), 
+          seq(caseInsensitive('*GRAPH'), ':',  choice(caseInsensitive('*JOBRUN'), caseInsensitive('*SRC'), caseInsensitive('*HEX'), caseInsensitive('*IGNORE'), $.number)), 
+          seq(caseInsensitive('*UCS2'), ':',  choice(caseInsensitive('*UTF16'), $.number)),), 
+        ')', ),
+      seq(caseInsensitive('CLASS'), '(', caseInsensitive('*JAVA'), ':', choice($.special_value, $.string), ')'),
+
+      // TODO: When specifying the value of a named constant, the CONST keyword itself is optional. That is, the constant value can be specified with or without the CONST keyword.
+      //       Hence, Need to check that constants have their type defined correctly in cases with and without CONST
+      seq(caseInsensitive('CONST'), optional(seq('(', choice($.number, $.identifier, $.string, $.builtin), ')'))),
+
+      caseInsensitive('CTDATA'), 
+      seq(caseInsensitive('DATE'), optional(seq('(', choice($.special_value, choice('/','-',',','.','&')), ')'))),
+      seq(caseInsensitive('DATFMT'), '(', $.special_value, optional(choice('/','.',',','&')), ')',),
+      caseInsensitive('DESCEND'), 
+      caseInsensitive('DFT'),
+      seq(caseInsensitive('DIM'), '(', optional(choice(seq(choice(caseInsensitive('*AUTO'), caseInsensitive('*VAR')), ':', choice($.identifier, $.number, $.builtin)), caseInsensitive('*CTDATA'))), ')',),
+      // NOTE: DTAARA has different defs between dcl-s/sub-f and dcl-ds. also different on fixed-form.
+      seq(caseInsensitive('DTAARA'), optional(seq('(', colonSep(choice($.identifier, $.string, caseInsensitive('*AUTO'), caseInsensitive('*USRCTL'))), ')', ))),
+      seq(caseInsensitive('EXPORT'), optional(seq('(', choice($.identifier, $.string), ')',))),
+      caseInsensitive('EXT'), 
+      seq(caseInsensitive('EXTFLD'), optional(seq('(', choice($.identifier, $.string), ')',))),
+      seq(caseInsensitive('EXTFMT'), '(', choice(
+        caseInsensitive('B'), 
+        caseInsensitive('C'), 
+        caseInsensitive('I'), 
+        caseInsensitive('L'), 
+        caseInsensitive('R'), 
+        caseInsensitive('P'), 
+        caseInsensitive('S'), 
+        caseInsensitive('U'), 
+        caseInsensitive('F'), 
+      ), ')', ),
+      seq(caseInsensitive('EXTNAME'), '(', choice($.identifier, $.string), optional(choice(seq(':',choice($.identifier, $.string)),seq(':',choice(caseInsensitive('*ALL'), caseInsensitive('*INPUT'), caseInsensitive('*OUTPUT'), caseInsensitive('*KEY'), caseInsensitive('*NULL'))))), ')',),
+      seq(caseInsensitive('EXTPGM'), optional(seq('(', choice($.identifier, $.string), ')',))),
+      seq(caseInsensitive('EXTPROC'), optional(seq('(', choice(
+        seq(caseInsensitive('*CL'), ':'),
+        seq(caseInsensitive('*CWIDEN'), ':'),
+        seq(caseInsensitive('*CNOWIDEN'), ':'),
+        seq(caseInsensitive('*JAVA'), ':', choice($.identifier, $.string), ':'),
+      ), choice(caseInsensitive('*DCLCASE'), $.identifier, $.string), ')', ))),
+      seq(caseInsensitive('FLOAT'), '(', $.number, ')', ),
+      seq(caseInsensitive('FROMFILE'), '(', $.identifier, ')', ),
+      seq(caseInsensitive('GRAPH'), '(', $.number, ')', ),
+      seq(caseInsensitive('IMPORT'), optional(seq('(', choice($.identifier, $.string), ')',))),
+      caseInsensitive('IND'), 
+      seq(caseInsensitive('INT'), '(', $.number, ')', ),
+      seq(caseInsensitive('INZ'), optional(seq('(', choice($.identifier, $.string, $.number), ')'))),
+      seq(caseInsensitive('LEN'), '(', $.number, ')', ),
+      seq(caseInsensitive('LIKE'), '(', choice($.identifier, $.string), optional(seq(':', choice('+', '-'), $.number,)), ')', ),
+      seq(caseInsensitive('LIKEDS'), '(', $.identifier, ')', ),
+      seq(caseInsensitive('LIKEFILE'), '(', choice($.identifier, $.string), ')', ),
+      seq(caseInsensitive('LIKEREC'), '(', choice($.identifier, $.string), optional(seq(':', choice($.identifier, $.string))), ')',),
+      caseInsensitive('NOOPT'), 
+      seq(caseInsensitive('NULLIND'), '(', $.identifier, ')',),
+      seq(caseInsensitive('OCCURS'), '(', $.number, ')', ),
+      caseInsensitive('OPDESC'), 
+      seq(caseInsensitive('OBJECT'), optional(seq('(', caseInsensitive('*JAVA'), optional(colonSep(choice($.special_value, $.string))), ')'))),
+      seq(caseInsensitive('OPTIONS'), '(', colonSep(choice(caseInsensitive('*NOPASS'), caseInsensitive('*OMIT'), caseInsensitive('*VARSIZE'), caseInsensitive('*EXACT'), caseInsensitive('*STRING'), caseInsensitive('*TRIM'), caseInsensitive('*RIGHTADJ'), caseInsensitive('*NULLIND'), caseInsensitive('*CONVERT'))), ')', ),
+      seq(caseInsensitive('OVERLAY'), '(', $.identifier, optional(seq(':', choice($.number, caseInsensitive('*NEXT')))), ')',),
+      seq(caseInsensitive('OVERLOAD'), '(', colonSep($.identifier), ')'),
+      seq(caseInsensitive('PACKED'), '(', $.number,  optional(seq(':', $.number)), ')'),
+      caseInsensitive('PACKEVEN'), 
+      seq(caseInsensitive('PERRCD'), '(', $.number, ')', ),
+      seq(caseInsensitive('POINTER'), optional(seq('(', caseInsensitive('*PROC'), ')',))),
+      seq(caseInsensitive('POS'), '(', choice($.number, $.identifier), ')', ),
+      //
+      // TODO: Cater for PREFIX in GOTO Def requests
+      seq(caseInsensitive('PREFIX'), '(', choice($.identifier, $.string), optional(seq(':', $.number)), ')',),
+      caseInsensitive('PROCPTR'), 
+      caseInsensitive('PSDS'), 
+      caseInsensitive('QUALIFIED'), 
+      seq(caseInsensitive('REQPROTO'), '(', caseInsensitive('*NO'), ')', ),
+      caseInsensitive('RTNPARM'), 
+      seq(caseInsensitive('SAMEPOS'), '(', $.identifier, ')', ),
+      seq(caseInsensitive('STATIC'), optional(seq('(', caseInsensitive('*ALLTHREAD'), ')',))),
+      caseInsensitive('TEMPLATE'), 
+      seq(caseInsensitive('TIME'), optional(seq('(', choice($.special_value, choice(':','.',',','&')), ')'))),
+      seq(caseInsensitive('TIMESTAMP'), optional(seq('(', $.number, ')'))),
+      seq(caseInsensitive('TIMFMT'), '(', $.special_value, optional(choice(':','.',',','&')), ')',),
+      seq(caseInsensitive('TOFILE'), '(', choice($.identifier, $.string), ')', ),
+      seq(caseInsensitive('UCS2'), '(', $.number, ')', ),
+      seq(caseInsensitive('UNS'), '(', $.number, ')', ),
+      caseInsensitive('VALUE'), 
+      seq(caseInsensitive('VARCHAR'), '(', choice($.identifier, $.number), optional(seq(':', choice('2', '4'))), ')'),
+      seq(caseInsensitive('VARGRAPH'), '(', choice($.identifier, $.number), optional(seq(':', choice('2', '4'))), ')'),
+      seq(caseInsensitive('VARUCS2'), '(', choice($.identifier, $.number), optional(seq(':', choice('2', '4'))), ')'),
+      seq(caseInsensitive('VARYING'), '(', choice('2', '4'), ')'),
+      seq(caseInsensitive('ZONED'), '(', $.number, optional(seq(':', $.number)),')',),
     ),
 
     keyword_p_spec: $ => choice($.special_value, 'TODO:'),
