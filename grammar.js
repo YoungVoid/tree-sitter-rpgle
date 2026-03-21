@@ -151,7 +151,7 @@ export default grammar({
     ds_subfield: $ => seq(
       optional(alias(ci('dcl-subf'), $.keyword)),
       field('name', $.identifier),
-      optional(field('type', $.type_expression)),
+      optional(field('type', choice($.type_expression, $.psds_types))),
       repeat($.keyword),
       ';'
     ),
@@ -492,6 +492,10 @@ export default grammar({
       $.qualified_type
     )),
 
+    psds_types: $ => choice(
+      ci('*PROC'), ci('*STATUS'), ci('*ROUTINE'), ci('*PARAMS')
+    ),
+
     // Qualified Type for external defined like
     //    `dcl-s customer likeds(CustomerDS);`
     //    `dcl-s obj object(*JAVA:com.example.MyClass);`
@@ -506,10 +510,10 @@ export default grammar({
         ')'
     ),
 
-    type_expression: $ => choice(
-      $.builtin_type,
-      $.qualified_type
-    ),
+    // type_expression: $ => choice(
+    //   $.builtin_type,
+    //   $.qualified_type
+    // ),
 
     builtin_type: $ => choice(
       $.char_type,

@@ -411,8 +411,17 @@
               "type": "FIELD",
               "name": "type",
               "content": {
-                "type": "SYMBOL",
-                "name": "type_expression"
+                "type": "CHOICE",
+                "members": [
+                  {
+                    "type": "SYMBOL",
+                    "name": "type_expression"
+                  },
+                  {
+                    "type": "SYMBOL",
+                    "name": "psds_types"
+                  }
+                ]
               }
             },
             {
@@ -2271,15 +2280,40 @@
       }
     },
     "type_expression": {
+      "type": "PREC",
+      "value": 2,
+      "content": {
+        "type": "CHOICE",
+        "members": [
+          {
+            "type": "SYMBOL",
+            "name": "builtin_type"
+          },
+          {
+            "type": "SYMBOL",
+            "name": "qualified_type"
+          }
+        ]
+      }
+    },
+    "psds_types": {
       "type": "CHOICE",
       "members": [
         {
-          "type": "SYMBOL",
-          "name": "builtin_type"
+          "type": "PATTERN",
+          "value": "\\*[pP][rR][oO][cC]"
         },
         {
-          "type": "SYMBOL",
-          "name": "qualified_type"
+          "type": "PATTERN",
+          "value": "\\*[sS][tT][aA][tT][uU][sS]"
+        },
+        {
+          "type": "PATTERN",
+          "value": "\\*[rR][oO][uU][tT][iI][nN][eE]"
+        },
+        {
+          "type": "PATTERN",
+          "value": "\\*[pP][aA][rR][aA][mM][sS]"
         }
       ]
     },

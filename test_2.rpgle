@@ -1,2 +1,3 @@
-dow not ExitKey and not PreviousKey;
-enddo;
+dcl-ds ProgStatus PSDS;
+  PgmName *PROC;
+end-ds;

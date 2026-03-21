@@ -551,6 +551,10 @@
         "required": false,
         "types": [
           {
+            "type": "psds_types",
+            "named": true
+          },
+          {
             "type": "type_expression",
             "named": true
           }
@@ -1065,6 +1069,11 @@
         }
       ]
     }
+  },
+  {
+    "type": "psds_types",
+    "named": true,
+    "fields": {}
   },
   {
     "type": "qualified_type",
