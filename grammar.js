@@ -146,6 +146,7 @@ export default grammar({
       alias(ci('dcl-ds'), $.keyword),
       optional(field('name', $.identifier)),
       repeat($.keyword),
+      optional(alias(ci('end-ds'), $.keyword)),
       ';'
     ),
 
@@ -177,11 +178,17 @@ export default grammar({
       alias(ci('dcl-pr'), $.keyword),
       field('name', $.identifier),
       repeat($.keyword),
+      optional(alias(ci('end-pr'), $.keyword)),
       ';'
     ),
 
     // --- Procedure Interface ---
-    dcl_pi: $ => seq(
+    dcl_pi: $ => choice(
+      $.dcl_pi_block,
+      $.dcl_pi_inline
+    ),
+
+    dcl_pi_block: $ => seq(
       alias(ci('dcl-pi'), $.keyword),
       field('name', choice($.identifier, $.anonymous_name)),
       repeat($.keyword),
@@ -190,6 +197,14 @@ export default grammar({
       alias(ci('end-pi'), $.keyword),
       optional(choice($.identifier, $.anonymous_name)),
       ';'
+    ),
+
+    dcl_pi_inline: $ => seq(
+      alias(ci('dcl-pi'), $.keyword),
+      field('name', choice($.identifier, $.anonymous_name)),
+      repeat($.keyword),
+      alias(ci('end-pi'), $.keyword),
+      ';',
     ),
 
     parameter: $ => seq(

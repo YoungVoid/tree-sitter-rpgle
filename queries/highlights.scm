@@ -53,7 +53,10 @@
 (dcl_pr_inline
   name: (identifier) @function)
 
-(dcl_pi
+(dcl_pi_block
+  name: (identifier) @function)
+
+(dcl_pi_inline
   name: (identifier) @function)
 
 (procedure

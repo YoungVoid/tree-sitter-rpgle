@@ -317,6 +317,25 @@
   {
     "type": "dcl_pi",
     "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "dcl_pi_block",
+          "named": true
+        },
+        {
+          "type": "dcl_pi_inline",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "dcl_pi_block",
+    "named": true,
     "fields": {
       "name": {
         "multiple": false,
@@ -351,6 +370,36 @@
         },
         {
           "type": "parameter",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "dcl_pi_inline",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "anonymous_name",
+            "named": true
+          },
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword",
           "named": true
         }
       ]
