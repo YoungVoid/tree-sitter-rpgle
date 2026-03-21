@@ -40,10 +40,6 @@
         {
           "type": "SYMBOL",
           "name": "statement"
-        },
-        {
-          "type": "SYMBOL",
-          "name": "embedded_sql"
         }
       ]
     },
@@ -54,37 +50,6 @@
         "type": "PATTERN",
         "value": "\\*\\*[fF][rR][eE][eE]"
       }
-    },
-    "embedded_sql": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "ALIAS",
-          "content": {
-            "type": "SEQ",
-            "members": [
-              {
-                "type": "PATTERN",
-                "value": "[eE][xX][eE][cC]"
-              },
-              {
-                "type": "PATTERN",
-                "value": "[sS][qQ][lL]"
-              }
-            ]
-          },
-          "named": true,
-          "value": "keyword"
-        },
-        {
-          "type": "PATTERN",
-          "value": "[^;]+"
-        },
-        {
-          "type": "STRING",
-          "value": ";"
-        }
-      ]
     },
     "compiler_directive": {
       "type": "TOKEN",
@@ -888,6 +853,10 @@
         {
           "type": "SYMBOL",
           "name": "if_statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "embedded_sql_statement"
         }
       ]
     },
@@ -1304,11 +1273,23 @@
                     "value": "keyword"
                   },
                   {
+                    "type": "CHOICE",
+                    "members": [
+                      {
+                        "type": "SYMBOL",
+                        "name": "keyword_argument"
+                      },
+                      {
+                        "type": "BLANK"
+                      }
+                    ]
+                  },
+                  {
                     "type": "FIELD",
                     "name": "condition",
                     "content": {
                       "type": "SYMBOL",
-                      "name": "keyword_argument"
+                      "name": "expression"
                     }
                   },
                   {
@@ -1746,6 +1727,37 @@
       "named": true,
       "value": "keyword"
     },
+    "embedded_sql_statement": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "PATTERN",
+                "value": "[eE][xX][eE][cC]"
+              },
+              {
+                "type": "PATTERN",
+                "value": "[sS][qQ][lL]"
+              }
+            ]
+          },
+          "named": true,
+          "value": "keyword"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[^;]+"
+        },
+        {
+          "type": "STRING",
+          "value": ";"
+        }
+      ]
+    },
     "keyword": {
       "type": "PREC_RIGHT",
       "value": 0,
@@ -1871,29 +1883,33 @@
       ]
     },
     "parenthesized_expression": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "STRING",
-          "value": "("
-        },
-        {
-          "type": "CHOICE",
-          "members": [
-            {
-              "type": "SYMBOL",
-              "name": "expression"
-            },
-            {
-              "type": "BLANK"
-            }
-          ]
-        },
-        {
-          "type": "STRING",
-          "value": ")"
-        }
-      ]
+      "type": "PREC",
+      "value": 2,
+      "content": {
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "STRING",
+            "value": "("
+          },
+          {
+            "type": "CHOICE",
+            "members": [
+              {
+                "type": "SYMBOL",
+                "name": "expression"
+              },
+              {
+                "type": "BLANK"
+              }
+            ]
+          },
+          {
+            "type": "STRING",
+            "value": ")"
+          }
+        ]
+      }
     },
     "binary_expression": {
       "type": "CHOICE",

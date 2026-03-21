@@ -573,7 +573,7 @@
     }
   },
   {
-    "type": "embedded_sql",
+    "type": "embedded_sql_statement",
     "named": true,
     "fields": {},
     "children": {
@@ -1169,10 +1169,6 @@
           "named": true
         },
         {
-          "type": "embedded_sql",
-          "named": true
-        },
-        {
           "type": "file_spec",
           "named": true
         },
@@ -1201,6 +1197,10 @@
       "types": [
         {
           "type": "do_loop_statement",
+          "named": true
+        },
+        {
+          "type": "embedded_sql_statement",
           "named": true
         },
         {
@@ -1426,7 +1426,7 @@
         "required": false,
         "types": [
           {
-            "type": "keyword_argument",
+            "type": "expression",
             "named": true
           }
         ]
@@ -1453,11 +1453,15 @@
       }
     },
     "children": {
-      "multiple": false,
+      "multiple": true,
       "required": true,
       "types": [
         {
           "type": "keyword",
+          "named": true
+        },
+        {
+          "type": "keyword_argument",
           "named": true
         }
       ]

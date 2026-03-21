@@ -62,17 +62,11 @@ export default grammar({
       $.definition,
       $.procedure,
       $.statement,
-      $.embedded_sql,
     ),
 
 
     fully_free: $ => prec.left(5,/\*\*[fF][rR][eE][eE]/),
 
-    embedded_sql: $ => seq(
-        alias(seq(ci('EXEC'), ci('SQL')), $.keyword),
-       /[^;]+/,
-      ';',
-    ),
 
     // =====================
     // Compiler Directives
@@ -236,6 +230,7 @@ export default grammar({
       $.when_statement,
       $.other_statement,
       $.if_statement,
+      $.embedded_sql_statement,
     ),
 
     block: $ => prec.right(seq(
@@ -301,7 +296,7 @@ export default grammar({
 
     when_statement: $ => prec.right(seq(
       choice(
-        seq(alias(ci('WHEN'), $.keyword), field('condition', $.keyword_argument), ';'),
+        seq(alias(ci('WHEN'), $.keyword), optional($.keyword_argument), field('condition', $.expression), ';'),
         seq(alias(choice(ci('WHEN-IS'),ci('WHEN-IN')), $.keyword), field('value', $.expression), ';'),
       ),
       optional(field('consequence', $.block)),
@@ -395,6 +390,14 @@ export default grammar({
     )
       , $.keyword),
 
+
+    embedded_sql_statement: $ => seq(
+        alias(seq(ci('EXEC'), ci('SQL')), $.keyword),
+       /[^;]+/,
+      ';',
+    ),
+
+
     // =========================================================
     // KEYWORDS (shared across specs)
     // =========================================================
@@ -432,11 +435,11 @@ export default grammar({
       $.parenthesized_expression
     ),
 
-    parenthesized_expression: $ => seq(
+    parenthesized_expression: $ => prec(2,seq(
       '(',
       optional($.expression),
       ')'
-    ),
+    )),
 
     // Copied from tree-sitter-go
     binary_expression: $ => {
