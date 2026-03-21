@@ -1,3 +1,10 @@
-dcl-ds csz_a likeds(csz) dim(*auto : 50000) ;
-dcl-ds csz_b  dim(*auto : 50000) end-ds;
-dcl-s test char(10);
+dcl-ds vs qualified;
+	s1 char(3) inz('  ');
+	*n char(3) inz(SP0);
+	*n char(3) inZ(SP1);
+	*n char(3) inZ(SP2);
+	*n char(3) inZ(SP3);
+	validSpaces char(3) dim(5) samepos(s1);
+end-ds;
+
+if (%trim(ctlValues(2)) in vs.validSpaces);

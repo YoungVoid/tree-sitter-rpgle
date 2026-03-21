@@ -37,7 +37,15 @@
             "named": false
           },
           {
+            "type": "*=",
+            "named": false
+          },
+          {
             "type": "+",
+            "named": false
+          },
+          {
+            "type": "+=",
             "named": false
           },
           {
@@ -45,7 +53,15 @@
             "named": false
           },
           {
+            "type": "-=",
+            "named": false
+          },
+          {
             "type": "/",
+            "named": false
+          },
+          {
+            "type": "/=",
             "named": false
           },
           {
@@ -633,6 +649,10 @@
         "multiple": false,
         "required": true,
         "types": [
+          {
+            "type": "anonymous_name",
+            "named": true
+          },
           {
             "type": "identifier",
             "named": true
@@ -1581,11 +1601,23 @@
     "named": false
   },
   {
+    "type": "*=",
+    "named": false
+  },
+  {
     "type": "+",
     "named": false
   },
   {
+    "type": "+=",
+    "named": false
+  },
+  {
     "type": "-",
+    "named": false
+  },
+  {
+    "type": "-=",
     "named": false
   },
   {
@@ -1594,6 +1626,10 @@
   },
   {
     "type": "/",
+    "named": false
+  },
+  {
+    "type": "/=",
     "named": false
   },
   {

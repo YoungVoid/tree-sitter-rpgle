@@ -35,8 +35,8 @@ const PREC = {
   composite_literal: -1,
 };
 
-const multiplicativeOperators = ['*', '/'];
-const additiveOperators = ['+', '-'];
+const multiplicativeOperators = ['*', '/', '*=', '/='];
+const additiveOperators = ['+', '-', '+=', '-='];
 const comparativeOperators = ['=', '<>', '<', '<=', '>', '>='];
 
 export default grammar({
@@ -169,7 +169,7 @@ export default grammar({
 
     ds_subfield: $ => seq(
       optional(alias(ci('dcl-subf'), $.keyword)),
-      field('name', $.identifier),
+      field('name', choice($.identifier, $.anonymous_name)),
       optional(field('type', choice($.type_expression, $.psds_types))),
       repeat($.keyword),
       ';'
@@ -500,7 +500,7 @@ export default grammar({
     )),
 
     operator: $ => choice(
-      '+', '-', '*', '/', '=', '<>', '<', '>', '<=', '>=', ci('IN'), ci('NOT'), ci('AND'), ci('OR')
+      '+', '-', '*', '/','+=', '-=', '*=', '/=', '=', '<>', '<', '>', '<=', '>=', ci('IN'), ci('NOT'), ci('AND'), ci('OR')
     ),
 
     // --- Function Call ---
