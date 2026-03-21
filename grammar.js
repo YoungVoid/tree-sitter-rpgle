@@ -7,7 +7,9 @@
 /// <reference types="tree-sitter-cli/dsl" />
 // @ts-check
 
-function caseInsensitive(word) {
+  
+// --- Case-insensitive helper ---
+function ci(word) {
   return new RegExp(
     word
       .split('')
@@ -15,27 +17,13 @@ function caseInsensitive(word) {
         if (/[a-zA-Z]/.test(char)) {
           return `[${char.toLowerCase()}${char.toUpperCase()}]`;
         }
-        // Escape special regex characters
         return char.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
       })
       .join('')
   );
-}
+};
 
-
-function commaSep(rule) {
-  return optional(seq(rule, repeat(seq(',', rule))));
-}
-
-function colonSep(rule) {
-  return optional(seq(rule, repeat(seq(':', rule))));
-}
-
-function periodSep(rule) {
-  return optional(seq(rule, repeat(seq('.', rule))));
-}
-
-// Copied: https://github.com/tree-sitter/tree-sitter-go/blob/master/grammar.js#L32
+// Copied from tree-sitter-go: https://github.com/tree-sitter/tree-sitter-go/blob/master/grammar.js#L11
 const PREC = {
   primary: 7,
   unary: 6,
@@ -47,87 +35,37 @@ const PREC = {
   composite_literal: -1,
 };
 
-// TODO: Check these lists, whether they are correct for RPGLE
-const multiplicativeOperators = ['*', '/', '%', '<<', '>>', '&', '&^'];
-const additiveOperators = ['+', '-', '|', '^'];
+const multiplicativeOperators = ['*', '/'];
+const additiveOperators = ['+', '-'];
 const comparativeOperators = ['=', '<>', '<', '<=', '>', '>='];
-const assignmentOperators = multiplicativeOperators.concat(additiveOperators).map(operator => operator + '=').concat('=');
-
-const open_block = [
-  caseInsensitive('if'),
-  caseInsensitive('select'),
-  caseInsensitive('dow'),
-  caseInsensitive('dou'),
-  caseInsensitive('for'),
-  caseInsensitive('monitor'),
-  caseInsensitive('dcl-proc'),
-  caseInsensitive('dcl-pr'),
-  caseInsensitive('dcl-pi'),
-  caseInsensitive('dcl-ds'),
-  caseInsensitive('dcl-enum')
-];
-
-const close_block = [
-  caseInsensitive('endif'),
-  caseInsensitive('endsl'),
-  caseInsensitive('enddo'),
-  caseInsensitive('endfor'),
-  caseInsensitive('endmon'),
-  caseInsensitive('end-proc'),
-  caseInsensitive('end-pr'),
-  caseInsensitive('end-pi'),
-  caseInsensitive('end-ds'),
-  caseInsensitive('end-enum')
-];
 
 export default grammar({
-  name: "rpgle",
+  name: 'rpgle',
 
-  extras: ($) => [
-    /\s+/, // whitespace
-    $.comment,
+  extras: $ => [
+    /\s/,
+    $.comment
   ],
-
 
   word: $ => $.identifier,
 
-
-  conflicts: $ => [
-    //[$.identifier, $.builtin]
-  ],
-
   rules: {
 
-    source_file: $ => seq(
-      optional($.fully_free),
-      repeat($._statement)
-    ),
+    // --- ROOT ---
+    source_file: $ => repeat($._top_level),
 
-    // =====================
-    // Core Statements
-    // =====================
-
-    _statement: $ => choice(
-      $.ctl_opt,
-      $.declaration,
-      $.procedure,
-      $.assignment,
-      $.if_statement,
-      $.select_statement,
-      $.dow_loop,
-      $.dou_loop,
-      $.for_loop,
-      $.monitor_block,
-      $.return_statement,
-      $.call_statement,
-      $.sql_block,
+    _top_level: $ => choice(
+      $.fully_free,
       $.compiler_directive,
-      $.native_operand_statement,
-      $.expression_statement
+      $.control_spec,
+      $.file_spec,
+      $.definition,
+      $.procedure,
+      $.statement
     ),
 
 
-    fully_free: $ => prec.left(2,/\*\*[fF][rR][eE][eE]/),
+    fully_free: $ => prec.left(5,/\*\*[fF][rR][eE][eE]/),
 
     // =====================
     // Compiler Directives
@@ -139,710 +77,559 @@ export default grammar({
       /.*/
     )),
 
-    // =====================
-    // H-Spec
-    // Control Options
-    // https://www.ibm.com/docs/en/i/7.6.0?topic=specifications-control
-    // =====================
-
-    ctl_opt: $ => prec.right(2, seq(
-      caseInsensitive('ctl-opt'),
-      repeat(seq($.keyword_h_spec,)),
+    // =========================================================
+    // H-SPEC (ctl-opt)
+    // =========================================================
+    control_spec: $ => seq(
+      alias(ci('ctl-opt'), $.keyword),
+      repeat($.keyword),
       ';'
-    )),
+    ),
 
-    // =====================
-    // Declarations
-    // =====================
+    // =========================================================
+    // F-SPEC (dcl-f)
+    // =========================================================
+    file_spec: $ => seq(
+      alias(ci('dcl-f'), $.keyword),
+      field('name', $.identifier),
+      repeat($.keyword),
+      ';'
+    ),
 
-    declaration: $ => choice(
-      $.dcl_f,
+    // =========================================================
+    // D-SPEC (definitions)
+    // =========================================================
+    definition: $ => choice(
       $.dcl_s,
+      $.dcl_c,
       $.dcl_ds,
       $.dcl_pr,
-      $.dcl_pi
+      $.dcl_pi,
+      //TODO: dcl-enum,
     ),
-    
-    dcl_f: $ => seq(
-      caseInsensitive('dcl-f'),
-      $.identifier,
-      repeat($.keyword_f_spec),
-      ';'
-    ),
-
 
     dcl_s: $ => seq(
-      caseInsensitive('dcl-s'),
-      $.identifier,
-      optional($.type),
-      repeat($.keyword_d_spec),
+      alias(ci('dcl-s'), $.keyword),
+      field('name', $.identifier),
+      optional(field('type', $.type_expression)),
+      repeat($.keyword),
       ';'
     ),
 
-    // BUG: Just wandering if niche case theres dcl-ds and double semi colon without an end-ds,
-    // if it will see the second ; as part of the dcl-ds? should, with the way it is set up now...
-    // happens a few times, ie with dcl-pr as well.
-    dcl_ds: $ => prec.right(choice(
-      // 
-      seq(
-        token(prec(2, caseInsensitive('dcl-ds'))),
-        $.identifier,
-        repeat($.keyword_d_spec),
-        ';',
-        optional(repeat($.field_declaration)),
-        optional(seq(
-          token(caseInsensitive('end-ds')),
-          optional($.field_reference),
-          ';'
-        )),
-      ),
-    )),
-
-    field_declaration: $ => seq(
-      $.identifier,
-      $.type,
-      repeat($.keyword_d_spec),
+    dcl_c: $ => seq(
+      alias(ci('dcl-c'), $.keyword),
+      field('name', $.identifier),
+      repeat($.expression),
       ';'
     ),
 
-    dcl_pr: $ => seq(
-      caseInsensitive('dcl-pr'),
-      $.identifier,
-      repeat($.keyword_d_spec),
+    // --- Data Structure ---
+    dcl_ds: $ => choice(
+      // TODO: alias the ds_block to block? consider recursive inside dcl_ds_block - they all need to be alias'd
+      $.dcl_ds_block,
+      $.dcl_ds_inline
+    ),
+
+    dcl_ds_block: $ => prec(2,seq(
+      alias(ci('dcl-ds'), $.keyword),
+      optional(field('name', $.identifier)),
+      repeat($.keyword),
       ';',
-      repeat($.parameter),
-      caseInsensitive('end-pr'),
+      repeat(choice($.ds_subfield, $.dcl_ds_block)),
+      alias(ci('end-ds'), $.keyword),
       optional($.identifier),
       ';'
+    )),
+
+    dcl_ds_inline: $ => seq(
+      alias(ci('dcl-ds'), $.keyword),
+      optional(field('name', $.identifier)),
+      repeat($.keyword),
+      ';'
     ),
 
-    dcl_pi: $ => seq(
-      caseInsensitive('dcl-pi'),
-      choice($.identifier, '*n', '*N'),
-      optional($.type),
-      repeat($.keyword_d_spec),
+    ds_subfield: $ => seq(
+      optional(alias(ci('dcl-subf'), $.keyword)),
+      field('name', $.identifier),
+      optional(field('type', $.type_expression)),
+      repeat($.keyword),
+      ';'
+    ),
+
+    // --- Prototype ---
+    dcl_pr: $ => choice(
+      $.dcl_pr_block,
+      $.dcl_pr_inline
+    ),
+
+    dcl_pr_block: $ => prec(2,seq(
+      alias(ci('dcl-pr'), $.keyword),
+      field('name', $.identifier),
+      repeat($.keyword),
       ';',
-      repeat($.parameter),
-      caseInsensitive('end-pi'),
-      optional(choice($.identifier, '*n', '*N')),
+      repeat($.parameter), 
+      alias(ci('end-pr'), $.keyword),
+      ';'
+    )),
+
+    dcl_pr_inline: $ => seq(
+      alias(ci('dcl-pr'), $.keyword),
+      field('name', $.identifier),
+      repeat($.keyword),
+      ';'
+    ),
+
+    // --- Procedure Interface ---
+    dcl_pi: $ => seq(
+      alias(ci('dcl-pi'), $.keyword),
+      field('name', choice($.identifier, $.anonymous_name)),
+      repeat($.keyword),
+      ';',
+      repeat($.parameter), 
+      alias(ci('end-pi'), $.keyword),
+      optional(choice($.identifier, $.anonymous_name)),
       ';'
     ),
 
     parameter: $ => seq(
-      $.field_reference,
-      optional($.type),
-      repeat($.keyword_d_spec),
+      optional(alias(ci('dcl-parm'), $.keyword)),
+      field('name', choice($.identifier, $.anonymous_name)),
+      optional(field('type', $.type_expression)),
+      repeat($.keyword),
       ';'
     ),
 
+    // =========================================================
+    // P-SPEC (procedures)
+    // =========================================================
     procedure: $ => seq(
-      caseInsensitive('dcl-proc'),
-      $.identifier,
-      repeat($.keyword_p_spec),
+      alias(ci('dcl-proc'), $.keyword),
+      field('name', choice($.identifier, $.anonymous_name)),
+      repeat($.keyword),
       ';',
-      repeat($._statement),
-      caseInsensitive('end-proc'),
-      optional($.identifier),
+      repeat(choice(
+        $.statement,
+        $.definition,
+        $.procedure,
+      )),
+      alias(ci('end-proc'), $.keyword),
+      optional(choice($.identifier, $.anonymous_name)),
       ';'
     ),
 
-    // =====================
-    // Types
-    // =====================
+    // =========================================================
+    // C-SPEC (statements)
+    // =========================================================
+    statement: $ => choice(
+      seq(optional($.opcode), optional($.expression), ';'),
+      $.subr_statement,
+      $.do_loop_statement,
+      $.for_loop_statement,
+      $.select_statement,
+      $.when_statement,
+      $.other_statement,
+      $.if_statement,
+    ),
 
-    type: $ => prec(2, choice(
-      seq(caseInsensitive('BINDEC'), '(', $.number, optional(seq(':', $.number)), ')'),
-      seq(caseInsensitive('CHAR'), '(', $.number, ')'),
-      // seq(caseInsensitive('DATE'), optional(seq('(', choice($.special_value, choice('/','-',',','.','&')), ')'))),
-      seq(caseInsensitive('FLOAT'), '(', $.number, ')'),
-      seq(caseInsensitive('GRAPH'), '(', $.number, ')'),
-      caseInsensitive('IND'),
-      seq(caseInsensitive('INT'), '(', $.number, ')'),
-      seq(caseInsensitive('OBJECT'), optional(seq('(', caseInsensitive('*JAVA'), optional(colonSep(choice($.special_value, $.string))), ')'))),
-      seq(caseInsensitive('PACKED'), '(', $.number, optional(seq(':', $.number)), ')'),
-      seq(caseInsensitive('POINTER'), optional(seq('(', caseInsensitive('*PROC'), ')'))),
-      seq(caseInsensitive('TIME'), optional(seq('(', choice($.special_value, choice(':','.',',','&')), ')'))),
-      seq(caseInsensitive('TIMESTAMP'), optional(seq('(', $.number, ')'))),
-      seq(caseInsensitive('UCS2'), '(', $.number, ')'),
-      seq(caseInsensitive('UNS'), '(', $.number, ')'),
-      seq(caseInsensitive('VARCHAR'), '(', $.number, optional(seq(':', $.number)), ')',),
-      seq(caseInsensitive('VARGRAPH'),'(', $.number, optional(seq(':', $.number)), ')',),
-      seq(caseInsensitive('VARUCS2'),'(', $.number, optional(seq(':', $.number)), ')',),
-      seq(caseInsensitive('ZONED'),'(', $.number, optional(seq(':', $.number)), ')',),
+    block: $ => prec.right(seq(
+      repeat1($.statement),
     )),
-
-
-    // https://www.ibm.com/docs/en/i/7.6.0?topic=specifications-control-specification-keywords
-    keyword_h_spec: $ => choice(
-      seq(caseInsensitive('ACTGRP'), '(', choice(caseInsensitive('*STGMDL'), caseInsensitive('*NEW'), caseInsensitive('*CALLER'), $.string, $.identifier), ')', ),
-      seq(caseInsensitive('ALLOC'), '(', choice(caseInsensitive('*STGMDL'), caseInsensitive('*TERASPACE'), caseInsensitive('*SNGLVL')), ')',),
-      seq(caseInsensitive('ALTSEQ'), optional(seq('(', choice(caseInsensitive('*NONE'), caseInsensitive('*SRC'), caseInsensitive('*EXT')),')'))),
-      seq(caseInsensitive('ALWNULL'), '(', choice(caseInsensitive('*NO'), caseInsensitive('*INPUTONLY'), caseInsensitive('*USRCTL')), ')'),
-      seq(caseInsensitive('AUT'), '(', choice(caseInsensitive('*LIBRCRTAUT'), caseInsensitive('*ALL'), caseInsensitive('*CHANGE'), caseInsensitive('*USE'), caseInsensitive('*EXCLUDE'), $.string, $.identifier),')'),
-      seq(caseInsensitive('BNDDIR'), '(', choice($.string, $.identifier), optional(seq(':', choice($.string, $.identifier))), ')',), 
-      seq(caseInsensitive('COPYNEST'), '(', $.number,')', ),
-      seq(caseInsensitive('CCSID'), '(', 
-        choice( 
-          caseInsensitive('*EXACT'), 
-          seq(caseInsensitive('*CHAR'), ':', choice(caseInsensitive('*JOBRUN'), caseInsensitive('*JOBRUNMIX'), caseInsensitive('*UTF8'), caseInsensitive('*HEX'), $.number)), 
-          seq(caseInsensitive('*GRAPH'), ':',  choice(caseInsensitive('*JOBRUN'), caseInsensitive('*SRC'), caseInsensitive('*HEX'), caseInsensitive('*IGNORE'), $.number)), 
-          seq(caseInsensitive('*UCS2'), ':',  choice(caseInsensitive('*UTF16'), $.number)),), 
-        ')', ),
-      seq(caseInsensitive('CCSIDCVT'), '(', caseInsensitive('*EXCP'), caseInsensitive('*LIST'), ')', ),
-      seq(caseInsensitive('COPYRIGHT'), '(', $.string, ')', ),
-      seq(caseInsensitive('CURSYM'), '(', $.string, ')', ),
-      seq(caseInsensitive('CVTOPT'), '(', colonSep(choice(caseInsensitive('*DATETIME'), caseInsensitive('*NODATETIME'), caseInsensitive('*GRAPHIC'), caseInsensitive('*NOGRAPHIC'), caseInsensitive('*VARCHAR'), caseInsensitive('*NOVARCHAR'), caseInsensitive('*VARGRAPHIC'), caseInsensitive('*NOVARGRAPHIC'))), ')', ),
-      seq(caseInsensitive('DATEDIT'), '(', $.special_value, optional(choice('/','.',',','&')), ')',),
-      seq(caseInsensitive('DATEYY'), '(', choice(caseInsensitive('*ALLOW'), caseInsensitive('*WARN'), caseInsensitive('*NOALLOW')), ')'),
-      seq(caseInsensitive('DATFMT'), '(', $.special_value, optional(choice('/','.',',','&')), ')',),
-      seq(caseInsensitive('DCLOPT'), '(', caseInsensitive('*NOCHGDSLEN'), ')', ),
-      seq(caseInsensitive('DEBUG'), optional(seq('(',colonSep(choice(caseInsensitive('*DUMP'), caseInsensitive('*INPUT'), caseInsensitive('*RETVAL'), caseInsensitive('*XMLSAX'), caseInsensitive('*NO'), caseInsensitive('*YES'))), ')', ))),
-      seq(caseInsensitive('DECEDIT'), '(', choice(caseInsensitive('*JOBRUN'), $.string, $.identifier), ')'),
-      seq(caseInsensitive('DFTACTGRP'), '(', choice(caseInsensitive('*YES'), caseInsensitive('*NO')), ')',),
-      seq(caseInsensitive('DFTNAME'), '(', $.identifier, ')',),
-      seq(caseInsensitive('ENBPFRCOL'), '(', choice(caseInsensitive('*PEP'), caseInsensitive('*ENTRYEXIT'), caseInsensitive('*FULL')), ')', ),
-      seq(caseInsensitive('EXPROPTS'), '(', choice(caseInsensitive('*MAXDIGITS'), caseInsensitive('*RESDECPOS'), caseInsensitive('*ALWBLANKNUM'), caseInsensitive('*USEDECEDIT')), ')',),
-      seq(caseInsensitive('EXTBININT'), optional(seq('(', choice(caseInsensitive('*NO'), caseInsensitive('*YES')),')'))),
-      seq(caseInsensitive('FIXNBR'), '(', colonSep(choice(caseInsensitive('*ZONED'),caseInsensitive('*NOZONED'), caseInsensitive('*INPUTPACKED'), caseInsensitive('*NOINPUTPACKED'))), ')',),
-      seq(caseInsensitive('FLTDIV'), optional(seq('(', choice(caseInsensitive('*NO'), caseInsensitive('*YES')), ')',))),
-      seq(caseInsensitive('FORMSALIGN'), optional(seq('(', choice(caseInsensitive('*NO'), caseInsensitive('*YES')), ')',))),
-      seq(caseInsensitive('FTRANS'), optional(seq('(', choice(caseInsensitive('*NONE'), caseInsensitive('*SRC')), ')',))),
-      seq(caseInsensitive('GENLVL'), '(', $.number,')', ),
-      seq(caseInsensitive('INDENT'), '(', choice(caseInsensitive('*NONE'), $.string, $.identifier), ')', ),
-      seq(caseInsensitive('INTPREC'), '(', $.number, ')', ),
-        seq(caseInsensitive('LANGID'), '(', choice(caseInsensitive('*JOBRUN'), caseInsensitive('*JOB'), $.string, $.identifier), ')', ),
-        seq(caseInsensitive('MAIN'), '(', $.identifier, ')',),
-        seq(caseInsensitive('NOMAIN'), 
-          seq(caseInsensitive('OPENOPT'),  '(', colonSep(choice(caseInsensitive('*INZOFL'),caseInsensitive('*NOINZOFL'), caseInsensitive('*CVTDATA'),caseInsensitive('*NOCVTDATA'))), ')', ),
-          seq(caseInsensitive('OPTIMIZE'), '(', choice(caseInsensitive('*NONE'), caseInsensitive('*BASIC'), caseInsensitive('*FULL')), ')',),
-          seq(caseInsensitive('OPTION'), '(', colonSep(choice(
-            caseInsensitive('*XREF'),caseInsensitive('*NOXREF'),
-            caseInsensitive('*GEN') ,caseInsensitive('*NOGEN') ,
-            caseInsensitive('*SECLVL') ,caseInsensitive('*NOSECLVL') ,
-            caseInsensitive('*SHOWCPY') ,caseInsensitive('*NOSHOWCPY') ,
-            caseInsensitive('*EXPDDS') ,caseInsensitive('*NOEXPDDS') ,
-            caseInsensitive('*EXT') ,caseInsensitive('*NOEXT') ,
-            caseInsensitive('*SHOWSKP'),caseInsensitive('*NOSHOWSKP'),
-            caseInsensitive('*SRCSTMT'),caseInsensitive('*NOSRCSTMT'),
-            caseInsensitive('*DEBUGIO'),caseInsensitive('*NODEBUGIO'),
-            caseInsensitive('*UNREF'),caseInsensitive('*NOUNREF'),
-          )), ')',),
-          seq(caseInsensitive('PRFDTA'), '(', choice(caseInsensitive('*NOCOL'), caseInsensitive('*COL')), ')', ),
-          seq(caseInsensitive('REQPREXP'), '(', choice(caseInsensitive('*NO'), caseInsensitive('*WARN'), caseInsensitive('*REQUIRE')), ')',),
-          seq(caseInsensitive('SRTSEQ'), '(', choice(caseInsensitive('*HEX'), caseInsensitive('*JOB'), caseInsensitive('*JOBRUN'), caseInsensitive('*LANGIDUNQ'), caseInsensitive('*LANGIDSHR'), $.string, $.identifier)), ')',),
-        seq(caseInsensitive('TEXT'), '(', choice(caseInsensitive('*SRCMBRTXT'), caseInsensitive('*BLANK'), $.string, $.identifier), ')',),
-        seq(caseInsensitive('THREAD'), '(', choice(caseInsensitive('*CONCURRENT'), caseInsensitive('*SERIALIZE')), ')'),
-        seq(caseInsensitive('TIMFMT'), '(', $.special_value, optional(choice(':','.',',','&')), ')',),
-        seq(caseInsensitive('TRUNCNBR'), '(', choice(caseInsensitive('*NO'), caseInsensitive('*YES')), ')',),
-        seq(caseInsensitive('USRPRF'), '(', choice(caseInsensitive('*USER'), caseInsensitive('*OWNER')), ')', ),
-        seq(caseInsensitive('VALIDATE'), '(', caseInsensitive('*NODATETIME'), ')', ),
-      ),
-
-
-    keyword_f_spec: $ => choice(
-      caseInsensitive('ALIAS'),
-      seq(caseInsensitive('BLOCK'), '(', choice(caseInsensitive('*YES'), caseInsensitive('*NO')), ')'),
-      seq(caseInsensitive('COMMIT'),optional(seq('(', choice($.identifier, '0', '1'), ')'))),
-      seq(caseInsensitive('CHARCOUNT'), '(', choice(caseInsensitive('*NATURAL'), caseInsensitive('*STDCHARSIZE')), ')', ),
-      seq(caseInsensitive('DATA'),'(', choice(caseInsensitive('*CVT'), caseInsensitive('*NOCVT')), ')', ),
-      seq(caseInsensitive('DATFMT'), '(', $.special_value, optional(choice('/','.',',','&')), ')',),
-      seq(caseInsensitive('DEVID'), '(', $.identifier, ')', ),
-      seq(caseInsensitive('DISK'), optional(seq('(', choice(caseInsensitive('*EXT'), $.identifier, $.literal), ')', ))),
-      seq(caseInsensitive('EXTDESC'),'(', choice($.identifier, $.string), ')',),
-      seq(caseInsensitive('EXTFILE'),'(', choice($.identifier, $.string, caseInsensitive('*EXTDESC')), ')', ),
-      seq(caseInsensitive('EXTIND'),'(', $.indicator, ')', ),
-      seq(caseInsensitive('EXTMBR'),'(', choice($.identifier, $.string), ')',),
-      seq(caseInsensitive('FORMLEN'),'(', $.number, ')', ),
-      seq(caseInsensitive('FORMOFL'),'(', $.number, ')', ),
-      seq(caseInsensitive('HANDLER'),'(', choice($.identifier, $.string), optional($.identifier), ')',),
-      seq(caseInsensitive('IGNORE'),'(', $.identifier, optional(colonSep($.identifier)), ')', ),
-      seq(caseInsensitive('INCLUDE'),'(', $.identifier, optional(colonSep($.identifier)), ')', ),
-      seq(caseInsensitive('INDDS'),'(', $.identifier, ')',),
-      seq(caseInsensitive('INFDS'),'(', $.identifier, ')',),
-      seq(caseInsensitive('INFSR'),'(', $.identifier, ')',),
-      seq(caseInsensitive('KEYED'), optional(seq('(', caseInsensitive('*CHAR'), ':', $.number, ')'))),
-      seq(caseInsensitive('KEYLOC'),'(', $.number, ')'),
-      seq(caseInsensitive('LIKEFILE'),'(', choice($.identifier, $.string), ')',),
-      seq(caseInsensitive('MAXDEV'),'(', choice('*ONLY', '*FILE'), ')'),
-      seq(caseInsensitive('OFLIND'),'(', $.indicator, ')',),
-      seq(caseInsensitive('PASS'),'(', '*NOIND', ')'),
-      seq(caseInsensitive('PGMNAME'),'(', choice($.identifier, $.string), ')',),
-      seq(caseInsensitive('PLIST'),'(', $.identifier, ')',),
-      seq(caseInsensitive('PREFIX'),'(', $.identifier, optional(seq(':', $.number)), ')',),
-      seq(caseInsensitive('PRINTER'),optional(seq('(', choice(caseInsensitive('*EXT'), $.number, $.identifier), ')'))),
-      seq(caseInsensitive('PRTCTL'),'(', $.identifier, optional(seq(':', caseInsensitive('*COMPAT'))), ')',),
-      caseInsensitive('QUALIFIED'),
-      seq(caseInsensitive('RAFDATA'),'(', choice($.identifier, $.string), ')',),
-      seq(caseInsensitive('RECNO'),'(', choice($.identifier, $.string), ')',),
-      seq(caseInsensitive('RENAME'),'(', choice($.identifier, $.string),':', choice($.identifier, $.string), ')'),
-      seq(caseInsensitive('SAVEDS'),'(', $.identifier, ')',),
-      seq(caseInsensitive('SAVEIND'),'(', $.number, ')',),
-      seq(caseInsensitive('SEQ'),optional(seq('(', choice(caseInsensitive('*EXT'), $.number), ')'))),
-      seq(caseInsensitive('SFILE'),'(', $.identifier,':',$.identifier, ')',),
-      seq(caseInsensitive('SLN'),'(', $.number, ')'),
-      seq(caseInsensitive('SPECIAL'),optional(seq('(',choice(caseInsensitive('*EXT'), $.number, ')')))),
-      caseInsensitive('STATIC'),
-      caseInsensitive('TEMPLATE'),
-      seq(caseInsensitive('TIMFMT'),'(',$.special_value, optional(choice(':','.',',','&')), ')',),
-      seq(caseInsensitive('USAGE'),'(', optional(colonSep(choice(caseInsensitive('*INPUT'), caseInsensitive('*OUTPUT'), caseInsensitive('*UPDATE'), caseInsensitive('*DELETE'),))),')',),
-      caseInsensitive('USROPN'),
-      seq(caseInsensitive('WORKSTN'),optional(seq('(', choice(caseInsensitive('*EXT'), $.number, $.identifier), ')'))),
-    ),
-
-    keyword_d_spec: $ => choice(
-      caseInsensitive('ALIAS'),
-      seq(caseInsensitive('ALIGN'), optional(seq('(', caseInsensitive('*FULL'), ')', ))),
-      seq(caseInsensitive('ALT'), '(', $.identifier, ')', ),
-      seq(caseInsensitive('ALTSEQ'), '(', caseInsensitive('*NONE'),')',),
-      caseInsensitive('ASCEND'), 
-      seq(caseInsensitive('BASED'), '(', $.identifier, ')', ),
-      seq(caseInsensitive('BINDEC'), '(', $.number, optional(seq(':', $.number)), ')',),
-      seq(caseInsensitive('CHAR'), '(', $.number, ')', ),
-      seq(caseInsensitive('CCSID'), '(', 
-        choice( 
-          caseInsensitive('*EXACT'), 
-          seq(caseInsensitive('*CHAR'), ':', choice(caseInsensitive('*JOBRUN'), caseInsensitive('*JOBRUNMIX'), caseInsensitive('*UTF8'), caseInsensitive('*HEX'), $.number)), 
-          seq(caseInsensitive('*GRAPH'), ':',  choice(caseInsensitive('*JOBRUN'), caseInsensitive('*SRC'), caseInsensitive('*HEX'), caseInsensitive('*IGNORE'), $.number)), 
-          seq(caseInsensitive('*UCS2'), ':',  choice(caseInsensitive('*UTF16'), $.number)),), 
-        ')', ),
-      seq(caseInsensitive('CLASS'), '(', caseInsensitive('*JAVA'), ':', choice($.special_value, $.string), ')'),
-
-      // TODO: When specifying the value of a named constant, the CONST keyword itself is optional. That is, the constant value can be specified with or without the CONST keyword.
-      //       Hence, Need to check that constants have their type defined correctly in cases with and without CONST
-      seq(caseInsensitive('CONST'), optional(seq('(', choice($.number, $.identifier, $.string, $.builtin), ')'))),
-
-      caseInsensitive('CTDATA'), 
-      seq(caseInsensitive('DATE'), optional(seq('(', choice($.special_value, choice('/','-',',','.','&')), ')'))),
-      seq(caseInsensitive('DATFMT'), '(', $.special_value, optional(choice('/','.',',','&')), ')',),
-      caseInsensitive('DESCEND'), 
-      caseInsensitive('DFT'),
-      seq(caseInsensitive('DIM'), '(', optional(choice(seq(choice(caseInsensitive('*AUTO'), caseInsensitive('*VAR')), ':', choice($.identifier, $.number, $.builtin)), caseInsensitive('*CTDATA'))), ')',),
-      // NOTE: DTAARA has different defs between dcl-s/sub-f and dcl-ds. also different on fixed-form.
-      seq(caseInsensitive('DTAARA'), optional(seq('(', colonSep(choice($.identifier, $.string, caseInsensitive('*AUTO'), caseInsensitive('*USRCTL'))), ')', ))),
-      seq(caseInsensitive('EXPORT'), optional(seq('(', choice($.identifier, $.string), ')',))),
-      caseInsensitive('EXT'), 
-      seq(caseInsensitive('EXTFLD'), optional(seq('(', choice($.identifier, $.string), ')',))),
-      seq(caseInsensitive('EXTFMT'), '(', choice(
-        caseInsensitive('B'), 
-        caseInsensitive('C'), 
-        caseInsensitive('I'), 
-        caseInsensitive('L'), 
-        caseInsensitive('R'), 
-        caseInsensitive('P'), 
-        caseInsensitive('S'), 
-        caseInsensitive('U'), 
-        caseInsensitive('F'), 
-      ), ')', ),
-      seq(caseInsensitive('EXTNAME'), '(', choice($.identifier, $.string), optional(choice(seq(':',choice($.identifier, $.string)),seq(':',choice(caseInsensitive('*ALL'), caseInsensitive('*INPUT'), caseInsensitive('*OUTPUT'), caseInsensitive('*KEY'), caseInsensitive('*NULL'))))), ')',),
-      seq(caseInsensitive('EXTPGM'), optional(seq('(', choice($.identifier, $.string), ')',))),
-      seq(caseInsensitive('EXTPROC'), optional(seq('(', choice(
-        seq(caseInsensitive('*CL'), ':'),
-        seq(caseInsensitive('*CWIDEN'), ':'),
-        seq(caseInsensitive('*CNOWIDEN'), ':'),
-        seq(caseInsensitive('*JAVA'), ':', choice($.identifier, $.string), ':'),
-      ), choice(caseInsensitive('*DCLCASE'), $.identifier, $.string), ')', ))),
-      seq(caseInsensitive('FLOAT'), '(', $.number, ')', ),
-      seq(caseInsensitive('FROMFILE'), '(', $.identifier, ')', ),
-      seq(caseInsensitive('GRAPH'), '(', $.number, ')', ),
-      seq(caseInsensitive('IMPORT'), optional(seq('(', choice($.identifier, $.string), ')',))),
-      caseInsensitive('IND'), 
-      seq(caseInsensitive('INT'), '(', $.number, ')', ),
-      seq(caseInsensitive('INZ'), optional(seq('(', choice($.identifier, $.string, $.number), ')'))),
-      seq(caseInsensitive('LEN'), '(', $.number, ')', ),
-      seq(caseInsensitive('LIKE'), '(', choice($.identifier, $.string), optional(seq(':', choice('+', '-'), $.number,)), ')', ),
-      seq(caseInsensitive('LIKEDS'), '(', $.identifier, ')', ),
-      seq(caseInsensitive('LIKEFILE'), '(', choice($.identifier, $.string), ')', ),
-      seq(caseInsensitive('LIKEREC'), '(', choice($.identifier, $.string), optional(seq(':', choice($.identifier, $.string))), ')',),
-      caseInsensitive('NOOPT'), 
-      seq(caseInsensitive('NULLIND'), '(', $.identifier, ')',),
-      seq(caseInsensitive('OCCURS'), '(', $.number, ')', ),
-      caseInsensitive('OPDESC'), 
-      seq(caseInsensitive('OBJECT'), optional(seq('(', caseInsensitive('*JAVA'), optional(colonSep(choice($.special_value, $.string))), ')'))),
-      seq(caseInsensitive('OPTIONS'), '(', colonSep(choice(caseInsensitive('*NOPASS'), caseInsensitive('*OMIT'), caseInsensitive('*VARSIZE'), caseInsensitive('*EXACT'), caseInsensitive('*STRING'), caseInsensitive('*TRIM'), caseInsensitive('*RIGHTADJ'), caseInsensitive('*NULLIND'), caseInsensitive('*CONVERT'))), ')', ),
-      seq(caseInsensitive('OVERLAY'), '(', $.identifier, optional(seq(':', choice($.number, caseInsensitive('*NEXT')))), ')',),
-      seq(caseInsensitive('OVERLOAD'), '(', colonSep($.identifier), ')'),
-      seq(caseInsensitive('PACKED'), '(', $.number,  optional(seq(':', $.number)), ')'),
-      caseInsensitive('PACKEVEN'), 
-      seq(caseInsensitive('PERRCD'), '(', $.number, ')', ),
-      seq(caseInsensitive('POINTER'), optional(seq('(', caseInsensitive('*PROC'), ')',))),
-      seq(caseInsensitive('POS'), '(', choice($.number, $.identifier), ')', ),
-      //
-      // TODO: Cater for PREFIX in GOTO Def requests
-      seq(caseInsensitive('PREFIX'), '(', choice($.identifier, $.string), optional(seq(':', $.number)), ')',),
-      caseInsensitive('PROCPTR'), 
-      caseInsensitive('PSDS'), 
-      caseInsensitive('QUALIFIED'), 
-      seq(caseInsensitive('REQPROTO'), '(', caseInsensitive('*NO'), ')', ),
-      caseInsensitive('RTNPARM'), 
-      seq(caseInsensitive('SAMEPOS'), '(', $.identifier, ')', ),
-      seq(caseInsensitive('STATIC'), optional(seq('(', caseInsensitive('*ALLTHREAD'), ')',))),
-      caseInsensitive('TEMPLATE'), 
-      seq(caseInsensitive('TIME'), optional(seq('(', choice($.special_value, choice(':','.',',','&')), ')'))),
-      seq(caseInsensitive('TIMESTAMP'), optional(seq('(', $.number, ')'))),
-      seq(caseInsensitive('TIMFMT'), '(', $.special_value, optional(choice(':','.',',','&')), ')',),
-      seq(caseInsensitive('TOFILE'), '(', choice($.identifier, $.string), ')', ),
-      seq(caseInsensitive('UCS2'), '(', $.number, ')', ),
-      seq(caseInsensitive('UNS'), '(', $.number, ')', ),
-      caseInsensitive('VALUE'), 
-      seq(caseInsensitive('VARCHAR'), '(', choice($.identifier, $.number), optional(seq(':', choice('2', '4'))), ')'),
-      seq(caseInsensitive('VARGRAPH'), '(', choice($.identifier, $.number), optional(seq(':', choice('2', '4'))), ')'),
-      seq(caseInsensitive('VARUCS2'), '(', choice($.identifier, $.number), optional(seq(':', choice('2', '4'))), ')'),
-      seq(caseInsensitive('VARYING'), '(', choice('2', '4'), ')'),
-      seq(caseInsensitive('ZONED'), '(', $.number, optional(seq(':', $.number)),')',),
-    ),
-
-    keyword_p_spec: $ => choice($.special_value, 'TODO:'),
-
-    special_value: $ => /\*[A-Za-z][A-Za-z0-9_]*/,
-
-    indicator: $ => /\*[iI][nN]([0-9]{2})|\*[lL][rR]|[uU][1-8]/,
-
-    // keyword: $ => prec(0, seq(
-    //   choice(
-    //     $.special_value, 
-    //     $.keyword_h_spec,
-    //     $.keyword_f_spec,
-    //     $.keyword_d_spec,
-    //   ),
-    //   optional($.argument_list)
-    // )),
-
-    // =====================
-    // Native Operands
-    // =====================
-
-    // NOTE: For now this is kind of just a dump for the `exfmt` type of operations
     
-    native_operand: $ => choice(
-      caseInsensitive('WRITE'),
-      caseInsensitive('exfmt'),
-      caseInsensitive('read'),
-      caseInsensitive('readc'),
-    ),
-
-
-    native_operand_statement: $ => seq(
-      $.native_operand,
-      optional($.field_reference), // should perhaps be $.expression, for now $.identifier (or $.field_reference in case) makes more sense since i only have write/exfmt/read
-      ';'
-    ),
-
-
-
-
-
-
-    // =====================
-    // Assignments
-    // =====================
-
-/*
-Error: Error when generating parser
-
-Caused by:
-    Unresolved conflict for symbol sequence:
-
-      identifier  •  '='  …
-
-    Possible interpretations:
-
-      1:  (assignment  identifier  •  '='  expression  ';')
-      2:  (assignment  identifier  •  '='  expression)
-      3:  (expression  identifier)  •  '='  …
-
-    Possible resolutions:
-
-      1:  Specify a higher precedence in `assignment` than in the other rules.
-      2:  Specify a higher precedence in `expression` than in the other rules.
-      3:  Specify a left or right associativity in `expression`
-      4:  Add a conflict for these rules: `assignment`, `expression`
-*/
-    // Guessing prec.right will fix the above issue
-    assignment: $ => prec.right(2, seq(
-      $.field_reference,
-      '=',
-      $.expression,
+    // Technically C-Spec, technically a statement, not sure my brain likes it here
+    subr_statement: $ => prec(2,seq(
+      alias(ci('BEGSR'), $.keyword),
+      field('name', $.identifier),
+      ';',
+      optional($.block),
+      alias(ci('ENDSR'), $.keyword),
+      optional($.identifier), // Return-Point
       ';'
     )),
 
-    expression_statement: $ => seq(
-      $.expression,
-      ';'
-    ),
-
-    // =====================
-    // Control Flow
-    // =====================
-
-    // TEST: Check if repeat requires you to have elseif statements now...
-    if_statement: $ => seq(
-      caseInsensitive('if'),
-      $.expression,
+    do_loop_statement: $ => seq(
+      alias(choice(ci('DOU'), ci('DOW')), $.keyword),
+      optional($.keyword_argument),
+      field('condition', $.expression),
       ';',
-      repeat($._statement),
-      repeat($.elseif_clause),
-      optional($.else_clause),
-      caseInsensitive('endif'),
-      ';'
+      optional($.block),
+      alias(ci('ENDDO'), $.keyword),
+      ';',
     ),
 
-    elseif_clause: $ => seq(
-      caseInsensitive('elseif'),
-      $.expression,
+
+    for_loop_statement: $ => seq(
+      alias(ci('FOR'), $.keyword),
+      optional($.keyword_argument),
+      field('index', $.expression), // can either be `index-name` or `index-name = 1`
+      repeat(choice(
+        seq(ci('BY'), field('by', $.expression)),
+        seq(choice(ci('TO'), ci('DOWNTO')), field('by', $.expression)),
+      )),
       ';',
-      repeat($._statement)
+      optional($.block),
+      alias(ci('ENDFOR'), $.keyword),
+      ';',
     ),
 
-    else_clause: $ => seq(
-      caseInsensitive('else'),
+
+    foreach_loop_statement: $ => seq(
+      alias(ci('FOR-EACH'), $.keyword),
+      optional($.keyword_argument),
+      $.binary_expression,
       ';',
-      repeat($._statement)
+      optional($.block),
+      alias(ci('ENDFOR'), $.keyword),
+      ';',
     ),
+
 
     select_statement: $ => seq(
-      caseInsensitive('select'),
-      optional($.field_reference),
+      alias(ci('SELECT'), $.keyword),
+      optional(field('value', $.expression)),
       ';',
-      repeat($.when_clause),
-      optional($.other_clause),
-      caseInsensitive('endSl'),
+      repeat(choice($.when_statement, $.other_statement)),
+      alias(ci('ENDSL'), $.keyword),
       ';'
     ),
 
-    when_clause: $ => seq(
+    when_statement: $ => prec.right(seq(
       choice(
-        seq(
-          caseInsensitive('when'), 
-          $.expression
-        ), 
-        seq(
-          choice(caseInsensitive('when-is'), caseInsensitive('when-in')), 
-          $.expression
-        )
+        seq(alias(ci('WHEN'), $.keyword), field('condition', $.keyword_argument), ';'),
+        seq(alias(choice(ci('WHEN-IS'),ci('WHEN-IN')), $.keyword), field('value', $.expression), ';'),
       ),
-      ';',
-      repeat($._statement)
-    ),
-
-    other_clause: $ => seq(
-      caseInsensitive('other'),
-      ';',
-      repeat($._statement)
-    ),
-
-    dow_loop: $ => seq(
-      caseInsensitive('dow'),
-      $.expression,
-      ';',
-      repeat($._statement),
-      caseInsensitive('enddo'),
-      ';'
-    ),
-
-    dou_loop: $ => seq(
-      caseInsensitive('dou'),
-      $.expression,
-      ';',
-      repeat($._statement),
-      caseInsensitive('enddo'),
-      ';'
-    ),
-
-    for_loop: $ => seq(
-      caseInsensitive('for'),
-      $.assignment,
-      caseInsensitive('to'),
-      $.expression,
-      optional(seq('by', $.expression)),
-      ';',
-      repeat($._statement),
-      caseInsensitive('endfor'),
-      ';'
-    ),
-
-    monitor_block: $ => seq(
-      caseInsensitive('monitor'),
-      ';',
-      repeat($._statement),
-      repeat($.on_error_clause),
-      caseInsensitive('endmon'),
-      ';'
-    ),
-
-    on_error_clause: $ => seq(
-      caseInsensitive('on-error'),
-      optional($.expression),
-      ';',
-      repeat($._statement)
-    ),
-
-    
-
-
-/*
-Error: Error when generating parser
-
-Caused by:
-    Unresolved conflict for symbol sequence:
-
-      '[rRr][eEe][tTt][uUu][rRr][nNn]'  •  '('  …
-
-    Possible interpretations:
-
-      1:  (return_statement  '[rRr][eEe][tTt][uUu][rRr][nNn]'  •  expression  ';')
-      2:  (return_statement  '[rRr][eEe][tTt][uUu][rRr][nNn]'  •  expression)
-      3:  (return_statement  '[rRr][eEe][tTt][uUu][rRr][nNn]')  •  '('  …
-
-    Possible resolutions:
-
-      1:  Specify a left or right associativity in `return_statement`
-      2:  Add a conflict for these rules: `return_statement`
-*/
-    // Guessing prec.right since we want to pull the largest one? if it has both optionals, dont end on return, end on all three.
-    // See above error
-    return_statement: $ => prec.right(2, seq(
-      caseInsensitive('return'),
-      optional($.expression),
-      ';'
+      optional(field('consequence', $.block)),
     )),
 
-    call_statement: $ => seq(
-      choice(caseInsensitive('callp'), caseInsensitive('call')),
-      $.identifier,
-      optional($.argument_list),
-      ';'
-    ),
+    other_statement: $ => prec.right(seq(
+      alias(ci('OTHER'), $.keyword), 
+      ';',
+      optional(field('consequence', $.block)),
+    )),
 
-    argument_list: $ => seq(
+    if_statement: $ => prec.right(seq(
+      alias(ci('IF'), $.keyword),
+      field('condition', $.expression),
+      ';',
+      optional(field('consequence', $.block)),
+      repeat(seq(
+        alias(ci('ELSEIF'), $.keyword),
+        optional(field('alternative', $.block))
+      )),
+      optional(seq(
+        alias(ci('ELSE'), $.keyword),
+        optional(field('alternative', $.block))
+      )),
+    )),
+
+
+
+    //TODO: Some or all of these should be pulled into blocks, ie if
+    //      Ideally only opcodes that stands alone remains.
+    // Doing this so that DCL-DS block won't think the subf are opcodes
+    // ie DCL-DS test Qualified;
+    //      field char(10);
+    //    END-DS;
+    // it thought field is opcode, char is function call, and dcl-ds parsed to dcl_ds_inline
+    opcode: $ => alias(choice(
+      ci('ACQ'),
+      ci('CALLP'),
+      ci('CHAIN'),
+      ci('CLEAR'),
+      ci('CLOSE'),
+      ci('COMMIT'),
+      ci('DATA-GEN'),
+      ci('DATA-INTO'),
+      ci('DEALLOC'),
+      ci('DELETE'),
+      ci('DSPLY'),
+      ci('DUMP'),
+      // ENDs
+      ci('ENDMON'),
+      //
+      ci('EVAL'),
+      ci('EVALR'),
+      ci('EVAL-CORR'),
+      ci('EXCEPT'),
+      ci('EXFMT'),
+      ci('EXSR'),
+      ci('FEOD'),
+      ci('FORCE'),
+      ci('IN'),
+      ci('ITER'),
+      ci('LEAVE'),
+      ci('LEAVESR'),
+      ci('MONITOR'),
+      ci('NEXT'),
+      ci('ON-ERROR'),
+      ci('ON-EXCP'),
+      ci('ON-EXIT'),
+      ci('OPEN'),
+      ci('OUT'),
+      ci('POST'),
+      ci('READ'),
+      ci('READC'),
+      ci('READE'),
+      ci('READP'),
+      ci('READPE'),
+      ci('REL'),
+      ci('RESET'),
+      ci('RETURN'),
+      ci('ROLBK'),
+      ci('SETGT'),
+      ci('SETLL'),
+      ci('SND-MSG'),
+      ci('SORTA'),
+      ci('TEST'),
+      ci('UNLOCK'),
+      ci('UPDATE'),
+      ci('WRITE'),
+      ci('XML-INTO'),
+      ci('XML-SAX'),
+    )
+      , $.keyword),
+
+    // =========================================================
+    // KEYWORDS (shared across specs)
+    // =========================================================
+    keyword: $ => prec.right(seq(
+      field('name', $.identifier),
+      optional( //choice(
+        $.keyword_argument,
+        //$.parenthesized_expression
+        //)
+      )
+    )),
+
+    keyword_argument: $ => prec(1,seq(
       '(',
-      optional(colonSep($.expression)),
+      optional($.argument_list),
       ')'
-    ),
+    )),
 
-    // =====================
-    // Embedded SQL (.sqlrpgle)
-    // =====================
+    argument_list: $ => prec(1,seq(
+      $.expression,
+      repeat(seq(':', $.expression))
+    )),
 
-    sql_block: $ => seq(
-      caseInsensitive('exec'),
-      caseInsensitive('sql'),
-      repeat1(/[^;]+/),
-      ';'
-    ),
-
-    // =====================
-    // Expressions
-    // =====================
-
+    // =========================================================
+    // EXPRESSIONS
+    // =========================================================
     expression: $ => choice(
       $.binary_expression,
       $.unary_expression,
+      $.field_access,
+      $.subscript_expression,
       $.function_call,
-      $.literal,
       $.identifier,
-      $.field_reference,
-      $.special_value,
-      seq('(', $.expression, ')')
+      $.literal,
+      $.parenthesized_expression
     ),
 
-    binary_expression: $ => prec.left(seq(
-      $.expression,
-      choice(
-        '+', '-', '*', '/',
-        '=', '<>', '<', '>', '<=', '>=',
-        caseInsensitive('and'), caseInsensitive('or')
-      ),
-      $.expression
+    parenthesized_expression: $ => seq(
+      '(',
+      optional($.expression),
+      ')'
+    ),
+
+    // Copied from tree-sitter-go
+    binary_expression: $ => {
+      const table = [
+        [PREC.multiplicative, choice(...multiplicativeOperators)],
+        [PREC.additive, choice(...additiveOperators)],
+        [PREC.comparative, choice(...comparativeOperators)],
+        [PREC.and, ci('AND')],
+        [PREC.or, ci('OR')],
+      ];
+
+      return choice(...table.map(([precedence, operator]) =>
+        // @ts-ignore
+        prec.left(precedence, seq(
+          field('left', $.expression),
+          // @ts-ignore
+          field('operator', operator),
+          field('right', $.expression),
+        )),
+      ));
+    },
+
+    unary_expression: $ => prec(PREC.unary, seq(
+      field('operator', choice('+', '-', '*','/', ci('NOT'))),
+      field('argument', $.expression)
     )),
 
-    unary_expression: $ => prec.left(seq(
-      choice('-', caseInsensitive('not')),
-      $.expression
+    operator: $ => choice(
+      '+', '-', '*', '/', '=', '<>', '<', '>', '<=', '>=', ci('IN'), ci('NOT'), ci('AND'), ci('OR')
+    ),
+
+    // --- Function Call ---
+    function_call: $ => prec(PREC.primary,seq(
+      field('name', $.identifier),
+      '(',
+      optional($.argument_list),
+      ')'
     )),
 
-/*
-Error: Error when generating parser
-
-Caused by:
-    Unresolved conflict for symbol sequence:
-
-      identifier  •  '('  …
-
-    Possible interpretations:
-
-      1:  (expression  identifier)  •  '('  …
-      2:  (function_call  identifier  •  argument_list)
-
-    Possible resolutions:
-
-      1:  Specify a higher precedence in `function_call` than in the other rules.
-      2:  Specify a higher precedence in `expression` than in the other rules.
-      3:  Specify a left or right associativity in `expression`
-      4:  Add a conflict for these rules: `expression`, `function_call`
-*/
-    // Guessing prec(2..) will fix above error
-    // BUG: Function can be without brackets
-    function_call: $ => prec(2, seq(
-      choice($.identifier, $.builtin),
-      $.argument_list 
+    // --- Field Access (QUALIFIED DS SUPPORT) ---
+    field_access: $ => prec(PREC.primary, seq(
+      field('object', $.expression),
+      '.',
+      field('field', $.identifier)
     )),
 
-      // Just making builtin's any word that starts with a %
-      builtin: $ => /%[A-Za-z][A-Za-z0-9_]*/,
-  /*
-    builtin: $ => token(choice(
-      '%trim',
-      '%subst',
-      '%len',
-      '%date',
-      '%time',
-      '%timestamp',
-      '%char',
-      '%int',
-      '%dec'
+    // --- Array access ---
+    subscript_expression: $ => prec(PREC.primary, seq(
+      field('object', $.expression),
+      '(',
+      field('index', $.expression),
+      ')'
     )),
-  */
+
+    // =========================================================
+    // Types
+    // =========================================================
+    type_expression: $ => prec(2,choice(
+      $.builtin_type,
+      $.qualified_type
+    )),
+
+    // Qualified Type for external defined like
+    //    `dcl-s customer likeds(CustomerDS);`
+    //    `dcl-s obj object(*JAVA:com.example.MyClass);`
+    //    `dcl-s ds likeds(OuterDS.InnerDS);`
+    qualified_type: $ => seq(
+      $.keyword, 
+      '(', 
+        choice( 
+          $.identifier,
+          $.field_access,
+        ),
+        ')'
+    ),
+
+    type_expression: $ => choice(
+      $.builtin_type,
+      $.qualified_type
+    ),
+
+    builtin_type: $ => choice(
+      $.char_type,
+      $.varchar_type,
+      $.numeric_type,
+      $.date_type,
+      $.time_type,
+      $.timestamp_type,
+      $.pointer_type,
+      $.object_type,
+      $.ind_type
+    ),
+
+    // 
+    // Char Types
+    // 
+    char_type: $ => seq(
+      alias(ci('char'), $.type_keyword),
+      '(',
+        $.expression,
+        ')'
+    ),
+
+    varchar_type: $ => seq(
+      alias(choice(ci('varchar'), ci('vargraph'), ci('varucs2')), $.type_keyword),
+      '(',
+        $.expression,
+        optional(seq(':', $.expression)),
+        ')'
+    ),
+
+    graph_type: $ => seq(
+      alias(choice(ci('graph'), ci('ucs2')), $.type_keyword),
+      '(',
+        $.expression,
+        ')'
+    ),
+
+    // 
+    // Numeric Types
+    // 
+    numeric_type: $ => seq(
+      alias(choice(
+        ci('int'),
+        ci('uns'),
+        ci('packed'),
+        ci('zoned'),
+        ci('bindec')
+      ), $.type_keyword),
+      '(',
+        $.expression,
+        optional(seq(':', $.expression)),
+        ')'
+    ),
+
+    // 
+    // Date/Time Types
+    // 
+    date_type: $ => seq(
+      alias(ci('date'), $.type_keyword),
+      optional($.parenthesized_expression)
+    ),
+
+    time_type: $ => seq(
+      alias(ci('time'), $.type_keyword),
+      optional($.parenthesized_expression)
+    ),
+
+    timestamp_type: $ => seq(
+      alias(ci('timestamp'), $.type_keyword),
+      optional($.parenthesized_expression)
+    ),
+
+    // 
+    // Special Types
+    // 
+    pointer_type: $ => seq(
+      alias(ci('pointer'), $.type_keyword),
+      optional($.parenthesized_expression)
+    ),
+
+    object_type: $ => seq(
+      alias(ci('object'), $.type_keyword),
+      optional($.parenthesized_expression)
+    ),
+
+  ind_type: $ => alias(ci('ind'), $.type_keyword),
+    // =========================================================
+    // TERMINALS
+    // =========================================================
+    identifier: $ => /[A-Za-z_@%][A-Za-z0-9_]*/,
+
+    anonymous_name: $ => ci('*N'),
 
     literal: $ => choice(
       $.number,
-      $.string
+      $.string,
+      $.indicator
     ),
 
-    number: $ => /\d+/,
+    number: $ => /\d+(\.\d+)?/,
 
-      // BUG: Think that this should be counted as 1 string since double '' should count as an ' inside, 
-      // ie -> 'test one ''value'' here'
-      string: $ => choice(
-        seq(
-          "'",
-          repeat(/[^']/),
-          "'"
-        ),
-        seq(
-          '"',
-          repeat(/[^"]/),
-          '"'
-        ),
+    string: $ => choice(
+      seq(
+        "'",
+        repeat(/[^']/),
+        "'"),
+      seq(
+        '"',
+        repeat(/[^"]/),
+        '"'
       ),
+    ),
 
-        // https://www.ibm.com/docs/en/i/7.6.0?topic=words-symbolic-names#symbol9
-    identifier: $ => /[A-Za-z_][A-Za-z0-9_]*/,
 
-    // You can have DataStruct.FieldName and so forth
-    dotted_identifier: $ => prec.right(3, seq(
-      $.identifier,
-      repeat(seq('.', $.identifier))
-    )),
-
-    field_reference: $ => prec.right(2, choice($.identifier, $.dotted_identifier)),
+    indicator: $ => /\*[A-Za-z0-9]+/,
 
     comment: $ => token(choice(
-      seq('//', /.*/)
-
- // FIX: this feels like it wont work, so leaving the col 6 * comments for now. Fix later!
-      //seq('*', /.*/)
-    ))
+      seq('//', /.*/),
+      seq('/*', /[^*]*\*+([^/*][^*]*\*+)*/, '/')
+    )),
   }
 });
-
-//});

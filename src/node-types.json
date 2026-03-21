@@ -5,29 +5,10 @@
     "fields": {},
     "children": {
       "multiple": true,
-      "required": false,
-      "types": [
-        {
-          "type": "expression",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "assignment",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
       "required": true,
       "types": [
         {
           "type": "expression",
-          "named": true
-        },
-        {
-          "type": "field_reference",
           "named": true
         }
       ]
@@ -36,6 +17,140 @@
   {
     "type": "binary_expression",
     "named": true,
+    "fields": {
+      "left": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      },
+      "operator": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "*",
+            "named": false
+          },
+          {
+            "type": "+",
+            "named": false
+          },
+          {
+            "type": "-",
+            "named": false
+          },
+          {
+            "type": "/",
+            "named": false
+          },
+          {
+            "type": "<",
+            "named": false
+          },
+          {
+            "type": "<=",
+            "named": false
+          },
+          {
+            "type": "<>",
+            "named": false
+          },
+          {
+            "type": "=",
+            "named": false
+          },
+          {
+            "type": ">",
+            "named": false
+          },
+          {
+            "type": ">=",
+            "named": false
+          }
+        ]
+      },
+      "right": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "block",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "statement",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "builtin_type",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "char_type",
+          "named": true
+        },
+        {
+          "type": "date_type",
+          "named": true
+        },
+        {
+          "type": "ind_type",
+          "named": true
+        },
+        {
+          "type": "numeric_type",
+          "named": true
+        },
+        {
+          "type": "object_type",
+          "named": true
+        },
+        {
+          "type": "pointer_type",
+          "named": true
+        },
+        {
+          "type": "time_type",
+          "named": true
+        },
+        {
+          "type": "timestamp_type",
+          "named": true
+        },
+        {
+          "type": "varchar_type",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "char_type",
+    "named": true,
     "fields": {},
     "children": {
       "multiple": true,
@@ -44,12 +159,16 @@
         {
           "type": "expression",
           "named": true
+        },
+        {
+          "type": "type_keyword",
+          "named": true
         }
       ]
     }
   },
   {
-    "type": "call_statement",
+    "type": "control_spec",
     "named": true,
     "fields": {},
     "children": {
@@ -57,26 +176,56 @@
       "required": true,
       "types": [
         {
-          "type": "argument_list",
-          "named": true
-        },
-        {
-          "type": "identifier",
+          "type": "keyword",
           "named": true
         }
       ]
     }
   },
   {
-    "type": "ctl_opt",
+    "type": "date_type",
     "named": true,
     "fields": {},
     "children": {
       "multiple": true,
-      "required": false,
+      "required": true,
       "types": [
         {
-          "type": "keyword_h_spec",
+          "type": "parenthesized_expression",
+          "named": true
+        },
+        {
+          "type": "type_keyword",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "dcl_c",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "expression",
+          "named": true
+        },
+        {
+          "type": "keyword",
           "named": true
         }
       ]
@@ -87,42 +236,79 @@
     "named": true,
     "fields": {},
     "children": {
-      "multiple": true,
+      "multiple": false,
       "required": true,
       "types": [
         {
-          "type": "field_declaration",
+          "type": "dcl_ds_block",
           "named": true
         },
         {
-          "type": "field_reference",
-          "named": true
-        },
-        {
-          "type": "identifier",
-          "named": true
-        },
-        {
-          "type": "keyword_d_spec",
+          "type": "dcl_ds_inline",
           "named": true
         }
       ]
     }
   },
   {
-    "type": "dcl_f",
+    "type": "dcl_ds_block",
     "named": true,
-    "fields": {},
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
     "children": {
       "multiple": true,
       "required": true,
       "types": [
         {
+          "type": "dcl_ds_block",
+          "named": true
+        },
+        {
+          "type": "ds_subfield",
+          "named": true
+        },
+        {
           "type": "identifier",
           "named": true
         },
         {
-          "type": "keyword_f_spec",
+          "type": "keyword",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "dcl_ds_inline",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword",
           "named": true
         }
       ]
@@ -131,25 +317,40 @@
   {
     "type": "dcl_pi",
     "named": true,
-    "fields": {},
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "anonymous_name",
+            "named": true
+          },
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
     "children": {
       "multiple": true,
-      "required": false,
+      "required": true,
       "types": [
+        {
+          "type": "anonymous_name",
+          "named": true
+        },
         {
           "type": "identifier",
           "named": true
         },
         {
-          "type": "keyword_d_spec",
+          "type": "keyword",
           "named": true
         },
         {
           "type": "parameter",
-          "named": true
-        },
-        {
-          "type": "type",
           "named": true
         }
       ]
@@ -160,15 +361,41 @@
     "named": true,
     "fields": {},
     "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "dcl_pr_block",
+          "named": true
+        },
+        {
+          "type": "dcl_pr_inline",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "dcl_pr_block",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
       "multiple": true,
       "required": true,
       "types": [
         {
-          "type": "identifier",
-          "named": true
-        },
-        {
-          "type": "keyword_d_spec",
+          "type": "keyword",
           "named": true
         },
         {
@@ -179,30 +406,69 @@
     }
   },
   {
-    "type": "dcl_s",
+    "type": "dcl_pr_inline",
     "named": true,
-    "fields": {},
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
     "children": {
       "multiple": true,
       "required": true,
       "types": [
         {
-          "type": "identifier",
-          "named": true
-        },
-        {
-          "type": "keyword_d_spec",
-          "named": true
-        },
-        {
-          "type": "type",
+          "type": "keyword",
           "named": true
         }
       ]
     }
   },
   {
-    "type": "declaration",
+    "type": "dcl_s",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      },
+      "type": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "type_expression",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "definition",
     "named": true,
     "fields": {},
     "children": {
@@ -210,11 +476,11 @@
       "required": true,
       "types": [
         {
-          "type": "dcl_ds",
+          "type": "dcl_c",
           "named": true
         },
         {
-          "type": "dcl_f",
+          "type": "dcl_ds",
           "named": true
         },
         {
@@ -233,327 +499,70 @@
     }
   },
   {
-    "type": "dotted_identifier",
+    "type": "do_loop_statement",
     "named": true,
-    "fields": {},
+    "fields": {
+      "condition": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      }
+    },
     "children": {
       "multiple": true,
       "required": true,
       "types": [
         {
-          "type": "identifier",
+          "type": "block",
+          "named": true
+        },
+        {
+          "type": "keyword",
+          "named": true
+        },
+        {
+          "type": "keyword_argument",
           "named": true
         }
       ]
     }
   },
   {
-    "type": "dou_loop",
+    "type": "ds_subfield",
     "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "assignment",
-          "named": true
-        },
-        {
-          "type": "call_statement",
-          "named": true
-        },
-        {
-          "type": "compiler_directive",
-          "named": true
-        },
-        {
-          "type": "ctl_opt",
-          "named": true
-        },
-        {
-          "type": "declaration",
-          "named": true
-        },
-        {
-          "type": "dou_loop",
-          "named": true
-        },
-        {
-          "type": "dow_loop",
-          "named": true
-        },
-        {
-          "type": "expression",
-          "named": true
-        },
-        {
-          "type": "expression_statement",
-          "named": true
-        },
-        {
-          "type": "for_loop",
-          "named": true
-        },
-        {
-          "type": "if_statement",
-          "named": true
-        },
-        {
-          "type": "monitor_block",
-          "named": true
-        },
-        {
-          "type": "native_operand_statement",
-          "named": true
-        },
-        {
-          "type": "procedure",
-          "named": true
-        },
-        {
-          "type": "return_statement",
-          "named": true
-        },
-        {
-          "type": "select_statement",
-          "named": true
-        },
-        {
-          "type": "sql_block",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "dow_loop",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "assignment",
-          "named": true
-        },
-        {
-          "type": "call_statement",
-          "named": true
-        },
-        {
-          "type": "compiler_directive",
-          "named": true
-        },
-        {
-          "type": "ctl_opt",
-          "named": true
-        },
-        {
-          "type": "declaration",
-          "named": true
-        },
-        {
-          "type": "dou_loop",
-          "named": true
-        },
-        {
-          "type": "dow_loop",
-          "named": true
-        },
-        {
-          "type": "expression",
-          "named": true
-        },
-        {
-          "type": "expression_statement",
-          "named": true
-        },
-        {
-          "type": "for_loop",
-          "named": true
-        },
-        {
-          "type": "if_statement",
-          "named": true
-        },
-        {
-          "type": "monitor_block",
-          "named": true
-        },
-        {
-          "type": "native_operand_statement",
-          "named": true
-        },
-        {
-          "type": "procedure",
-          "named": true
-        },
-        {
-          "type": "return_statement",
-          "named": true
-        },
-        {
-          "type": "select_statement",
-          "named": true
-        },
-        {
-          "type": "sql_block",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "else_clause",
-    "named": true,
-    "fields": {},
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      },
+      "type": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "type_expression",
+            "named": true
+          }
+        ]
+      }
+    },
     "children": {
       "multiple": true,
       "required": false,
       "types": [
         {
-          "type": "assignment",
-          "named": true
-        },
-        {
-          "type": "call_statement",
-          "named": true
-        },
-        {
-          "type": "compiler_directive",
-          "named": true
-        },
-        {
-          "type": "ctl_opt",
-          "named": true
-        },
-        {
-          "type": "declaration",
-          "named": true
-        },
-        {
-          "type": "dou_loop",
-          "named": true
-        },
-        {
-          "type": "dow_loop",
-          "named": true
-        },
-        {
-          "type": "expression_statement",
-          "named": true
-        },
-        {
-          "type": "for_loop",
-          "named": true
-        },
-        {
-          "type": "if_statement",
-          "named": true
-        },
-        {
-          "type": "monitor_block",
-          "named": true
-        },
-        {
-          "type": "native_operand_statement",
-          "named": true
-        },
-        {
-          "type": "procedure",
-          "named": true
-        },
-        {
-          "type": "return_statement",
-          "named": true
-        },
-        {
-          "type": "select_statement",
-          "named": true
-        },
-        {
-          "type": "sql_block",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "elseif_clause",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "assignment",
-          "named": true
-        },
-        {
-          "type": "call_statement",
-          "named": true
-        },
-        {
-          "type": "compiler_directive",
-          "named": true
-        },
-        {
-          "type": "ctl_opt",
-          "named": true
-        },
-        {
-          "type": "declaration",
-          "named": true
-        },
-        {
-          "type": "dou_loop",
-          "named": true
-        },
-        {
-          "type": "dow_loop",
-          "named": true
-        },
-        {
-          "type": "expression",
-          "named": true
-        },
-        {
-          "type": "expression_statement",
-          "named": true
-        },
-        {
-          "type": "for_loop",
-          "named": true
-        },
-        {
-          "type": "if_statement",
-          "named": true
-        },
-        {
-          "type": "monitor_block",
-          "named": true
-        },
-        {
-          "type": "native_operand_statement",
-          "named": true
-        },
-        {
-          "type": "procedure",
-          "named": true
-        },
-        {
-          "type": "return_statement",
-          "named": true
-        },
-        {
-          "type": "select_statement",
-          "named": true
-        },
-        {
-          "type": "sql_block",
+          "type": "keyword",
           "named": true
         }
       ]
@@ -572,11 +581,7 @@
           "named": true
         },
         {
-          "type": "expression",
-          "named": true
-        },
-        {
-          "type": "field_reference",
+          "type": "field_access",
           "named": true
         },
         {
@@ -592,7 +597,11 @@
           "named": true
         },
         {
-          "type": "special_value",
+          "type": "parenthesized_expression",
+          "named": true
+        },
+        {
+          "type": "subscript_expression",
           "named": true
         },
         {
@@ -603,136 +612,96 @@
     }
   },
   {
-    "type": "expression_statement",
+    "type": "field_access",
     "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": true,
-      "types": [
-        {
-          "type": "expression",
-          "named": true
-        }
-      ]
+    "fields": {
+      "field": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      },
+      "object": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      }
     }
   },
   {
-    "type": "field_declaration",
+    "type": "file_spec",
     "named": true,
-    "fields": {},
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
     "children": {
       "multiple": true,
       "required": true,
       "types": [
         {
-          "type": "identifier",
-          "named": true
-        },
-        {
-          "type": "keyword_d_spec",
-          "named": true
-        },
-        {
-          "type": "type",
+          "type": "keyword",
           "named": true
         }
       ]
     }
   },
   {
-    "type": "field_reference",
+    "type": "for_loop_statement",
     "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": true,
-      "types": [
-        {
-          "type": "dotted_identifier",
-          "named": true
-        },
-        {
-          "type": "identifier",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "for_loop",
-    "named": true,
-    "fields": {},
+    "fields": {
+      "by": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      },
+      "index": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      }
+    },
     "children": {
       "multiple": true,
       "required": true,
       "types": [
         {
-          "type": "assignment",
+          "type": "block",
           "named": true
         },
         {
-          "type": "call_statement",
+          "type": "keyword",
           "named": true
         },
         {
-          "type": "compiler_directive",
-          "named": true
-        },
-        {
-          "type": "ctl_opt",
-          "named": true
-        },
-        {
-          "type": "declaration",
-          "named": true
-        },
-        {
-          "type": "dou_loop",
-          "named": true
-        },
-        {
-          "type": "dow_loop",
-          "named": true
-        },
-        {
-          "type": "expression",
-          "named": true
-        },
-        {
-          "type": "expression_statement",
-          "named": true
-        },
-        {
-          "type": "for_loop",
-          "named": true
-        },
-        {
-          "type": "if_statement",
-          "named": true
-        },
-        {
-          "type": "monitor_block",
-          "named": true
-        },
-        {
-          "type": "native_operand_statement",
-          "named": true
-        },
-        {
-          "type": "procedure",
-          "named": true
-        },
-        {
-          "type": "return_statement",
-          "named": true
-        },
-        {
-          "type": "select_statement",
-          "named": true
-        },
-        {
-          "type": "sql_block",
+          "type": "keyword_argument",
           "named": true
         }
       ]
@@ -746,21 +715,24 @@
   {
     "type": "function_call",
     "named": true,
-    "fields": {},
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
     "children": {
-      "multiple": true,
-      "required": true,
+      "multiple": false,
+      "required": false,
       "types": [
         {
           "type": "argument_list",
-          "named": true
-        },
-        {
-          "type": "builtin",
-          "named": true
-        },
-        {
-          "type": "identifier",
           "named": true
         }
       ]
@@ -769,185 +741,92 @@
   {
     "type": "if_statement",
     "named": true,
-    "fields": {},
+    "fields": {
+      "alternative": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "block",
+            "named": true
+          }
+        ]
+      },
+      "condition": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      },
+      "consequence": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "block",
+            "named": true
+          }
+        ]
+      }
+    },
     "children": {
       "multiple": true,
       "required": true,
       "types": [
         {
-          "type": "assignment",
-          "named": true
-        },
-        {
-          "type": "call_statement",
-          "named": true
-        },
-        {
-          "type": "compiler_directive",
-          "named": true
-        },
-        {
-          "type": "ctl_opt",
-          "named": true
-        },
-        {
-          "type": "declaration",
-          "named": true
-        },
-        {
-          "type": "dou_loop",
-          "named": true
-        },
-        {
-          "type": "dow_loop",
-          "named": true
-        },
-        {
-          "type": "else_clause",
-          "named": true
-        },
-        {
-          "type": "elseif_clause",
-          "named": true
-        },
-        {
-          "type": "expression",
-          "named": true
-        },
-        {
-          "type": "expression_statement",
-          "named": true
-        },
-        {
-          "type": "for_loop",
-          "named": true
-        },
-        {
-          "type": "if_statement",
-          "named": true
-        },
-        {
-          "type": "monitor_block",
-          "named": true
-        },
-        {
-          "type": "native_operand_statement",
-          "named": true
-        },
-        {
-          "type": "procedure",
-          "named": true
-        },
-        {
-          "type": "return_statement",
-          "named": true
-        },
-        {
-          "type": "select_statement",
-          "named": true
-        },
-        {
-          "type": "sql_block",
+          "type": "keyword",
           "named": true
         }
       ]
     }
   },
   {
-    "type": "keyword_d_spec",
+    "type": "ind_type",
     "named": true,
     "fields": {},
     "children": {
-      "multiple": true,
-      "required": false,
+      "multiple": false,
+      "required": true,
       "types": [
         {
-          "type": "builtin",
-          "named": true
-        },
-        {
-          "type": "identifier",
-          "named": true
-        },
-        {
-          "type": "number",
-          "named": true
-        },
-        {
-          "type": "special_value",
-          "named": true
-        },
-        {
-          "type": "string",
+          "type": "type_keyword",
           "named": true
         }
       ]
     }
   },
   {
-    "type": "keyword_f_spec",
+    "type": "keyword",
     "named": true,
-    "fields": {},
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
     "children": {
-      "multiple": true,
+      "multiple": false,
       "required": false,
       "types": [
         {
-          "type": "identifier",
-          "named": true
-        },
-        {
-          "type": "indicator",
-          "named": true
-        },
-        {
-          "type": "literal",
-          "named": true
-        },
-        {
-          "type": "number",
-          "named": true
-        },
-        {
-          "type": "special_value",
-          "named": true
-        },
-        {
-          "type": "string",
+          "type": "keyword_argument",
           "named": true
         }
       ]
     }
   },
   {
-    "type": "keyword_h_spec",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": false,
-      "types": [
-        {
-          "type": "identifier",
-          "named": true
-        },
-        {
-          "type": "number",
-          "named": true
-        },
-        {
-          "type": "special_value",
-          "named": true
-        },
-        {
-          "type": "string",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "keyword_p_spec",
+    "type": "keyword_argument",
     "named": true,
     "fields": {},
     "children": {
@@ -955,7 +834,7 @@
       "required": false,
       "types": [
         {
-          "type": "special_value",
+          "type": "argument_list",
           "named": true
         }
       ]
@@ -970,6 +849,10 @@
       "required": true,
       "types": [
         {
+          "type": "indicator",
+          "named": true
+        },
+        {
           "type": "number",
           "named": true
         },
@@ -981,91 +864,7 @@
     }
   },
   {
-    "type": "monitor_block",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": false,
-      "types": [
-        {
-          "type": "assignment",
-          "named": true
-        },
-        {
-          "type": "call_statement",
-          "named": true
-        },
-        {
-          "type": "compiler_directive",
-          "named": true
-        },
-        {
-          "type": "ctl_opt",
-          "named": true
-        },
-        {
-          "type": "declaration",
-          "named": true
-        },
-        {
-          "type": "dou_loop",
-          "named": true
-        },
-        {
-          "type": "dow_loop",
-          "named": true
-        },
-        {
-          "type": "expression_statement",
-          "named": true
-        },
-        {
-          "type": "for_loop",
-          "named": true
-        },
-        {
-          "type": "if_statement",
-          "named": true
-        },
-        {
-          "type": "monitor_block",
-          "named": true
-        },
-        {
-          "type": "native_operand_statement",
-          "named": true
-        },
-        {
-          "type": "on_error_clause",
-          "named": true
-        },
-        {
-          "type": "procedure",
-          "named": true
-        },
-        {
-          "type": "return_statement",
-          "named": true
-        },
-        {
-          "type": "select_statement",
-          "named": true
-        },
-        {
-          "type": "sql_block",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "native_operand",
-    "named": true,
-    "fields": {}
-  },
-  {
-    "type": "native_operand_statement",
+    "type": "numeric_type",
     "named": true,
     "fields": {},
     "children": {
@@ -1073,165 +872,71 @@
       "required": true,
       "types": [
         {
-          "type": "field_reference",
-          "named": true
-        },
-        {
-          "type": "native_operand",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "on_error_clause",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": false,
-      "types": [
-        {
-          "type": "assignment",
-          "named": true
-        },
-        {
-          "type": "call_statement",
-          "named": true
-        },
-        {
-          "type": "compiler_directive",
-          "named": true
-        },
-        {
-          "type": "ctl_opt",
-          "named": true
-        },
-        {
-          "type": "declaration",
-          "named": true
-        },
-        {
-          "type": "dou_loop",
-          "named": true
-        },
-        {
-          "type": "dow_loop",
-          "named": true
-        },
-        {
           "type": "expression",
           "named": true
         },
         {
-          "type": "expression_statement",
-          "named": true
-        },
-        {
-          "type": "for_loop",
-          "named": true
-        },
-        {
-          "type": "if_statement",
-          "named": true
-        },
-        {
-          "type": "monitor_block",
-          "named": true
-        },
-        {
-          "type": "native_operand_statement",
-          "named": true
-        },
-        {
-          "type": "procedure",
-          "named": true
-        },
-        {
-          "type": "return_statement",
-          "named": true
-        },
-        {
-          "type": "select_statement",
-          "named": true
-        },
-        {
-          "type": "sql_block",
+          "type": "type_keyword",
           "named": true
         }
       ]
     }
   },
   {
-    "type": "other_clause",
+    "type": "object_type",
     "named": true,
     "fields": {},
     "children": {
       "multiple": true,
-      "required": false,
+      "required": true,
       "types": [
         {
-          "type": "assignment",
+          "type": "parenthesized_expression",
           "named": true
         },
         {
-          "type": "call_statement",
+          "type": "type_keyword",
           "named": true
-        },
+        }
+      ]
+    }
+  },
+  {
+    "type": "opcode",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
         {
-          "type": "compiler_directive",
+          "type": "keyword",
           "named": true
-        },
+        }
+      ]
+    }
+  },
+  {
+    "type": "other_statement",
+    "named": true,
+    "fields": {
+      "consequence": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "block",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
         {
-          "type": "ctl_opt",
-          "named": true
-        },
-        {
-          "type": "declaration",
-          "named": true
-        },
-        {
-          "type": "dou_loop",
-          "named": true
-        },
-        {
-          "type": "dow_loop",
-          "named": true
-        },
-        {
-          "type": "expression_statement",
-          "named": true
-        },
-        {
-          "type": "for_loop",
-          "named": true
-        },
-        {
-          "type": "if_statement",
-          "named": true
-        },
-        {
-          "type": "monitor_block",
-          "named": true
-        },
-        {
-          "type": "native_operand_statement",
-          "named": true
-        },
-        {
-          "type": "procedure",
-          "named": true
-        },
-        {
-          "type": "return_statement",
-          "named": true
-        },
-        {
-          "type": "select_statement",
-          "named": true
-        },
-        {
-          "type": "sql_block",
+          "type": "keyword",
           "named": true
         }
       ]
@@ -1240,111 +945,45 @@
   {
     "type": "parameter",
     "named": true,
-    "fields": {},
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "anonymous_name",
+            "named": true
+          },
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      },
+      "type": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "type_expression",
+            "named": true
+          }
+        ]
+      }
+    },
     "children": {
       "multiple": true,
-      "required": true,
+      "required": false,
       "types": [
         {
-          "type": "field_reference",
-          "named": true
-        },
-        {
-          "type": "keyword_d_spec",
-          "named": true
-        },
-        {
-          "type": "type",
+          "type": "keyword",
           "named": true
         }
       ]
     }
   },
   {
-    "type": "procedure",
-    "named": true,
-    "fields": {},
-    "children": {
-      "multiple": true,
-      "required": true,
-      "types": [
-        {
-          "type": "assignment",
-          "named": true
-        },
-        {
-          "type": "call_statement",
-          "named": true
-        },
-        {
-          "type": "compiler_directive",
-          "named": true
-        },
-        {
-          "type": "ctl_opt",
-          "named": true
-        },
-        {
-          "type": "declaration",
-          "named": true
-        },
-        {
-          "type": "dou_loop",
-          "named": true
-        },
-        {
-          "type": "dow_loop",
-          "named": true
-        },
-        {
-          "type": "expression_statement",
-          "named": true
-        },
-        {
-          "type": "for_loop",
-          "named": true
-        },
-        {
-          "type": "identifier",
-          "named": true
-        },
-        {
-          "type": "if_statement",
-          "named": true
-        },
-        {
-          "type": "keyword_p_spec",
-          "named": true
-        },
-        {
-          "type": "monitor_block",
-          "named": true
-        },
-        {
-          "type": "native_operand_statement",
-          "named": true
-        },
-        {
-          "type": "procedure",
-          "named": true
-        },
-        {
-          "type": "return_statement",
-          "named": true
-        },
-        {
-          "type": "select_statement",
-          "named": true
-        },
-        {
-          "type": "sql_block",
-          "named": true
-        }
-      ]
-    }
-  },
-  {
-    "type": "return_statement",
+    "type": "parenthesized_expression",
     "named": true,
     "fields": {},
     "children": {
@@ -1359,23 +998,126 @@
     }
   },
   {
-    "type": "select_statement",
+    "type": "pointer_type",
     "named": true,
     "fields": {},
     "children": {
       "multiple": true,
-      "required": false,
+      "required": true,
       "types": [
         {
-          "type": "field_reference",
+          "type": "parenthesized_expression",
           "named": true
         },
         {
-          "type": "other_clause",
+          "type": "type_keyword",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "procedure",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "anonymous_name",
+            "named": true
+          },
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "anonymous_name",
           "named": true
         },
         {
-          "type": "when_clause",
+          "type": "definition",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "keyword",
+          "named": true
+        },
+        {
+          "type": "procedure",
+          "named": true
+        },
+        {
+          "type": "statement",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "qualified_type",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "field_access",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "keyword",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "select_statement",
+    "named": true,
+    "fields": {
+      "value": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "keyword",
+          "named": true
+        },
+        {
+          "type": "other_statement",
+          "named": true
+        },
+        {
+          "type": "when_statement",
           "named": true
         }
       ]
@@ -1391,39 +1133,19 @@
       "required": false,
       "types": [
         {
-          "type": "assignment",
-          "named": true
-        },
-        {
-          "type": "call_statement",
-          "named": true
-        },
-        {
           "type": "compiler_directive",
           "named": true
         },
         {
-          "type": "ctl_opt",
+          "type": "control_spec",
           "named": true
         },
         {
-          "type": "declaration",
+          "type": "definition",
           "named": true
         },
         {
-          "type": "dou_loop",
-          "named": true
-        },
-        {
-          "type": "dow_loop",
-          "named": true
-        },
-        {
-          "type": "expression_statement",
-          "named": true
-        },
-        {
-          "type": "for_loop",
+          "type": "file_spec",
           "named": true
         },
         {
@@ -1431,48 +1153,18 @@
           "named": true
         },
         {
-          "type": "if_statement",
-          "named": true
-        },
-        {
-          "type": "monitor_block",
-          "named": true
-        },
-        {
-          "type": "native_operand_statement",
-          "named": true
-        },
-        {
           "type": "procedure",
           "named": true
         },
         {
-          "type": "return_statement",
-          "named": true
-        },
-        {
-          "type": "select_statement",
-          "named": true
-        },
-        {
-          "type": "sql_block",
+          "type": "statement",
           "named": true
         }
       ]
     }
   },
   {
-    "type": "sql_block",
-    "named": true,
-    "fields": {}
-  },
-  {
-    "type": "string",
-    "named": true,
-    "fields": {}
-  },
-  {
-    "type": "type",
+    "type": "statement",
     "named": true,
     "fields": {},
     "children": {
@@ -1480,15 +1172,161 @@
       "required": false,
       "types": [
         {
-          "type": "number",
+          "type": "do_loop_statement",
           "named": true
         },
         {
-          "type": "special_value",
+          "type": "expression",
           "named": true
         },
         {
-          "type": "string",
+          "type": "for_loop_statement",
+          "named": true
+        },
+        {
+          "type": "if_statement",
+          "named": true
+        },
+        {
+          "type": "opcode",
+          "named": true
+        },
+        {
+          "type": "other_statement",
+          "named": true
+        },
+        {
+          "type": "select_statement",
+          "named": true
+        },
+        {
+          "type": "subr_statement",
+          "named": true
+        },
+        {
+          "type": "when_statement",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "string",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "subr_statement",
+    "named": true,
+    "fields": {
+      "name": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "identifier",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "block",
+          "named": true
+        },
+        {
+          "type": "identifier",
+          "named": true
+        },
+        {
+          "type": "keyword",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "subscript_expression",
+    "named": true,
+    "fields": {
+      "index": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      },
+      "object": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
+    "type": "time_type",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "parenthesized_expression",
+          "named": true
+        },
+        {
+          "type": "type_keyword",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "timestamp_type",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": true,
+      "required": true,
+      "types": [
+        {
+          "type": "parenthesized_expression",
+          "named": true
+        },
+        {
+          "type": "type_keyword",
+          "named": true
+        }
+      ]
+    }
+  },
+  {
+    "type": "type_expression",
+    "named": true,
+    "fields": {},
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
+        {
+          "type": "builtin_type",
+          "named": true
+        },
+        {
+          "type": "qualified_type",
           "named": true
         }
       ]
@@ -1497,20 +1335,43 @@
   {
     "type": "unary_expression",
     "named": true,
-    "fields": {},
-    "children": {
-      "multiple": false,
-      "required": true,
-      "types": [
-        {
-          "type": "expression",
-          "named": true
-        }
-      ]
+    "fields": {
+      "argument": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      },
+      "operator": {
+        "multiple": false,
+        "required": true,
+        "types": [
+          {
+            "type": "*",
+            "named": false
+          },
+          {
+            "type": "+",
+            "named": false
+          },
+          {
+            "type": "-",
+            "named": false
+          },
+          {
+            "type": "/",
+            "named": false
+          }
+        ]
+      }
     }
   },
   {
-    "type": "when_clause",
+    "type": "varchar_type",
     "named": true,
     "fields": {},
     "children": {
@@ -1518,71 +1379,57 @@
       "required": true,
       "types": [
         {
-          "type": "assignment",
-          "named": true
-        },
-        {
-          "type": "call_statement",
-          "named": true
-        },
-        {
-          "type": "compiler_directive",
-          "named": true
-        },
-        {
-          "type": "ctl_opt",
-          "named": true
-        },
-        {
-          "type": "declaration",
-          "named": true
-        },
-        {
-          "type": "dou_loop",
-          "named": true
-        },
-        {
-          "type": "dow_loop",
-          "named": true
-        },
-        {
           "type": "expression",
           "named": true
         },
         {
-          "type": "expression_statement",
+          "type": "type_keyword",
           "named": true
-        },
+        }
+      ]
+    }
+  },
+  {
+    "type": "when_statement",
+    "named": true,
+    "fields": {
+      "condition": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "keyword_argument",
+            "named": true
+          }
+        ]
+      },
+      "consequence": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "block",
+            "named": true
+          }
+        ]
+      },
+      "value": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      }
+    },
+    "children": {
+      "multiple": false,
+      "required": true,
+      "types": [
         {
-          "type": "for_loop",
-          "named": true
-        },
-        {
-          "type": "if_statement",
-          "named": true
-        },
-        {
-          "type": "monitor_block",
-          "named": true
-        },
-        {
-          "type": "native_operand_statement",
-          "named": true
-        },
-        {
-          "type": "procedure",
-          "named": true
-        },
-        {
-          "type": "return_statement",
-          "named": true
-        },
-        {
-          "type": "select_statement",
-          "named": true
-        },
-        {
-          "type": "sql_block",
+          "type": "keyword",
           "named": true
         }
       ]
@@ -1590,10 +1437,6 @@
   },
   {
     "type": "\"",
-    "named": false
-  },
-  {
-    "type": "&",
     "named": false
   },
   {
@@ -1613,31 +1456,7 @@
     "named": false
   },
   {
-    "type": "*FILE",
-    "named": false
-  },
-  {
-    "type": "*N",
-    "named": false
-  },
-  {
-    "type": "*NOIND",
-    "named": false
-  },
-  {
-    "type": "*ONLY",
-    "named": false
-  },
-  {
-    "type": "*n",
-    "named": false
-  },
-  {
     "type": "+",
-    "named": false
-  },
-  {
-    "type": ",",
     "named": false
   },
   {
@@ -1650,22 +1469,6 @@
   },
   {
     "type": "/",
-    "named": false
-  },
-  {
-    "type": "0",
-    "named": false
-  },
-  {
-    "type": "1",
-    "named": false
-  },
-  {
-    "type": "2",
-    "named": false
-  },
-  {
-    "type": "4",
     "named": false
   },
   {
@@ -1701,16 +1504,8 @@
     "named": false
   },
   {
-    "type": "TODO:",
-    "named": false
-  },
-  {
-    "type": "builtin",
+    "type": "anonymous_name",
     "named": true
-  },
-  {
-    "type": "by",
-    "named": false
   },
   {
     "type": "comment",
@@ -1734,7 +1529,7 @@
     "named": true
   },
   {
-    "type": "special_value",
+    "type": "type_keyword",
     "named": true
   }
 ]
