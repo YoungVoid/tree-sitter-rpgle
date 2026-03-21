@@ -5,6 +5,8 @@ dcl-s companyType varchar(10) dim(*auto : 30);
 dcl-ds csz_a likeds(csz) dim(*auto : 50000) ;
 
 
+dcl-ds csz_a likeds(csz) dim(*auto : 50000) end-ds;
+
 dcl-ds dfIndDS len(99);
 //--- 21-99 are automatically cleared after EXFMT --------------
     Protect_SD_ALL ind pos(10);

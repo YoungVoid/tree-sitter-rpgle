@@ -109,13 +109,13 @@ export default grammar({
       //TODO: dcl-enum,
     ),
 
-    dcl_s: $ => seq(
+    dcl_s: $ => prec(2,seq(
       alias(ci('dcl-s'), $.keyword),
       field('name', $.identifier),
       optional(field('type', $.type_expression)),
       repeat($.keyword),
       ';'
-    ),
+    )),
 
     dcl_c: $ => seq(
       alias(ci('dcl-c'), $.keyword),
@@ -125,30 +125,47 @@ export default grammar({
     ),
 
     // --- Data Structure ---
+    //   // TODO: alias the ds_block to block? consider recursive inside dcl_ds_block - they all need to be alias'd
     dcl_ds: $ => choice(
-      // TODO: alias the ds_block to block? consider recursive inside dcl_ds_block - they all need to be alias'd
       $.dcl_ds_block,
+      $.dcl_ds_likeds_inline,
       $.dcl_ds_inline
     ),
 
-    dcl_ds_block: $ => prec(2,seq(
+    dcl_ds_block: $ => prec.right(2, seq(
       alias(ci('dcl-ds'), $.keyword),
-      optional(field('name', $.identifier)),
+      field('name', $.identifier),
       repeat($.keyword),
       ';',
-      repeat(choice($.ds_subfield, $.dcl_ds_block)),
+      repeat(choice($.ds_subfield, $.dcl_ds_block, $.dcl_ds_inline)),
       alias(ci('end-ds'), $.keyword),
       optional($.identifier),
       ';'
     )),
 
-    dcl_ds_inline: $ => seq(
+    // Inline form for LIKEDS/LIKEREC only
+    dcl_ds_likeds_inline: $ => seq(
       alias(ci('dcl-ds'), $.keyword),
-      optional(field('name', $.identifier)),
-      repeat($.keyword),
-      optional(alias(ci('end-ds'), $.keyword)),
+      field('name', $.identifier),
+      repeat1(
+        field('likeds_keyword', choice(
+          seq(ci('likeds'), $.keyword_argument),
+          seq(ci('likerec'), $.keyword_argument)
+        ))
+      ),
+      repeat($.keyword), // allow DIM, etc.
       ';'
     ),
+
+    // Inline form for END-DS only (no subfields)
+    dcl_ds_inline: $ => seq(
+      alias(ci('dcl-ds'), $.keyword),
+      field('name', $.identifier),
+      repeat($.keyword),
+      ci('end-ds'),
+      ';'
+    ),
+
 
     ds_subfield: $ => seq(
       optional(alias(ci('dcl-subf'), $.keyword)),
