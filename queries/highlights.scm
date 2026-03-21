@@ -1,114 +1,141 @@
-; ======================
+; =========================
 ; Comments
-; ======================
-
+; =========================
 (comment) @comment
 
-; ======================
+; =========================
 ; Keywords
-; ======================
-
-[
-  "ctl-opt"
-] @keyword
-
-(compiler_directive) @keyword
-(fully_free) @keyword
-
-; Declaration keywords (matched via regex tokens)
-(dcl_f) @keyword
-(dcl_s) @keyword
-(dcl_ds) @keyword
-(dcl_pr) @keyword
-(dcl_pi) @keyword
-(procedure) @keyword
-
-(keyword_d_spec_fixed) @keyword
+; =========================
 (keyword) @keyword
 
-; Control flow
-;[
-;  "if"
-;  "elseif" "else" "endif"
-;  "select" "when" "when-is" "when-in" "other" "endsl"
-;  "dow" "dou" "enddo"
-;  "for" "to" "by" "endfor"
-;  "monitor" "on-error" "endmon"
-;  "return"
-;] @keyword
+; Control flow keywords (optional refinement)
+; [
+;   "IF" "ELSE" "ELSEIF"
+;   "DOU" "DOW" "FOR" "FOR-EACH"
+;   "SELECT" "WHEN" "WHEN-IS" "WHEN-IN" "OTHER"
+;   "ENDDO" "ENDFOR" "ENDSL"
+;   "BEGSR" "ENDSR"
+;   "DCL-PROC" "END-PROC"
+;   "DCL-PI" "END-PI"
+;   "DCL-PR" "END-PR"
+;   "DCL-DS" "END-DS"
+; ] @keyword.control
 
-; ======================
+; =========================
 ; Types
-; ======================
+; =========================
+(type_keyword) @type
 
-(type) @type
+(builtin_type) @type
+(qualified_type) @type
 
-;[
-;  "char" "varchar" "packed" "zoned"
-;  "int" "ind" "date" "time" "timestamp"
-;] @type.builtin
-
-; ======================
-; Functions & Procedures
-; ======================
-
-(procedure
-  (identifier) @function)
-
-(function_call
-  (identifier) @function.call)
-
-(builtin) @function.builtin
-
-(call_statement
-  (identifier) @function.call)
-
-; ======================
-; Variables
-; ======================
-
-(field_declaration
-  (identifier) @variable.member)
-
-(parameter
-  (field_reference) @parameter)
-
-(assignment
-  (field_reference) @variable)
-
+; =========================
+; Identifiers
+; =========================
 (identifier) @variable
 
-; ======================
+; Definitions (names)
+(dcl_s
+  name: (identifier) @variable.definition)
+
+(dcl_c
+  name: (identifier) @constant)
+
+(dcl_ds_block
+  name: (identifier) @type.definition)
+
+(dcl_ds_inline
+  name: (identifier) @type.definition)
+
+(dcl_pr_block
+  name: (identifier) @function)
+
+(dcl_pr_inline
+  name: (identifier) @function)
+
+(dcl_pi
+  name: (identifier) @function)
+
+(procedure
+  name: (identifier) @function)
+
+(parameter
+  name: (identifier) @parameter)
+
+(ds_subfield
+  name: (identifier) @property)
+
+; =========================
+; Function calls
+; =========================
+(function_call
+  name: (identifier) @function.call)
+
+; =========================
+; Field access
+; =========================
+(field_access
+  field: (identifier) @property)
+
+; =========================
 ; Literals
-; ======================
-
-(string) @string
+; =========================
 (number) @number
-(literal) @constant
+(string) @string
+(indicator) @constant.builtin
 
-(special_value) @constant
-
-; ======================
+; =========================
 ; Operators
-; ======================
+; =========================
+; [
+;   "+"
+;   "-"
+;   "*"
+;   "/"
+;   "="
+;   "<>"
+;   "<"
+;   "<="
+;   ">"
+;   ">="
+; ] @operator
 
-;[
-;  "+" "-" "*" "/"
-;  "=" "<>" "<" ">" "<=" ">="
-;] @operator
+; Logical operators (word-based)
+; [
+;   "AND"
+;   "OR"
+;   "NOT"
+;   "IN"
+; ] @operator
 
-;[
-;  "and" "or" "not"
-;] @keyword.operator
+; =========================
+; Delimiters
+; =========================
+; [
+;   "("
+;   ")"
+;   ";"
+;   ":"
+;   "."
+; ] @punctuation.delimiter
 
-; ======================
-; Native operands
-; ======================
+; =========================
+; Special constructs
+; =========================
+(compiler_directive) @preproc
 
-(native_operand) @function.builtin
+(fully_free) @preproc
 
-; ======================
-; SQL Block
-; ======================
+; =========================
+; Keywords inside keyword nodes
+; =========================
+(keyword
+  name: (identifier) @keyword)
 
-(sql_block) @string.special
+; Keyword arguments
+(keyword_argument) @punctuation.bracket
+
+; =========================
+; Anonymous names (*N)
+; =========================
+(anonymous_name) @constant.builtin
