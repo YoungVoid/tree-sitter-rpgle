@@ -61,11 +61,18 @@ export default grammar({
       $.file_spec,
       $.definition,
       $.procedure,
-      $.statement
+      $.statement,
+      $.embedded_sql,
     ),
 
 
     fully_free: $ => prec.left(5,/\*\*[fF][rR][eE][eE]/),
+
+    embedded_sql: $ => seq(
+        alias(seq(ci('EXEC'), ci('SQL')), $.keyword),
+       /[^;]+/,
+      ';',
+    ),
 
     // =====================
     // Compiler Directives

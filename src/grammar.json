@@ -40,6 +40,10 @@
         {
           "type": "SYMBOL",
           "name": "statement"
+        },
+        {
+          "type": "SYMBOL",
+          "name": "embedded_sql"
         }
       ]
     },
@@ -50,6 +54,37 @@
         "type": "PATTERN",
         "value": "\\*\\*[fF][rR][eE][eE]"
       }
+    },
+    "embedded_sql": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "ALIAS",
+          "content": {
+            "type": "SEQ",
+            "members": [
+              {
+                "type": "PATTERN",
+                "value": "[eE][xX][eE][cC]"
+              },
+              {
+                "type": "PATTERN",
+                "value": "[sS][qQ][lL]"
+              }
+            ]
+          },
+          "named": true,
+          "value": "keyword"
+        },
+        {
+          "type": "PATTERN",
+          "value": "[^;]+"
+        },
+        {
+          "type": "STRING",
+          "value": ";"
+        }
+      ]
     },
     "compiler_directive": {
       "type": "TOKEN",

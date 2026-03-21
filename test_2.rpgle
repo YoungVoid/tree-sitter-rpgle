@@ -1,3 +1,2 @@
-dcl-ds ProgStatus PSDS;
-  PgmName *PROC;
-end-ds;
+exec sql set option datfmt=*iso,
+                    closqlcsr=*endmod;
