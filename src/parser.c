@@ -1620,33 +1620,32 @@ static const TSSymbolMetadata ts_symbol_metadata[] = {
 };
 
 enum ts_field_identifiers {
-  field_TO = 1,
-  field_alternative = 2,
-  field_argument = 3,
-  field_arguments = 4,
-  field_by = 5,
-  field_condition = 6,
-  field_consequence = 7,
-  field_copy_datastructure = 8,
-  field_extender = 9,
-  field_field = 10,
-  field_index = 11,
-  field_left = 12,
-  field_name = 13,
-  field_object = 14,
-  field_operation_extender = 15,
-  field_operator = 16,
-  field_parameters = 17,
-  field_result = 18,
-  field_right = 19,
-  field_subfields = 20,
+  field_alternative = 1,
+  field_argument = 2,
+  field_arguments = 3,
+  field_by = 4,
+  field_condition = 5,
+  field_consequence = 6,
+  field_copy_datastructure = 7,
+  field_extender = 8,
+  field_field = 9,
+  field_index = 10,
+  field_left = 11,
+  field_name = 12,
+  field_object = 13,
+  field_operation_extender = 14,
+  field_operator = 15,
+  field_parameters = 16,
+  field_result = 17,
+  field_right = 18,
+  field_subfields = 19,
+  field_to = 20,
   field_type = 21,
   field_value = 22,
 };
 
 static const char * const ts_field_names[] = {
   [0] = NULL,
-  [field_TO] = "TO",
   [field_alternative] = "alternative",
   [field_argument] = "argument",
   [field_arguments] = "arguments",
@@ -1666,6 +1665,7 @@ static const char * const ts_field_names[] = {
   [field_result] = "result",
   [field_right] = "right",
   [field_subfields] = "subfields",
+  [field_to] = "to",
   [field_type] = "type",
   [field_value] = "value",
 };
@@ -1813,12 +1813,12 @@ static const TSFieldMapEntry ts_field_map_entries[] = {
   [47] =
     {field_by, 1},
   [48] =
-    {field_TO, 1},
+    {field_to, 1},
   [49] =
-    {field_TO, 0, .inherited = true},
-    {field_TO, 1, .inherited = true},
     {field_by, 0, .inherited = true},
     {field_by, 1, .inherited = true},
+    {field_to, 0, .inherited = true},
+    {field_to, 1, .inherited = true},
   [53] =
     {field_arguments, 1},
     {field_arguments, 1, .inherited = true},
@@ -1883,9 +1883,9 @@ static const TSFieldMapEntry ts_field_map_entries[] = {
     {field_arguments, 1, .inherited = true},
     {field_index, 2},
   [96] =
-    {field_TO, 2, .inherited = true},
     {field_by, 2, .inherited = true},
     {field_index, 1},
+    {field_to, 2, .inherited = true},
   [99] =
     {field_alternative, 4},
     {field_condition, 1},
@@ -1901,11 +1901,11 @@ static const TSFieldMapEntry ts_field_map_entries[] = {
     {field_parameters, 4},
     {field_result, 2, .inherited = true},
   [109] =
-    {field_TO, 3, .inherited = true},
     {field_arguments, 1},
     {field_arguments, 1, .inherited = true},
     {field_by, 3, .inherited = true},
     {field_index, 2},
+    {field_to, 3, .inherited = true},
   [114] =
     {field_alternative, 5},
     {field_condition, 1},
