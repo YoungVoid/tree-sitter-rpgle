@@ -41,22 +41,22 @@
 (dcl_c
   name: (identifier) @constant)
 
-(dcl_ds_block
+(dcl_ds
   name: (identifier) @type.definition)
 
-(dcl_ds_inline
+(dcl_ds
   name: (identifier) @type.definition)
 
-(dcl_pr_block
+(dcl_pr
   name: (identifier) @function)
 
-(dcl_pr_inline
+(dcl_pr
   name: (identifier) @function)
 
-(dcl_pi_block
+(dcl_pi
   name: (identifier) @function)
 
-(dcl_pi_inline
+(dcl_pi
   name: (identifier) @function)
 
 (procedure
@@ -65,8 +65,14 @@
 (parameter
   name: (identifier) @parameter)
 
-(ds_subfield
+(subfield
   name: (identifier) @property)
+
+(subfield
+  type: (type_expression) @type.definition)
+
+(subfield
+  type: (psds_types) @constant.builtin)
 
 ; =========================
 ; Function calls
@@ -136,7 +142,7 @@
   name: (identifier) @keyword)
 
 ; Keyword arguments
-(keyword_argument) @punctuation.bracket
+(keyword_arguments) @punctuation.bracket
 
 ; =========================
 ; Anonymous names (*N)

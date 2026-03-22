@@ -22,6 +22,7 @@ end-ds;
 // --- Prototypes (simulate interface methods) ---
 dcl-pr RectArea float(8);
     r likeDS(Rectangle) const;
+    x likeDS(Rectangle) const;
 end-pr;
 
 dcl-pr RectPerimeter float(8);
