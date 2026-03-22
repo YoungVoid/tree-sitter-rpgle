@@ -367,6 +367,7 @@ export default grammar({
         alias(ci('ELSE'), $.keyword),
         optional(field('alternative', $.block))
       )),
+      alias(ci('ENDIF'), $.keyword),
     )),
 
     return_statement: $ => seq(

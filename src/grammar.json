@@ -1832,6 +1832,15 @@
                 "type": "BLANK"
               }
             ]
+          },
+          {
+            "type": "ALIAS",
+            "content": {
+              "type": "PATTERN",
+              "value": "[eE][nN][dD][iI][fF]"
+            },
+            "named": true,
+            "value": "keyword"
           }
         ]
       }
