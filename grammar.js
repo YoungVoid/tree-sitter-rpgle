@@ -156,8 +156,8 @@ export default grammar({
       repeat($.keyword), 
       repeat1(
         field('copy_datastructure', choice(
-          seq(ci('likeds'), field('arguments', $.keyword_arguments)),
-          seq(ci('likerec'), field('arguments', $.keyword_arguments))
+          seq(ci('likeds'), field('arguments', $._keyword_arguments)),
+          seq(ci('likerec'), field('arguments', $._keyword_arguments))
         ))
       ),
       repeat($.keyword), 
@@ -292,7 +292,7 @@ export default grammar({
 
     do_loop_statement: $ => seq(
       alias(choice(ci('DOU'), ci('DOW')), $.keyword),
-      optional(field('arguments', $.keyword_arguments)),
+      optional(field('arguments', $._keyword_arguments)),
       field('condition', $.expression),
       ';',
       optional($.block),
@@ -303,7 +303,7 @@ export default grammar({
 
     for_loop_statement: $ => seq(
       alias(ci('FOR'), $.keyword),
-      optional(field('arguments', $.keyword_arguments)),
+      optional(field('arguments', $._keyword_arguments)),
       field('index', $.expression), // can either be `index-name` or `index-name = 1`
       repeat(choice(
         seq(ci('BY'), field('by', $.expression)),
@@ -318,7 +318,7 @@ export default grammar({
 
     foreach_loop_statement: $ => seq(
       alias(ci('FOR-EACH'), $.keyword),
-      optional(field('arguments', $.keyword_arguments)),
+      optional(field('arguments', $._keyword_arguments)),
       $.binary_expression,
       ';',
       optional($.block),
@@ -338,7 +338,7 @@ export default grammar({
 
     when_statement: $ => prec.right(seq(
       choice(
-        seq(alias(ci('WHEN'), $.keyword), optional(field('arguments', $.keyword_arguments)), field('condition', $.expression), ';'),
+        seq(alias(ci('WHEN'), $.keyword), optional(field('arguments', $._keyword_arguments)), field('condition', $.expression), ';'),
         seq(alias(choice(ci('WHEN-IS'),ci('WHEN-IN')), $.keyword), field('value', $.expression), ';'),
       ),
       optional(field('consequence', $.block)),
@@ -445,7 +445,7 @@ export default grammar({
     keyword: $ => prec.right(seq(
       field('name', $.identifier),
       optional( //choice(
-        field('arguments', $.keyword_arguments),
+        field('arguments', $._keyword_arguments),
         //$.parenthesized_expression
         //)
       )
@@ -453,18 +453,21 @@ export default grammar({
 
     // NOTE: Kinda wish I could call this parameter_list and such as well
     //        but that already exists...
-    keyword_arguments: $ => prec(1,seq(
+    _keyword_arguments: $ => prec(1,seq(
       '(',
       optional(field('arguments', $.argument_list)),
       ')'
     )),
 
-    argument_list: $ => prec(1, repeat1($.argument)),
+    argument_list: $ => prec(1, seq(
+      field('argument', alias($.expression, $.argument)),
+      repeat(seq(':', field('argument', alias($.expression, $.argument))))
+    )),
 
-    argument: $ => seq(
-      field('argument', $.expression),
-      repeat(seq(':', field('argument', $.expression)))
-    ),
+    // argument: $ => seq(
+    //   $.expression,
+    //   repeat(seq(':', $.expression))
+    // ),
 
     // =========================================================
     // EXPRESSIONS

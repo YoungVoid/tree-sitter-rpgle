@@ -421,7 +421,7 @@
                       "name": "arguments",
                       "content": {
                         "type": "SYMBOL",
-                        "name": "keyword_arguments"
+                        "name": "_keyword_arguments"
                       }
                     }
                   ]
@@ -438,7 +438,7 @@
                       "name": "arguments",
                       "content": {
                         "type": "SYMBOL",
-                        "name": "keyword_arguments"
+                        "name": "_keyword_arguments"
                       }
                     }
                   ]
@@ -1267,7 +1267,7 @@
               "name": "arguments",
               "content": {
                 "type": "SYMBOL",
-                "name": "keyword_arguments"
+                "name": "_keyword_arguments"
               }
             },
             {
@@ -1334,7 +1334,7 @@
               "name": "arguments",
               "content": {
                 "type": "SYMBOL",
-                "name": "keyword_arguments"
+                "name": "_keyword_arguments"
               }
             },
             {
@@ -1452,7 +1452,7 @@
               "name": "arguments",
               "content": {
                 "type": "SYMBOL",
-                "name": "keyword_arguments"
+                "name": "_keyword_arguments"
               }
             },
             {
@@ -1587,7 +1587,7 @@
                         "name": "arguments",
                         "content": {
                           "type": "SYMBOL",
-                          "name": "keyword_arguments"
+                          "name": "_keyword_arguments"
                         }
                       },
                       {
@@ -2091,7 +2091,7 @@
                 "name": "arguments",
                 "content": {
                   "type": "SYMBOL",
-                  "name": "keyword_arguments"
+                  "name": "_keyword_arguments"
                 }
               },
               {
@@ -2102,7 +2102,7 @@
         ]
       }
     },
-    "keyword_arguments": {
+    "_keyword_arguments": {
       "type": "PREC",
       "value": 1,
       "content": {
@@ -2139,45 +2139,48 @@
       "type": "PREC",
       "value": 1,
       "content": {
-        "type": "REPEAT1",
-        "content": {
-          "type": "SYMBOL",
-          "name": "argument"
-        }
-      }
-    },
-    "argument": {
-      "type": "SEQ",
-      "members": [
-        {
-          "type": "FIELD",
-          "name": "argument",
-          "content": {
-            "type": "SYMBOL",
-            "name": "expression"
-          }
-        },
-        {
-          "type": "REPEAT",
-          "content": {
-            "type": "SEQ",
-            "members": [
-              {
-                "type": "STRING",
-                "value": ":"
+        "type": "SEQ",
+        "members": [
+          {
+            "type": "FIELD",
+            "name": "argument",
+            "content": {
+              "type": "ALIAS",
+              "content": {
+                "type": "SYMBOL",
+                "name": "expression"
               },
-              {
-                "type": "FIELD",
-                "name": "argument",
-                "content": {
-                  "type": "SYMBOL",
-                  "name": "expression"
+              "named": true,
+              "value": "argument"
+            }
+          },
+          {
+            "type": "REPEAT",
+            "content": {
+              "type": "SEQ",
+              "members": [
+                {
+                  "type": "STRING",
+                  "value": ":"
+                },
+                {
+                  "type": "FIELD",
+                  "name": "argument",
+                  "content": {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "SYMBOL",
+                      "name": "expression"
+                    },
+                    "named": true,
+                    "value": "argument"
+                  }
                 }
-              }
-            ]
+              ]
+            }
           }
-        }
-      ]
+        ]
+      }
     },
     "expression": {
       "type": "CHOICE",
