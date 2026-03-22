@@ -23,6 +23,10 @@ function ci(word) {
   );
 };
 
+function opField($, ops) {
+  return choice(...ops.map(op => field('operator', alias(op, $.operator))));
+}
+
 // Copied from tree-sitter-go: https://github.com/tree-sitter/tree-sitter-go/blob/master/grammar.js#L11
 const PREC = {
   primary: 7,
@@ -120,45 +124,48 @@ export default grammar({
     dcl_c: $ => seq(
       alias(ci('dcl-c'), $.keyword),
       field('name', $.identifier),
-      repeat($.expression),
+      optional(seq(alias(ci('CONST'), $.keyword), '(')),
+        field('value', $.expression),
+        optional(')'),
       ';'
     ),
 
     // --- Data Structure ---
     //   // TODO: alias the ds_block to block? consider recursive inside dcl_ds_block - they all need to be alias'd
     dcl_ds: $ => choice(
-      $.dcl_ds_block,
-      $.dcl_ds_likeds_inline,
-      $.dcl_ds_inline
+      $._dcl_ds_block,
+      $._dcl_ds_likeds_inline,
+      $._dcl_ds_inline
     ),
 
-    dcl_ds_block: $ => prec.right(2, seq(
+    _dcl_ds_block: $ => prec.right(2, seq(
       alias(ci('dcl-ds'), $.keyword),
       field('name', $.identifier),
       repeat($.keyword),
       ';',
-      repeat(choice($.ds_subfield, $.dcl_ds_block, $.dcl_ds_inline)),
+      optional(field('subfields', $.subfield_list)),
       alias(ci('end-ds'), $.keyword),
       optional($.identifier),
       ';'
     )),
 
     // Inline form for LIKEDS/LIKEREC only
-    dcl_ds_likeds_inline: $ => seq(
+    _dcl_ds_likeds_inline: $ => seq(
       alias(ci('dcl-ds'), $.keyword),
       field('name', $.identifier),
+      repeat($.keyword), 
       repeat1(
-        field('likeds_keyword', choice(
-          seq(ci('likeds'), $.keyword_argument),
-          seq(ci('likerec'), $.keyword_argument)
+        field('copy_datastructure', choice(
+          seq(ci('likeds'), field('arguments', $.keyword_arguments)),
+          seq(ci('likerec'), field('arguments', $.keyword_arguments))
         ))
       ),
-      repeat($.keyword), // allow DIM, etc.
+      repeat($.keyword), 
       ';'
     ),
 
     // Inline form for END-DS only (no subfields)
-    dcl_ds_inline: $ => seq(
+    _dcl_ds_inline: $ => seq(
       alias(ci('dcl-ds'), $.keyword),
       field('name', $.identifier),
       repeat($.keyword),
@@ -166,63 +173,66 @@ export default grammar({
       ';'
     ),
 
+    subfield_list: $=> repeat1(choice($.subfield, $._dcl_ds_block, $._dcl_ds_inline)),
 
-    ds_subfield: $ => seq(
+    subfield: $ => seq(
       optional(alias(ci('dcl-subf'), $.keyword)),
       field('name', choice($.identifier, $.anonymous_name)),
-      optional(field('type', choice($.type_expression, $.psds_types))),
+      field('type', choice($.type_expression, $.psds_types)),
       repeat($.keyword),
       ';'
     ),
 
     // --- Prototype ---
     dcl_pr: $ => choice(
-      $.dcl_pr_block,
-      $.dcl_pr_inline
+      $._dcl_pr_block,
+      $._dcl_pr_inline
     ),
 
-    dcl_pr_block: $ => prec(2,seq(
+    _dcl_pr_block: $ => prec(2,seq(
       alias(ci('dcl-pr'), $.keyword),
       field('name', $.identifier),
-      repeat($.keyword),
+      repeat(choice(field('result', $.type_expression), $.keyword)),
       ';',
-      repeat($.parameter), 
+      optional(field('parameters', $.parameter_list)), 
       alias(ci('end-pr'), $.keyword),
       ';'
     )),
 
-    dcl_pr_inline: $ => seq(
+    _dcl_pr_inline: $ => seq(
       alias(ci('dcl-pr'), $.keyword),
       field('name', $.identifier),
-      repeat($.keyword),
+      repeat(choice(field('result', $.type_expression), $.keyword)),
       optional(alias(ci('end-pr'), $.keyword)),
       ';'
     ),
 
     // --- Procedure Interface ---
     dcl_pi: $ => choice(
-      $.dcl_pi_block,
-      $.dcl_pi_inline
+      $._dcl_pi_block,
+      $._dcl_pi_inline
     ),
 
-    dcl_pi_block: $ => seq(
+    _dcl_pi_block: $ => seq(
       alias(ci('dcl-pi'), $.keyword),
       field('name', choice($.identifier, $.anonymous_name)),
-      repeat($.keyword),
+      repeat(choice(field('result', $.type_expression), $.keyword)),
       ';',
-      repeat($.parameter), 
+      optional(field('parameters', $.parameter_list)), 
       alias(ci('end-pi'), $.keyword),
       optional(choice($.identifier, $.anonymous_name)),
       ';'
     ),
 
-    dcl_pi_inline: $ => seq(
+    _dcl_pi_inline: $ => seq(
       alias(ci('dcl-pi'), $.keyword),
       field('name', choice($.identifier, $.anonymous_name)),
-      repeat($.keyword),
+      repeat(choice(field('result', $.type_expression), $.keyword)),
       alias(ci('end-pi'), $.keyword),
       ';',
     ),
+
+    parameter_list: $ => repeat1($.parameter),
 
     parameter: $ => seq(
       optional(alias(ci('dcl-parm'), $.keyword)),
@@ -282,7 +292,7 @@ export default grammar({
 
     do_loop_statement: $ => seq(
       alias(choice(ci('DOU'), ci('DOW')), $.keyword),
-      optional($.keyword_argument),
+      optional(field('arguments', $.keyword_arguments)),
       field('condition', $.expression),
       ';',
       optional($.block),
@@ -293,7 +303,7 @@ export default grammar({
 
     for_loop_statement: $ => seq(
       alias(ci('FOR'), $.keyword),
-      optional($.keyword_argument),
+      optional(field('arguments', $.keyword_arguments)),
       field('index', $.expression), // can either be `index-name` or `index-name = 1`
       repeat(choice(
         seq(ci('BY'), field('by', $.expression)),
@@ -308,7 +318,7 @@ export default grammar({
 
     foreach_loop_statement: $ => seq(
       alias(ci('FOR-EACH'), $.keyword),
-      optional($.keyword_argument),
+      optional(field('arguments', $.keyword_arguments)),
       $.binary_expression,
       ';',
       optional($.block),
@@ -328,7 +338,7 @@ export default grammar({
 
     when_statement: $ => prec.right(seq(
       choice(
-        seq(alias(ci('WHEN'), $.keyword), optional($.keyword_argument), field('condition', $.expression), ';'),
+        seq(alias(ci('WHEN'), $.keyword), optional(field('arguments', $.keyword_arguments)), field('condition', $.expression), ';'),
         seq(alias(choice(ci('WHEN-IS'),ci('WHEN-IN')), $.keyword), field('value', $.expression), ';'),
       ),
       optional(field('consequence', $.block)),
@@ -436,22 +446,26 @@ export default grammar({
     keyword: $ => prec.right(seq(
       field('name', $.identifier),
       optional( //choice(
-        $.keyword_argument,
+        field('arguments', $.keyword_arguments),
         //$.parenthesized_expression
         //)
       )
     )),
 
-    keyword_argument: $ => prec(1,seq(
+    // NOTE: Kinda wish I could call this parameter_list and such as well
+    //        but that already exists...
+    keyword_arguments: $ => prec(1,seq(
       '(',
       optional($.argument_list),
       ')'
     )),
 
-    argument_list: $ => prec(1,seq(
+    argument_list: $ => prec(1, repeat1($.argument)),
+
+    argument: $ => seq(
       $.expression,
       repeat(seq(':', $.expression))
-    )),
+    ),
 
     // =========================================================
     // EXPRESSIONS
@@ -476,19 +490,17 @@ export default grammar({
     // Copied from tree-sitter-go
     binary_expression: $ => {
       const table = [
-        [PREC.multiplicative, choice(...multiplicativeOperators)],
-        [PREC.additive, choice(...additiveOperators)],
-        [PREC.comparative, choice(...comparativeOperators)],
-        [PREC.and, ci('AND')],
-        [PREC.or, ci('OR')],
+        [PREC.multiplicative, opField($, multiplicativeOperators)],
+        [PREC.additive, opField($, additiveOperators)],
+        [PREC.comparative, opField($, comparativeOperators)],
+        [PREC.and, field('operator', ci('AND'))],
+        [PREC.or, field('operator', ci('OR'))],
       ];
 
       return choice(...table.map(([precedence, operator]) =>
-        // @ts-ignore
         prec.left(precedence, seq(
           field('left', $.expression),
-          // @ts-ignore
-          field('operator', operator),
+          operator, // gets assigned 'operator' in opField
           field('right', $.expression),
         )),
       ));

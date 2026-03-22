@@ -2,10 +2,14 @@ dcl-ds Fld ExtName('CUSTMAST') Qualified;
 end-ds;
 
 dcl-s companyType varchar(10) dim(*auto : 30);
-dcl-ds csz_a likeds(csz) dim(*auto : 50000) ;
+dcl-ds csz_a Qualified likeds(csz) dim(*auto : 50000) ;
 
 
-dcl-ds csz_a likeds(csz) dim(*auto : 50000) end-ds;
+dcl-ds csz_b dim(*auto : 50000) end-ds;
+
+
+dcl-ds csz_c dim(*auto : 50000); 
+end-ds;
 
 dcl-ds dfIndDS len(99);
 //--- 21-99 are automatically cleared after EXFMT --------------
