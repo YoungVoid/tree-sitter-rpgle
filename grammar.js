@@ -455,15 +455,15 @@ export default grammar({
     //        but that already exists...
     keyword_arguments: $ => prec(1,seq(
       '(',
-      optional($.argument_list),
+      optional(field('arguments', $.argument_list)),
       ')'
     )),
 
     argument_list: $ => prec(1, repeat1($.argument)),
 
     argument: $ => seq(
-      $.expression,
-      repeat(seq(':', $.expression))
+      field('argument', $.expression),
+      repeat(seq(':', field('argument', $.expression)))
     ),
 
     // =========================================================
@@ -518,7 +518,7 @@ export default grammar({
     function_call: $ => prec(PREC.primary,seq(
       field('name', $.identifier),
       '(',
-      optional($.argument_list),
+      optional(field('arguments',$.argument_list)),
       ')'
     )),
 
