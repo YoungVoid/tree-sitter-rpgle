@@ -264,7 +264,7 @@ export default grammar({
     // C-SPEC (statements)
     // =========================================================
     statement: $ => choice(
-      seq(optional($.opcode), optional($.expression), ';'),
+      seq(optional($.opcode), repeat($.expression), ';'),
       $.subr_statement,
       $.do_loop_statement,
       $.for_loop_statement,
@@ -364,7 +364,6 @@ export default grammar({
         optional(field('alternative', $.block))
       )),
     )),
-
 
 
     //TODO: Some or all of these should be pulled into blocks, ie if
