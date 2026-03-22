@@ -636,6 +636,16 @@
     "type": "for_loop_statement",
     "named": true,
     "fields": {
+      "TO": {
+        "multiple": true,
+        "required": false,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      },
       "arguments": {
         "multiple": true,
         "required": false,

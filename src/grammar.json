@@ -1406,7 +1406,7 @@
                   },
                   {
                     "type": "FIELD",
-                    "name": "by",
+                    "name": "TO",
                     "content": {
                       "type": "SYMBOL",
                       "name": "expression"

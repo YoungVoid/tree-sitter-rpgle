@@ -311,7 +311,7 @@ export default grammar({
       field('index', $.expression), // can either be `index-name` or `index-name = 1`
       repeat(choice(
         seq(ci('BY'), field('by', $.expression)),
-        seq(choice(ci('TO'), ci('DOWNTO')), field('by', $.expression)),
+        seq(choice(ci('TO'), ci('DOWNTO')), field('TO', $.expression)),
       )),
       ';',
       optional($.block),
