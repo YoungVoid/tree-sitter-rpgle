@@ -2499,6 +2499,19 @@
                       "named": true,
                       "value": "operator"
                     }
+                  },
+                  {
+                    "type": "FIELD",
+                    "name": "operator",
+                    "content": {
+                      "type": "ALIAS",
+                      "content": {
+                        "type": "PATTERN",
+                        "value": "[iI][nN]"
+                      },
+                      "named": true,
+                      "value": "operator"
+                    }
                   }
                 ]
               },

@@ -41,7 +41,7 @@ const PREC = {
 
 const multiplicativeOperators = ['*', '/', '*=', '/='];
 const additiveOperators = ['+', '-', '+=', '-='];
-const comparativeOperators = ['=', '<>', '<', '<=', '>', '>='];
+const comparativeOperators = ['=', '<>', '<', '<=', '>', '>=', ci('IN')];
 
 export default grammar({
   name: 'rpgle',
