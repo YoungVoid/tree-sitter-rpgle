@@ -742,6 +742,10 @@
           {
             "type": "block",
             "named": true
+          },
+          {
+            "type": "if_statement",
+            "named": true
           }
         ]
       },
@@ -768,7 +772,7 @@
     },
     "children": {
       "multiple": true,
-      "required": true,
+      "required": false,
       "types": [
         {
           "type": "keyword",

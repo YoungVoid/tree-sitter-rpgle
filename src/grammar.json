@@ -1777,20 +1777,17 @@
                   "value": "keyword"
                 },
                 {
-                  "type": "CHOICE",
-                  "members": [
-                    {
-                      "type": "FIELD",
-                      "name": "alternative",
-                      "content": {
-                        "type": "SYMBOL",
-                        "name": "block"
-                      }
+                  "type": "FIELD",
+                  "name": "alternative",
+                  "content": {
+                    "type": "ALIAS",
+                    "content": {
+                      "type": "SYMBOL",
+                      "name": "elseif"
                     },
-                    {
-                      "type": "BLANK"
-                    }
-                  ]
+                    "named": true,
+                    "value": "if_statement"
+                  }
                 }
               ]
             }
@@ -1809,6 +1806,10 @@
                     },
                     "named": true,
                     "value": "keyword"
+                  },
+                  {
+                    "type": "STRING",
+                    "value": ";"
                   },
                   {
                     "type": "CHOICE",
@@ -1844,6 +1845,39 @@
           }
         ]
       }
+    },
+    "elseif": {
+      "type": "SEQ",
+      "members": [
+        {
+          "type": "FIELD",
+          "name": "condition",
+          "content": {
+            "type": "SYMBOL",
+            "name": "expression"
+          }
+        },
+        {
+          "type": "STRING",
+          "value": ";"
+        },
+        {
+          "type": "CHOICE",
+          "members": [
+            {
+              "type": "FIELD",
+              "name": "consequence",
+              "content": {
+                "type": "SYMBOL",
+                "name": "block"
+              }
+            },
+            {
+              "type": "BLANK"
+            }
+          ]
+        }
+      ]
     },
     "return_statement": {
       "type": "SEQ",

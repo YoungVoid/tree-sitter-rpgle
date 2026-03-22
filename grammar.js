@@ -361,14 +361,22 @@ export default grammar({
       optional(field('consequence', $.block)),
       repeat(seq(
         alias(ci('ELSEIF'), $.keyword),
-        optional(field('alternative', $.block))
+        field('alternative',alias($.elseif, $.if_statement)),
       )),
       optional(seq(
         alias(ci('ELSE'), $.keyword),
+        ';',
         optional(field('alternative', $.block))
       )),
       alias(ci('ENDIF'), $.keyword),
     )),
+
+    // copied the if start
+    elseif: $ => seq(
+      field('condition', $.expression),
+      ';',
+      optional(field('consequence', $.block)),
+    ),
 
     return_statement: $ => seq(
       ci('RETURN'), 
