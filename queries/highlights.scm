@@ -44,35 +44,26 @@
 (dcl_ds
   name: (identifier) @type.definition)
 
-(dcl_ds
-  name: (identifier) @type.definition)
-
 (dcl_pr
-  name: (identifier) @function)
-
-(dcl_pr
-  name: (identifier) @function)
+  name: (identifier) @function.prototype)
 
 (dcl_pi
-  name: (identifier) @function)
-
-(dcl_pi
-  name: (identifier) @function)
+  name: (identifier) @variable.parameter)
 
 (procedure
   name: (identifier) @function)
 
 (parameter
-  name: (identifier) @parameter)
+  name: (identifier) @variable.parameter)
 
 (subfield
   name: (identifier) @property)
 
 (subfield
-  type: (type_expression) @type.definition)
+  type: (type_expression) @type)
 
 (subfield
-  type: (psds_types) @constant.builtin)
+  type: (psds_types) @type.builtin)
 
 ; =========================
 ; Function calls
