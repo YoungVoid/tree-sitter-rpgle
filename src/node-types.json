@@ -783,6 +783,11 @@
     }
   },
   {
+    "type": "iter_statement",
+    "named": true,
+    "fields": {}
+  },
+  {
     "type": "keyword",
     "named": true,
     "fields": {
@@ -815,6 +820,16 @@
         ]
       }
     }
+  },
+  {
+    "type": "leave_statement",
+    "named": true,
+    "fields": {}
+  },
+  {
+    "type": "leavesr_statement",
+    "named": true,
+    "fields": {}
   },
   {
     "type": "literal",
@@ -891,6 +906,11 @@
         }
       ]
     }
+  },
+  {
+    "type": "operation_extender",
+    "named": true,
+    "fields": {}
   },
   {
     "type": "other_statement",
@@ -1086,6 +1106,32 @@
     }
   },
   {
+    "type": "return_statement",
+    "named": true,
+    "fields": {
+      "operation_extender": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "operation_extender",
+            "named": true
+          }
+        ]
+      },
+      "value": {
+        "multiple": false,
+        "required": false,
+        "types": [
+          {
+            "type": "expression",
+            "named": true
+          }
+        ]
+      }
+    }
+  },
+  {
     "type": "select_statement",
     "named": true,
     "fields": {
@@ -1188,11 +1234,27 @@
           "named": true
         },
         {
+          "type": "iter_statement",
+          "named": true
+        },
+        {
+          "type": "leave_statement",
+          "named": true
+        },
+        {
+          "type": "leavesr_statement",
+          "named": true
+        },
+        {
           "type": "opcode",
           "named": true
         },
         {
           "type": "other_statement",
+          "named": true
+        },
+        {
+          "type": "return_statement",
           "named": true
         },
         {

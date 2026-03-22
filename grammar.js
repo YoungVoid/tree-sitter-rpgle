@@ -264,7 +264,6 @@ export default grammar({
     // C-SPEC (statements)
     // =========================================================
     statement: $ => choice(
-      seq(optional($.opcode), repeat($.expression), ';'),
       $.subr_statement,
       $.do_loop_statement,
       $.for_loop_statement,
@@ -272,7 +271,12 @@ export default grammar({
       $.when_statement,
       $.other_statement,
       $.if_statement,
+      $.return_statement,
+      $.iter_statement,
+      $.leave_statement,
+      $.leavesr_statement,
       $.embedded_sql_statement,
+      seq(optional($.opcode), repeat($.expression), ';'),
     ),
 
     block: $ => prec.right(seq(
@@ -365,6 +369,19 @@ export default grammar({
       )),
     )),
 
+    return_statement: $ => seq(
+      ci('RETURN'), 
+      optional(field('operation_extender', $.operation_extender)),
+      optional(field('value', $.expression)), 
+      ';'
+    ),
+
+    // Not sure if these will be needed, but adding anyway. 
+    // Leaving them in the opcode would have catered for them anyway, 
+    // but maybe we want to identify loop/sr ends? ie unreachable code?
+    iter_statement: $ => seq(ci('ITER'), ';'),
+    leave_statement: $ => seq(ci('LEAVE'), ';'),
+    leavesr_statement: $ => seq(ci('LEAVESR'), ';'),
 
     //TODO: Some or all of these should be pulled into blocks, ie if
     //      Ideally only opcodes that stands alone remains.
@@ -398,9 +415,6 @@ export default grammar({
       ci('FEOD'),
       ci('FORCE'),
       ci('IN'),
-      ci('ITER'),
-      ci('LEAVE'),
-      ci('LEAVESR'),
       ci('MONITOR'),
       ci('NEXT'),
       ci('ON-ERROR'),
@@ -416,7 +430,6 @@ export default grammar({
       ci('READPE'),
       ci('REL'),
       ci('RESET'),
-      ci('RETURN'),
       ci('ROLBK'),
       ci('SETGT'),
       ci('SETLL'),
@@ -464,10 +477,13 @@ export default grammar({
       repeat(seq(':', field('argument', alias($.expression, $.argument))))
     )),
 
-    // argument: $ => seq(
-    //   $.expression,
-    //   repeat(seq(':', $.expression))
-    // ),
+    operation_extender: $ => prec(9, seq(
+      '(',
+        repeat(field('extender',
+          token(/[AHNPTZMRDEC]+/i)
+        )),
+        ')'
+    )),
 
     // =========================================================
     // EXPRESSIONS

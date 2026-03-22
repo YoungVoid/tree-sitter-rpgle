@@ -160,6 +160,9 @@ dcl-proc main;
     dcl-s i int(10);
     for i = 0 to 2 by 1;
         dsply ('Loop iteration: ' + %char(i));
+		iter;
+		leave;
+		leavesr;
     endfor;
 
     // Select (Switch equivalent)
