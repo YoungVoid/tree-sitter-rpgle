@@ -11,35 +11,35 @@ dcl-s globalCounter int(10) inz(0);
 
 // --- Type Definitions (Interfaces approximated with procedures) ---
 dcl-ds Rectangle qualified;
-    Width  float(8);
-    Height float(8);
+    Width  packed(20:8);
+    Height packed(20:8);
 end-ds;
 
 dcl-ds Circle qualified;
-    Radius float(8);
+    Radius packed(20:8);
 end-ds;
 
 // --- Prototypes (simulate interface methods) ---
-dcl-pr RectArea float(8);
+dcl-pr RectArea packed(20:8);
     r likeDS(Rectangle) const;
     x likeDS(Rectangle) const;
 end-pr;
 
-dcl-pr RectPerimeter float(8);
+dcl-pr RectPerimeter packed(20:8);
     r likeDS(Rectangle) value;
 end-pr;
 
-dcl-pr CircleArea float(8);
+dcl-pr CircleArea packed(20:8);
     c likeDS(Circle) const;
 end-pr;
 
-dcl-pr CirclePerimeter float(8);
+dcl-pr CirclePerimeter packed(20:8);
     c likeDS(Circle) const;
 end-pr;
 
 // --- Methods (Procedures) ---
 dcl-proc RectArea;
-    dcl-pi *n float(8);
+    dcl-pi *n packed(20:8);
         r likeDS(Rectangle) const;
     end-pi;
 
@@ -47,7 +47,7 @@ dcl-proc RectArea;
 end-proc;
 
 dcl-proc RectPerimeter;
-    dcl-pi RectPerimeter float(8);
+    dcl-pi RectPerimeter packed(20:8);
         r likeDS(Rectangle) value;
     end-pi;
 
@@ -55,7 +55,7 @@ dcl-proc RectPerimeter;
 end-proc RectPerimeter ;
 
 dcl-proc CircleArea;
-    dcl-pi *n float(8);
+    dcl-pi *n packed(20:8);
         c likeDS(Circle) const;
     end-pi;
 
@@ -63,7 +63,7 @@ dcl-proc CircleArea;
 end-proc;
 
 dcl-proc CirclePerimeter;
-    dcl-pi *n float(8);
+    dcl-pi *n packed(20:8);
         c likeDS(Circle) const;
     end-pi;
 
@@ -73,8 +73,8 @@ end-proc;
 // --- Constructor-like Function ---
 dcl-proc NewRectangle;
     dcl-pi *n likeDS(Rectangle);
-        w float(8);
-        h float(8);
+        w packed(20:8);
+        h packed(20:8);
     end-pi;
 
     dcl-ds r likeDS(Rectangle);
@@ -87,9 +87,9 @@ end-proc;
 
 // --- Error Handling (simplified) ---
 dcl-proc Divide;
-    dcl-pi *n float(8);
-        a float(8);
-        b float(8);
+    dcl-pi *n packed(20:8);
+        a packed(20:8);
+        b packed(20:8);
     end-pi;
 
     if b = 0;
@@ -210,7 +210,7 @@ dcl-proc main;
     dsply ('Circle Perimeter: ' + %char(CirclePerimeter(circle)));
 
     // Error handling
-    dcl-s result float(8);
+    dcl-s result packed(20:8);
     result = Divide(10:2);
     dsply ('Division result: ' + %char(result));
 

@@ -133,7 +133,8 @@
   name: (identifier) @keyword)
 
 ; Keyword arguments
-(keyword_arguments) @punctuation.bracket
+; can no longer access the parenthesis this way
+;(_keyword_arguments) @punctuation.bracket
 
 ; =========================
 ; Anonymous names (*N)
