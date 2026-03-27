@@ -1,7 +1,7 @@
 [package]
 name = "tree-sitter-rpgle"
 description = "Parser for RPGLE"
-version = "0.1.0"
+version = "1.0.0"
 authors = ["Nian Vrey <51823073+YoungVoid@users.noreply.github.com>"]
 license = "MIT"
 readme = "README.md"

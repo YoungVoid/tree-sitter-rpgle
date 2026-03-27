@@ -1,6 +1,6 @@
 {
   "name": "tree-sitter-rpgle",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "Parser for RPGLE",
   "type": "module",
   "repository": {
