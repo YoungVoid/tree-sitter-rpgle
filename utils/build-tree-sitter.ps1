@@ -8,6 +8,6 @@ tree-sitter build
 
 # Step 3: Parse example.rpgle and save output
 Write-Host "Parsing example.rpgle..."
-tree-sitter parse example.rpgle > output_generate.txt
+tree-sitter parse tests\example.rpgle > tests\output_generate.txt
 
 Write-Host "All steps completed."
